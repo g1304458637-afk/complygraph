@@ -13,19 +13,13 @@ lines = [
     "# AUTO-GENERATED from data/ntm_seed.yaml — do not hand-edit.",
     f"# Regenerate: python scripts_gen_ntm.py  (seed v0, {len(rules)} rules)",
 ]
-body = {}
-for rule in rules:
-    body.setdefault(rule.pack, []).append(rule)
-
 text = "\n".join(lines) + "\n"
-for pack, pack_rules in body.items():
-    pack_type = "legal"
-    doc = {
-        "pack": pack,
-        "pack_type": pack_type,
-        "rules": [r.model_dump(mode="json") for r in pack_rules],
-    }
-    text += "\n" + yaml.safe_dump(doc, sort_keys=False, allow_unicode=False)
+doc = {
+    "pack": "ntm",
+    "pack_type": "legal",
+    "rules": [r.model_dump(mode="json") for r in sorted(rules, key=lambda x: x.id)],
+}
+text += yaml.safe_dump(doc, sort_keys=False, allow_unicode=False)
 
 target = root / "rulepacks" / "ntm" / "generated.yaml"
 target.parent.mkdir(exist_ok=True)

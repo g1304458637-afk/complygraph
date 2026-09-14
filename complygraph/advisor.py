@@ -69,6 +69,102 @@ EVIDENCE_HOWTO: dict[str, dict[str, str]] = {
         "zh": "LVD 安全测试（ICT/AV 设备按 EN 62368-1），认可实验室约 2-3 周",
         "en": "LVD safety testing (EN 62368-1 for ICT/AV equipment), 2-3 weeks",
     },
+    "ccc_certificate": {
+        "zh": "中国 CCC：指定认证机构认证（锂电池/移动电源 2024-08 起强制），约 6-10 周",
+        "en": "China CCC certification via an approved body (mandatory for lithium batteries/power banks since 2024-08), 6-10 weeks",
+    },
+    "srrc_certificate": {
+        "zh": "中国 SRRC 无线电型号核准，约 4-8 周",
+        "en": "China SRRC radio type approval, 4-8 weeks",
+    },
+    "bsmi_certificate": {
+        "zh": "台湾 BSMI 商品检验认证，约 4-8 周",
+        "en": "Taiwan BSMI product certification, 4-8 weeks",
+    },
+    "ncc_certificate": {
+        "zh": "台湾 NCC 低功率射频器材型式认证，约 2-4 周",
+        "en": "Taiwan NCC type approval for low-power RF devices, 2-4 weeks",
+    },
+    "sni_certificate": {
+        "zh": "印尼 SNI 认证（适用范围内的产品），约 8-16 周",
+        "en": "Indonesia SNI certification for products under mandatory scope, 8-16 weeks",
+    },
+    "sdppi_certificate": {
+        "zh": "印尼 SDPPI 无线设备型式认证，约 4-8 周",
+        "en": "Indonesia SDPPI type approval for radio equipment, 4-8 weeks",
+    },
+    "tisi_certificate": {
+        "zh": "泰国 TISI 工业标准认证，约 8-16 周",
+        "en": "Thailand TISI certification, 8-16 weeks",
+    },
+    "nbtc_certificate": {
+        "zh": "泰国 NBTC 无线设备 type approval，约 2-4 周",
+        "en": "Thailand NBTC type approval, 2-4 weeks",
+    },
+    "sirim_certificate": {
+        "zh": "马来西亚 SIRIM 认证与标签（CoA），约 4-8 周",
+        "en": "Malaysia SIRIM certification & labelling (CoA), 4-8 weeks",
+    },
+    "mcmc_certificate": {
+        "zh": "马来西亚 MCMC 通信设备认证（CoA），约 4-8 周",
+        "en": "Malaysia MCMC Certificate of Approval, 4-8 weeks",
+    },
+    "bps_icc_certificate": {
+        "zh": "菲律宾 BPS/ICC：强制清单产品需 ICC 通关许可",
+        "en": "Philippines BPS/ICC clearance for mandatory-list products",
+    },
+    "ntc_certificate": {
+        "zh": "菲律宾 NTC 无线设备型式认证，约 4-8 周",
+        "en": "Philippines NTC type approval, 4-8 weeks",
+    },
+    "saber_certificate": {
+        "zh": "沙特 SABER 平台：SASO 标准 CoC 证书（需本地注册），约 4-8 周",
+        "en": "Saudi SABER platform: SASO CoC with local registration, 4-8 weeks",
+    },
+    "cst_certificate": {
+        "zh": "沙特 CST 无线设备型式核准，约 4-8 周",
+        "en": "Saudi CST type approval, 4-8 weeks",
+    },
+    "sii_certificate": {
+        "zh": "以色列 SII 强制清单产品认证，约 6-12 周",
+        "en": "Israel SII approval for regulated products, 6-12 weeks",
+    },
+    "nrcs_loa": {
+        "zh": "南非 NRCS Letter of Authority（强制规范 VC），约 6-12 周",
+        "en": "South Africa NRCS Letter of Authority per compulsory specifications, 6-12 weeks",
+    },
+    "icasa_certificate": {
+        "zh": "南非 ICASA 无线设备型式认证，约 4-8 周",
+        "en": "South Africa ICASA type approval, 4-8 weeks",
+    },
+    "tse_certificate": {
+        "zh": "土耳其 TSE 认证或 CE 参照合规文件，约 4-8 周",
+        "en": "Turkey TSE certification or CE-referenced documentation, 4-8 weeks",
+    },
+    "eac_certificate": {
+        "zh": "欧亚联盟 EAC：TR CU 认证/声明（004/020 等），约 6-12 周",
+        "en": "EAEU EAC certification/declaration under TR CU (004/020 etc.), 6-12 weeks",
+    },
+    "iram_certificate": {
+        "zh": "阿根廷 SNC 安全认证（IRAM 标准），约 6-12 周",
+        "en": "Argentina SNC safety certification (IRAM standards), 6-12 weeks",
+    },
+    "sec_certificate": {
+        "zh": "智利 SEC 认证，约 4-10 周",
+        "en": "Chile SEC certification, 4-10 weeks",
+    },
+    "subtel_certificate": {
+        "zh": "智利 SUBTEL 无线设备 homologation，约 4-8 周",
+        "en": "Chile SUBTEL homologation, 4-8 weeks",
+    },
+    "retie_certificate": {
+        "zh": "哥伦比亚 RETIE 电气合规认证，约 4-10 周",
+        "en": "Colombia RETIE conformity certification, 4-10 weeks",
+    },
+    "mintic_certificate": {
+        "zh": "哥伦比亚 MINTIC 无线设备 type approval，约 4-8 周",
+        "en": "Colombia MINTIC type approval, 4-8 weeks",
+    },
     "un383_test_summary": {
         "zh": "向电芯/电池厂索取 UN38.3 测试摘要（通常免费，厂家持有）；尚未测试时送检约 1-2 周",
         "en": "Request the UN 38.3 test summary from the cell/battery maker, or test at an accredited lab (1-2 weeks)",
@@ -149,6 +245,11 @@ ELECTRICAL_EVIDENCE = {
     "pse_certificate", "telec_certificate", "kc_certificate", "ised_certificate",
     "inmetro_certificate", "anatel_certificate", "ecas_certificate", "nom_certificate",
     "fcc_test_report", "red_test_report", "rcm_declaration", "battery_conformity_declaration",
+    "ccc_certificate", "srrc_certificate", "bsmi_certificate", "ncc_certificate", "sni_certificate",
+    "sdppi_certificate", "tisi_certificate", "nbtc_certificate", "sirim_certificate", "mcmc_certificate",
+    "bps_icc_certificate", "ntc_certificate", "saber_certificate", "cst_certificate", "sii_certificate",
+    "nrcs_loa", "icasa_certificate", "tse_certificate", "eac_certificate", "iram_certificate",
+    "sec_certificate", "subtel_certificate", "retie_certificate", "mintic_certificate",
     "rohs_test_report", "emc_test_report", "lvd_test_report",
 }
 

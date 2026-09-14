@@ -5,7 +5,7 @@
 
 > **An open-source engine that converts product facts, regulatory sources and compliance evidence into versioned, executable, auditable market-readiness decisions.** LLM drafts, the engine decides, humans approve.
 
-[![CI](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml/badge.svg)](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-49%20passing-success)]()
+[![CI](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml/badge.svg)](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-62%20passing-success)]()
 
 ---
 
@@ -61,7 +61,7 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 ## 覆盖范围（诚实声明）
 
 - **品类**：消费电子纵向切片已含 RoHS / EMC / LVD / SCIP（欧盟）
-- **市场**：德国、法国、英国、美国（深度规则）+ 日本/韩国/加拿大/澳洲/巴西/印度/阿联酋/墨西哥/新加坡/瑞士（NTM 骨架，仅准入级检查）；
+- **市场**：德国、法国、英国、美国（深度规则）+ 25 个骨架市场——东亚（日/韩/中/台/港待扩）、东南亚（新/马/泰/印尼/菲/越草稿）、南亚（印度）、中东（阿联酋/沙特/以色列）、欧洲（瑞士）、北美（加拿大）、拉美（巴西/墨西哥/阿根廷/智利/哥伦比亚）、非洲（南非）、欧亚（EAEU）——NTM 骨架，仅准入级检查；
 - **品类**：消费电子（电池类）最完整（GPSR/电池法/RED/运输/RoHS/EMC/LVD/SCIP），服饰仅通用骨架；**其他品类只有 GPSR/包装骨架，请勿用于玩具、化妆品、食品等未覆盖品类**；
 - **规则状态**：全部为 **candidate** —— 每条挂权威源引用，但未经律师逐条核实（`last_verified` 字段标记）；
 - **本工具是决策支持，不是法律意见，不构成完整合规评估。**

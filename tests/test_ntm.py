@@ -12,9 +12,10 @@ from conftest import AS_OF, run
 
 def test_seed_generates_valid_rules():
     rules = generate_rules()
-    assert len(rules) == 12
+    assert len(rules) == 36
     ids = {r.id for r in rules}
     assert "ntm.jp.pse" in ids and "ntm.jp.telec" in ids and "ntm.sg.safety" in ids
+    assert "ntm.cn.ccc" in ids and "ntm.sa.saber" in ids and "ntm.ru.eac" in ids
     for r in rules:
         assert r.jurisdiction == r.id.split(".")[1].upper()
         assert r.source.authority
@@ -22,7 +23,10 @@ def test_seed_generates_valid_rules():
 
 def test_seed_market_registry_covers_all_iso():
     seed = load_seed()
-    assert seed_market_iso_codes(seed) == ["JP", "KR", "CA", "AU", "BR", "IN", "AE", "MX", "SG", "CH"]
+    assert seed_market_iso_codes(seed) == [
+        "JP", "KR", "CA", "AU", "BR", "IN", "AE", "MX", "SG", "CH",
+        "CN", "TW", "ID", "TH", "MY", "PH", "SA", "IL", "ZA", "TR", "RU", "AR", "CL", "CO",
+    ]
     cfgs = None
     from complygraph.sources.ntm import seed_market_configs
     cfgs = seed_market_configs(seed)

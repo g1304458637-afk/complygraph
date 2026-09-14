@@ -106,3 +106,101 @@ markets:
     - GLOBAL
     eu_member: false
     language: vi
+  cn:
+    country: CN
+    jurisdictions:
+    - CN
+    - GLOBAL
+    eu_member: false
+    language: en
+  tw:
+    country: TW
+    jurisdictions:
+    - TW
+    - GLOBAL
+    eu_member: false
+    language: en
+  id:
+    country: ID
+    jurisdictions:
+    - ID
+    - GLOBAL
+    eu_member: false
+    language: en
+  th:
+    country: TH
+    jurisdictions:
+    - TH
+    - GLOBAL
+    eu_member: false
+    language: en
+  my:
+    country: MY
+    jurisdictions:
+    - MY
+    - GLOBAL
+    eu_member: false
+    language: en
+  ph:
+    country: PH
+    jurisdictions:
+    - PH
+    - GLOBAL
+    eu_member: false
+    language: en
+  sa:
+    country: SA
+    jurisdictions:
+    - SA
+    - GLOBAL
+    eu_member: false
+    language: en
+  il:
+    country: IL
+    jurisdictions:
+    - IL
+    - GLOBAL
+    eu_member: false
+    language: en
+  za:
+    country: ZA
+    jurisdictions:
+    - ZA
+    - GLOBAL
+    eu_member: false
+    language: en
+  tr:
+    country: TR
+    jurisdictions:
+    - TR
+    - GLOBAL
+    eu_member: false
+    language: en
+  ru:
+    country: RU
+    jurisdictions:
+    - RU
+    - GLOBAL
+    eu_member: false
+    language: en
+  ar:
+    country: AR
+    jurisdictions:
+    - AR
+    - GLOBAL
+    eu_member: false
+    language: en
+  cl:
+    country: CL
+    jurisdictions:
+    - CL
+    - GLOBAL
+    eu_member: false
+    language: en
+  co:
+    country: CO
+    jurisdictions:
+    - CO
+    - GLOBAL
+    eu_member: false
+    language: en

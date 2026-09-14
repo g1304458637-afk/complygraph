@@ -50,17 +50,26 @@ def _applies_if(req: dict[str, Any], iso: str) -> dict[str, Any]:
         conds.append({"any": chapter_conds})
     if req.get("applies_feature"):
         conds.append({"fact": FEATURE_FACT, "op": "eq", "value": True})
+    if req.get("applies_battery"):
+        conds.append({"fact": "electrical.battery.present", "op": "eq", "value": True})
     if len(conds) == 1:
         return conds[0]
     return {"all": conds}
 
 
 def requirement_to_rule(market_iso: str, req: dict[str, Any]) -> Rule:
-    requires = {k: v for k, v in req["requires"].items() if k in
+    req_id = req["id"]
+    prefix = market_iso.lower() + "_"
+    if req_id.lower().startswith(prefix):
+        req_id = req_id[len(prefix):]
+    raw_req = req["requires"]
+    if isinstance(raw_req, list):  # tolerate list form
+        raw_req = raw_req[0]
+    requires = {k: v for k, v in raw_req.items() if k in
                 ("kind", "evidence_type", "registration_scheme", "attribute", "field", "severity", "description")}
-    requires["id"] = f"req.ntm.{market_iso.lower()}.{req['id']}"
+    requires["id"] = f"req.ntm.{market_iso.lower()}.{req_id}"
     return Rule.model_validate({
-        "id": f"ntm.{market_iso.lower()}.{req['id']}",
+        "id": f"ntm.{market_iso.lower()}.{req_id}",
         "title": req["title"],
         "version": "0.1.0",
         "pack": f"ntm.{market_iso.lower()}",

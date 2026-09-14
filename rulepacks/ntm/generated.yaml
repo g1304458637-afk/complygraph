@@ -1,5 +1,5 @@
 # AUTO-GENERATED from data/ntm_seed.yaml — do not hand-edit.
-# Regenerate: python scripts_gen_ntm.py  (12 rules, seed v0)
+# Regenerate: python scripts_gen_ntm.py  (seed v0, 36 rules)
 pack: ntm
 pack_type: legal
 rules:
@@ -34,6 +34,40 @@ rules:
     authority: MOIAT UAE
     provision: UAE ECAS regulations
     url: https://www.moiat.gov.ae/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.ar.safety
+  title: Argentine electrical safety certification (IRAM/SNC)
+  version: 0.1.0
+  pack: ntm.ar
+  pack_type: legal
+  channel: null
+  jurisdiction: AR
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: AR
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.ar.safety
+    kind: evidence
+    evidence_type: iram_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: Safety certification under the SNC system for electrical products
+  source:
+    authority: "Secretar\xEDa de Comercio Argentina"
+    provision: "Resolution 169/2018 \u2014 electrical product safety (SNC)"
+    url: https://www.argentina.gob.ar/produccion
   last_verified: null
   notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
     TRAINS/WITS connector.'
@@ -213,6 +247,331 @@ rules:
   last_verified: null
   notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
     TRAINS/WITS connector.'
+- id: ntm.cl.sec
+  title: SEC certification for electrical/fuel products
+  version: 0.1.0
+  pack: ntm.cl
+  pack_type: legal
+  channel: null
+  jurisdiction: CL
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CL
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.cl.sec
+    kind: evidence
+    evidence_type: sec_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: SEC certification for regulated electrical products
+  source:
+    authority: SEC Chile
+    provision: Ley 21.095 / SEC certification system
+    url: https://www.sec.cl/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.cl.subtel
+  title: SUBTEL homologation for radio equipment
+  version: 0.1.0
+  pack: ntm.cl
+  pack_type: legal
+  channel: null
+  jurisdiction: CL
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CL
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.cl.subtel
+    kind: evidence
+    evidence_type: subtel_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: SUBTEL type approval/homologation for telecom equipment
+  source:
+    authority: SUBTEL Chile
+    provision: Telecom equipment homologation regulations
+    url: https://www.subtel.gob.cl/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.cn.ccc
+  title: CCC compulsory certification for lithium batteries and power banks (since
+    2024-08)
+  version: 0.1.0
+  pack: ntm.cn
+  pack_type: legal
+  channel: null
+  jurisdiction: CN
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CN
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: electrical.battery.present
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.cn.ccc
+    kind: evidence
+    evidence_type: ccc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: CCC certificate from an approved certification body for lithium batteries
+      / power banks
+  source:
+    authority: SAMR China (CNCA)
+    provision: "Announcement No.10 of 2023 \u2014 lithium batteries and power banks\
+      \ under compulsory CCC from 2024-08-01"
+    url: https://www.cnca.gov.cn/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.cn.srrc
+  title: SRRC radio type approval for wireless devices
+  version: 0.1.0
+  pack: ntm.cn
+  pack_type: legal
+  channel: null
+  jurisdiction: CN
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CN
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.cn.srrc
+    kind: evidence
+    evidence_type: srrc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: SRRC type approval certificate for radio transmission equipment
+  source:
+    authority: MIIT China (SRRC)
+    provision: Radio transmitting equipment type approval
+    url: https://www.srrca.org.cn/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.co.mintic
+  title: MINTIC type approval for radio equipment
+  version: 0.1.0
+  pack: ntm.co
+  pack_type: legal
+  channel: null
+  jurisdiction: CO
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CO
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.co.mintic
+    kind: evidence
+    evidence_type: mintic_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: MINTIC type approval for telecom equipment
+  source:
+    authority: MINTIC Colombia
+    provision: Type approval regulations for ICT equipment
+    url: https://www.mintic.gov.co/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.co.retie
+  title: RETIE conformity for electrical equipment
+  version: 0.1.0
+  pack: ntm.co
+  pack_type: legal
+  channel: null
+  jurisdiction: CO
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CO
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.co.retie
+    kind: evidence
+    evidence_type: retie_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: "RETIE conformity certification (Ministerio de Minas y Energ\xED\
+      a)"
+  source:
+    authority: "MINEC/ENERG\xCDA Colombia"
+    provision: "RETIE \u2014 Reglamento T\xE9cnico de Instalaciones El\xE9ctricas"
+    url: https://www.minenergia.gov.co/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.id.sdppi
+  title: SDPPI type approval for wireless devices
+  version: 0.1.0
+  pack: ntm.id
+  pack_type: legal
+  channel: null
+  jurisdiction: ID
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: ID
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.id.sdppi
+    kind: evidence
+    evidence_type: sdppi_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: SDPPI (Kominfo) type approval for radio equipment
+  source:
+    authority: SDPPI Indonesia
+    provision: Ministerial regulation on type approval of telecom equipment
+    url: https://sertifikasi.komdigi.go.id/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.id.sni
+  title: SNI mandatory certification where applicable
+  version: 0.1.0
+  pack: ntm.id
+  pack_type: legal
+  channel: null
+  jurisdiction: ID
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: ID
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.id.sni
+    kind: evidence
+    evidence_type: sni_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: SNI certification for products under mandatory SNI scope
+  source:
+    authority: BSN Indonesia
+    provision: Government regulation on national standards (SNI)
+    url: https://www.bsn.go.id/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.il.sii
+  title: SII approval for electrical products under mandatory scope
+  version: 0.1.0
+  pack: ntm.il
+  pack_type: legal
+  channel: null
+  jurisdiction: IL
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: IL
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.il.sii
+    kind: evidence
+    evidence_type: sii_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: Standards Institution of Israel approval for regulated products
+  source:
+    authority: SII Israel
+    provision: "Standards Law \u2014 regulated products list"
+    url: https://www.sii.org.il/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
 - id: ntm.in.bis
   title: BIS CRS registration for electronics
   version: 0.1.0
@@ -386,6 +745,249 @@ rules:
   last_verified: null
   notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
     TRAINS/WITS connector.'
+- id: ntm.my.mcmc
+  title: MCMC certification for communications equipment
+  version: 0.1.0
+  pack: ntm.my
+  pack_type: legal
+  channel: null
+  jurisdiction: MY
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: MY
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.my.mcmc
+    kind: evidence
+    evidence_type: mcmc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: MCMC Certificate of Approval for communications/multimedia devices
+  source:
+    authority: MCMC Malaysia
+    provision: Communications and Multimedia Act 1998
+    url: https://www.mcmc.gov.my/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.my.sirim
+  title: SIRIM QAS certification / labelling for electrical products
+  version: 0.1.0
+  pack: ntm.my
+  pack_type: legal
+  channel: null
+  jurisdiction: MY
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: MY
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.my.sirim
+    kind: evidence
+    evidence_type: sirim_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: SIRIM certification and labelling under Certificate of Approval
+  source:
+    authority: SIRIM QAS Malaysia
+    provision: Communications and Multimedia Act / Energy Commission requirements
+    url: https://www.sirim-qas.com.my/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.ph.bps
+  title: BPS ICC certification where mandatory
+  version: 0.1.0
+  pack: ntm.ph
+  pack_type: legal
+  channel: null
+  jurisdiction: PH
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: PH
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.ph.bps
+    kind: evidence
+    evidence_type: bps_icc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: Import Commodity Clearance (ICC) / BPS license for mandatory products
+  source:
+    authority: BPS Philippines (DTI)
+    provision: BPS mandatory product certification
+    url: https://bps.dti.gov.ph/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.ph.ntc
+  title: NTC type approval for radio equipment
+  version: 0.1.0
+  pack: ntm.ph
+  pack_type: legal
+  channel: null
+  jurisdiction: PH
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: PH
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.ph.ntc
+    kind: evidence
+    evidence_type: ntc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: NTC type approval for radio communication equipment
+  source:
+    authority: NTC Philippines
+    provision: NTC rules on type approval
+    url: https://ntc.gov.ph/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.ru.eac
+  title: EAC conformity (TR CU technical regulations) for EAEU market
+  version: 0.1.0
+  pack: ntm.ru
+  pack_type: legal
+  channel: null
+  jurisdiction: RU
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    fact: target_markets
+    op: contains
+    value: RU
+  requires:
+  - id: req.ntm.ru.eac
+    kind: evidence
+    evidence_type: eac_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: EAC certificate / declaration under TR CU 004/2011, 020/2011 etc.
+  source:
+    authority: Eurasian Economic Commission
+    provision: TR CU technical regulations of the Customs Union
+    url: https://www.eurasiancommission.org/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.sa.cst
+  title: CST type approval for radio equipment
+  version: 0.1.0
+  pack: ntm.sa
+  pack_type: legal
+  channel: null
+  jurisdiction: SA
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: SA
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.sa.cst
+    kind: evidence
+    evidence_type: cst_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: CST type approval for radio equipment
+  source:
+    authority: CST Saudi Arabia
+    provision: Type approval regulations for radio equipment
+    url: https://www.cst.gov.sa/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.sa.saber
+  title: SABER / SASO conformity certification
+  version: 0.1.0
+  pack: ntm.sa
+  pack_type: legal
+  channel: null
+  jurisdiction: SA
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: SA
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.sa.saber
+    kind: evidence
+    evidence_type: saber_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: Product CoC issued through the SABER platform per SASO standards
+  source:
+    authority: SASO / SABER Saudi Arabia
+    provision: SASO technical regulations via SABER platform
+    url: https://saber.sa/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
 - id: ntm.sg.safety
   title: Safety Mark registration (Consumer Protection Registration Scheme)
   version: 0.1.0
@@ -417,6 +1019,254 @@ rules:
     authority: Enterprise Singapore
     provision: Consumer Protection (Safety Requirements) Registration Scheme
     url: https://www.enterprisesg.gov.sg/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.th.nbtc
+  title: NBTC approval for radio equipment
+  version: 0.1.0
+  pack: ntm.th
+  pack_type: legal
+  channel: null
+  jurisdiction: TH
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: TH
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.th.nbtc
+    kind: evidence
+    evidence_type: nbtc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: NBTC type approval for radio communication equipment
+  source:
+    authority: NBTC Thailand
+    provision: Radio Communications Act
+    url: https://www.nbtc.go.th/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.th.tisi
+  title: TISI mandatory certification where applicable
+  version: 0.1.0
+  pack: ntm.th
+  pack_type: legal
+  channel: null
+  jurisdiction: TH
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: TH
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.th.tisi
+    kind: evidence
+    evidence_type: tisi_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: TISI license for products under mandatory standards
+  source:
+    authority: TISI Thailand
+    provision: Industrial Product Standards Act
+    url: https://www.tisi.go.th/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.tr.tse
+  title: Turkish conformity route for electrical products (TSE / CE-referenced)
+  version: 0.1.0
+  pack: ntm.tr
+  pack_type: legal
+  channel: null
+  jurisdiction: TR
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: TR
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.tr.tse
+    kind: evidence
+    evidence_type: tse_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: TSE certification or CE-referenced conformity documentation per Turkish
+      market surveillance law
+  source:
+    authority: TSE Turkey
+    provision: Law on Preparation and Implementation of Technical Legislation
+    url: https://www.tse.org.tr/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.tw.bsmi
+  title: BSMI certification for electrical products
+  version: 0.1.0
+  pack: ntm.tw
+  pack_type: legal
+  channel: null
+  jurisdiction: TW
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: TW
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.tw.bsmi
+    kind: evidence
+    evidence_type: bsmi_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: BSMI product certification (CPC) for electrical goods
+  source:
+    authority: BSMI Taiwan
+    provision: Commodity Inspection Act
+    url: https://www.bsmi.gov.tw/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.tw.ncc
+  title: NCC approval for radio equipment
+  version: 0.1.0
+  pack: ntm.tw
+  pack_type: legal
+  channel: null
+  jurisdiction: TW
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: TW
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.tw.ncc
+    kind: evidence
+    evidence_type: ncc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: NCC type approval for low-power radio frequency devices
+  source:
+    authority: NCC Taiwan
+    provision: Telecommunications Management Act
+    url: https://www.ncc.gov.tw/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.za.icasa
+  title: ICASA type approval for radio equipment
+  version: 0.1.0
+  pack: ntm.za
+  pack_type: legal
+  channel: null
+  jurisdiction: ZA
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: ZA
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.za.icasa
+    kind: evidence
+    evidence_type: icasa_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: ICASA type approval for electronic communications equipment
+  source:
+    authority: ICASA South Africa
+    provision: ICASA type approval regulations
+    url: https://www.icasa.org.za/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.za.nrcs
+  title: NRCS Letter of Authority (LoA) for electrical products
+  version: 0.1.0
+  pack: ntm.za
+  pack_type: legal
+  channel: null
+  jurisdiction: ZA
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: ZA
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.za.nrcs
+    kind: evidence
+    evidence_type: nrcs_loa
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: NRCS Letter of Authority per compulsory specifications (VC act)
+  source:
+    authority: NRCS South Africa
+    provision: National Regulator for Compulsory Specifications Act
+    url: https://www.thedtic.gov.za/
   last_verified: null
   notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
     TRAINS/WITS connector.'

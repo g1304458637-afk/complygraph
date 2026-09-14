@@ -191,3 +191,400 @@ markets:
           authority: SEV Switzerland
           provision: "Niederspannungsgeräteverordnung (LVEV)"
           url: "https://www.sev.ch/"
+
+  # ---------- 中国 ----------
+  - iso: CN
+    requirements:
+      - id: cn_ccc
+        title: "CCC compulsory certification for lithium batteries and power banks (since 2024-08)"
+        applies_hs: ["85"]
+        applies_battery: true
+        requires:
+          - id: req.cn.ccc
+            kind: evidence
+            evidence_type: ccc_certificate
+            severity: blocker
+            description: "CCC certificate from an approved certification body for lithium batteries / power banks"
+        source:
+          authority: SAMR China (CNCA)
+          provision: "Announcement No.10 of 2023 — lithium batteries and power banks under compulsory CCC from 2024-08-01"
+          url: "https://www.cnca.gov.cn/"
+        notes: "Knowledge-based candidate — verify catalog scope."
+      - id: cn_srrc
+        title: "SRRC radio type approval for wireless devices"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.cn.srrc
+            kind: evidence
+            evidence_type: srrc_certificate
+            severity: blocker
+            description: "SRRC type approval certificate for radio transmission equipment"
+        source:
+          authority: MIIT China (SRRC)
+          provision: "Radio transmitting equipment type approval"
+          url: "https://www.srrca.org.cn/"
+        notes: "Knowledge-based candidate."
+  # ---------- 中国台湾 ----------
+  - iso: TW
+    requirements:
+      - id: tw_bsmi
+        title: "BSMI certification for electrical products"
+        applies_hs: ["85"]
+        requires:
+          - id: req.tw.bsmi
+            kind: evidence
+            evidence_type: bsmi_certificate
+            severity: blocker
+            description: "BSMI product certification (CPC) for electrical goods"
+        source:
+          authority: BSMI Taiwan
+          provision: "Commodity Inspection Act"
+          url: "https://www.bsmi.gov.tw/"
+        notes: "Knowledge-based candidate."
+      - id: tw_ncc
+        title: "NCC approval for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.tw.ncc
+            kind: evidence
+            evidence_type: ncc_certificate
+            severity: blocker
+            description: "NCC type approval for low-power radio frequency devices"
+        source:
+          authority: NCC Taiwan
+          provision: "Telecommunications Management Act"
+          url: "https://www.ncc.gov.tw/"
+        notes: "Knowledge-based candidate."
+  # ---------- 印度尼西亚 ----------
+  - iso: ID
+    requirements:
+      - id: id_sni
+        title: "SNI mandatory certification where applicable"
+        applies_hs: ["85"]
+        requires:
+          - id: req.id.sni
+            kind: evidence
+            evidence_type: sni_certificate
+            severity: major
+            description: "SNI certification for products under mandatory SNI scope"
+        source:
+          authority: BSN Indonesia
+          provision: "Government regulation on national standards (SNI)"
+          url: "https://www.bsn.go.id/"
+        notes: "Knowledge-based candidate — scope varies by product."
+      - id: id_sdppi
+        title: "SDPPI type approval for wireless devices"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.id.sdppi
+            kind: evidence
+            evidence_type: sdppi_certificate
+            severity: blocker
+            description: "SDPPI (Kominfo) type approval for radio equipment"
+        source:
+          authority: SDPPI Indonesia
+          provision: "Ministerial regulation on type approval of telecom equipment"
+          url: "https://sertifikasi.komdigi.go.id/"
+        notes: "Knowledge-based candidate."
+  # ---------- 泰国 ----------
+  - iso: TH
+    requirements:
+      - id: th_tisi
+        title: "TISI mandatory certification where applicable"
+        applies_hs: ["85"]
+        requires:
+          - id: req.th.tisi
+            kind: evidence
+            evidence_type: tisi_certificate
+            severity: major
+            description: "TISI license for products under mandatory standards"
+        source:
+          authority: TISI Thailand
+          provision: "Industrial Product Standards Act"
+          url: "https://www.tisi.go.th/"
+        notes: "Knowledge-based candidate."
+      - id: th_nbtc
+        title: "NBTC approval for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.th.nbtc
+            kind: evidence
+            evidence_type: nbtc_certificate
+            severity: blocker
+            description: "NBTC type approval for radio communication equipment"
+        source:
+          authority: NBTC Thailand
+          provision: "Radio Communications Act"
+          url: "https://www.nbtc.go.th/"
+        notes: "Knowledge-based candidate."
+  # ---------- 马来西亚 ----------
+  - iso: MY
+    requirements:
+      - id: my_sirim
+        title: "SIRIM QAS certification / labelling for electrical products"
+        applies_hs: ["85"]
+        requires:
+          - id: req.my.sirim
+            kind: evidence
+            evidence_type: sirim_certificate
+            severity: blocker
+            description: "SIRIM certification and labelling under Certificate of Approval"
+        source:
+          authority: SIRIM QAS Malaysia
+          provision: "Communications and Multimedia Act / Energy Commission requirements"
+          url: "https://www.sirim-qas.com.my/"
+        notes: "Knowledge-based candidate."
+      - id: my_mcmc
+        title: "MCMC certification for communications equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.my.mcmc
+            kind: evidence
+            evidence_type: mcmc_certificate
+            severity: blocker
+            description: "MCMC Certificate of Approval for communications/multimedia devices"
+        source:
+          authority: MCMC Malaysia
+          provision: "Communications and Multimedia Act 1998"
+          url: "https://www.mcmc.gov.my/"
+        notes: "Knowledge-based candidate."
+  # ---------- 菲律宾 ----------
+  - iso: PH
+    requirements:
+      - id: ph_bps
+        title: "BPS ICC certification where mandatory"
+        applies_hs: ["85"]
+        requires:
+          - id: req.ph.bps
+            kind: evidence
+            evidence_type: bps_icc_certificate
+            severity: major
+            description: "Import Commodity Clearance (ICC) / BPS license for mandatory products"
+        source:
+          authority: BPS Philippines (DTI)
+          provision: "BPS mandatory product certification"
+          url: "https://bps.dti.gov.ph/"
+        notes: "Knowledge-based candidate."
+      - id: ph_ntc
+        title: "NTC type approval for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.ph.ntc
+            kind: evidence
+            evidence_type: ntc_certificate
+            severity: blocker
+            description: "NTC type approval for radio communication equipment"
+        source:
+          authority: NTC Philippines
+          provision: "NTC rules on type approval"
+          url: "https://ntc.gov.ph/"
+        notes: "Knowledge-based candidate."
+  # ---------- 沙特阿拉伯 ----------
+  - iso: SA
+    requirements:
+      - id: sa_saber
+        title: "SABER / SASO conformity certification"
+        applies_hs: ["85"]
+        requires:
+          - id: req.sa.saber
+            kind: evidence
+            evidence_type: saber_certificate
+            severity: blocker
+            description: "Product CoC issued through the SABER platform per SASO standards"
+        source:
+          authority: SASO / SABER Saudi Arabia
+          provision: "SASO technical regulations via SABER platform"
+          url: "https://saber.sa/"
+        notes: "Knowledge-based candidate."
+      - id: sa_cst
+        title: "CST type approval for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.sa.cst
+            kind: evidence
+            evidence_type: cst_certificate
+            severity: blocker
+            description: "CST type approval for radio equipment"
+        source:
+          authority: CST Saudi Arabia
+          provision: "Type approval regulations for radio equipment"
+          url: "https://www.cst.gov.sa/"
+        notes: "Knowledge-based candidate."
+  # ---------- 以色列 ----------
+  - iso: IL
+    requirements:
+      - id: il_sii
+        title: "SII approval for electrical products under mandatory scope"
+        applies_hs: ["85"]
+        requires:
+          - id: req.il.sii
+            kind: evidence
+            evidence_type: sii_certificate
+            severity: major
+            description: "Standards Institution of Israel approval for regulated products"
+        source:
+          authority: SII Israel
+          provision: "Standards Law — regulated products list"
+          url: "https://www.sii.org.il/"
+        notes: "Knowledge-based candidate."
+  # ---------- 南非 ----------
+  - iso: ZA
+    requirements:
+      - id: za_nrcs
+        title: "NRCS Letter of Authority (LoA) for electrical products"
+        applies_hs: ["85"]
+        requires:
+          - id: req.za.nrcs
+            kind: evidence
+            evidence_type: nrcs_loa
+            severity: blocker
+            description: "NRCS Letter of Authority per compulsory specifications (VC act)"
+        source:
+          authority: NRCS South Africa
+          provision: "National Regulator for Compulsory Specifications Act"
+          url: "https://www.thedtic.gov.za/"
+        notes: "Knowledge-based candidate."
+      - id: za_icasa
+        title: "ICASA type approval for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.za.icasa
+            kind: evidence
+            evidence_type: icasa_certificate
+            severity: blocker
+            description: "ICASA type approval for electronic communications equipment"
+        source:
+          authority: ICASA South Africa
+          provision: "ICASA type approval regulations"
+          url: "https://www.icasa.org.za/"
+        notes: "Knowledge-based candidate."
+  # ---------- 土耳其 ----------
+  - iso: TR
+    requirements:
+      - id: tr_tse
+        title: "Turkish conformity route for electrical products (TSE / CE-referenced)"
+        applies_hs: ["85"]
+        requires:
+          - id: req.tr.tse
+            kind: evidence
+            evidence_type: tse_certificate
+            severity: major
+            description: "TSE certification or CE-referenced conformity documentation per Turkish market surveillance law"
+        source:
+          authority: TSE Turkey
+          provision: "Law on Preparation and Implementation of Technical Legislation"
+          url: "https://www.tse.org.tr/"
+        notes: "Knowledge-based candidate."
+  # ---------- 欧亚经济联盟（俄/哈等） ----------
+  - iso: RU
+    requirements:
+      - id: ru_eac
+        title: "EAC conformity (TR CU technical regulations) for EAEU market"
+        version: "1.0.0"
+        jurisdiction: RU
+        effective_from: 2013-02-15
+        applies_if:
+          all:
+            - {fact: target_markets, op: contains, value: RU}
+            - {fact: category, op: eq, value: consumer_electronics}
+        requires:
+          - id: req.ru.eac
+            kind: evidence
+            evidence_type: eac_certificate
+            severity: blocker
+            description: "EAC certificate / declaration under TR CU 004/2011, 020/2011 etc."
+        source:
+          authority: Eurasian Economic Commission
+          provision: "TR CU technical regulations of the Customs Union"
+          url: "https://www.eurasiancommission.org/"
+        notes: "Knowledge-based candidate. Covers RU and other EAEU members via target_markets=RU convention."
+        last_verified: null
+  # ---------- 阿根廷 ----------
+  - iso: AR
+    requirements:
+      - id: ar_safety
+        title: "Argentine electrical safety certification (IRAM/SNC)"
+        applies_hs: ["85"]
+        requires:
+          - id: req.ar.safety
+            kind: evidence
+            evidence_type: iram_certificate
+            severity: major
+            description: "Safety certification under the SNC system for electrical products"
+        source:
+          authority: Secretaría de Comercio Argentina
+          provision: "Resolution 169/2018 — electrical product safety (SNC)"
+          url: "https://www.argentina.gob.ar/produccion"
+        notes: "Knowledge-based candidate."
+  # ---------- 智利 ----------
+  - iso: CL
+    requirements:
+      - id: cl_sec
+        title: "SEC certification for electrical/fuel products"
+        applies_hs: ["85"]
+        requires:
+          - id: req.cl.sec
+            kind: evidence
+            evidence_type: sec_certificate
+            severity: major
+            description: "SEC certification for regulated electrical products"
+        source:
+          authority: SEC Chile
+          provision: "Ley 21.095 / SEC certification system"
+          url: "https://www.sec.cl/"
+        notes: "Knowledge-based candidate."
+      - id: cl_subtel
+        title: "SUBTEL homologation for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.cl.subtel
+            kind: evidence
+            evidence_type: subtel_certificate
+            severity: blocker
+            description: "SUBTEL type approval/homologation for telecom equipment"
+        source:
+          authority: SUBTEL Chile
+          provision: "Telecom equipment homologation regulations"
+          url: "https://www.subtel.gob.cl/"
+        notes: "Knowledge-based candidate."
+  # ---------- 哥伦比亚 ----------
+  - iso: CO
+    requirements:
+      - id: co_retie
+        title: "RETIE conformity for electrical equipment"
+        applies_hs: ["85"]
+        requires:
+          - id: req.co.retie
+            kind: evidence
+            evidence_type: retie_certificate
+            severity: major
+            description: "RETIE conformity certification (Ministerio de Minas y Energía)"
+        source:
+          authority: MINEC/ENERGÍA Colombia
+          provision: "RETIE — Reglamento Técnico de Instalaciones Eléctricas"
+          url: "https://www.minenergia.gov.co/"
+        notes: "Knowledge-based candidate."
+      - id: co_mintic
+        title: "MINTIC type approval for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          - id: req.co.mintic
+            kind: evidence
+            evidence_type: mintic_certificate
+            severity: blocker
+            description: "MINTIC type approval for telecom equipment"
+        source:
+          authority: MINTIC Colombia
+          provision: "Type approval regulations for ICT equipment"
+          url: "https://www.mintic.gov.co/"
+        notes: "Knowledge-based candidate."

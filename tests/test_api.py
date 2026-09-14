@@ -65,6 +65,14 @@ def test_empty_name_falls_back_to_sku(tmp_path):
 
 # ---- agent_brain 纯工具（离线，不调 LLM） ----
 
+try:
+    import pydantic_ai  # noqa: F401
+    HAS_BRAIN = True
+except ImportError:
+    HAS_BRAIN = False
+
+needs_brain = pytest.mark.skipif(not HAS_BRAIN, reason="pydantic-ai not installed (brain extra)")
+
 
 def _session_with_brain_tools():
     turn = start(lang="zh")
@@ -75,12 +83,14 @@ def _session_with_brain_tools():
     return session, ctx, agent_brain
 
 
+@needs_brain
 def test_brain_current_question_tool():
     session, ctx, ab = _session_with_brain_tools()
     out = ab._current_question(ctx)
     assert out["question"]["id"] == "sku"
 
 
+@needs_brain
 def test_brain_answer_tool_advances_flow():
     session, ctx, ab = _session_with_brain_tools()
     out = ab._answer_current_question(ctx, "AGT-7")
@@ -90,6 +100,7 @@ def test_brain_answer_tool_advances_flow():
     assert nxt["question"]["id"] == "name"
 
 
+@needs_brain
 def test_brain_evaluate_market_unknown_id():
     session, ctx, ab = _session_with_brain_tools()
     out = ab._evaluate_market(ctx, "xx")

@@ -617,6 +617,18 @@ const statObs = setInterval(() => {
 
 buildReveal();
 
+// deterministic hash navigation: large images / smooth-scroll can swallow the
+// browser's native anchor jump — force it once the layout is stable.
+if (location.hash) {
+  const gotoHash = () => {
+    const el = document.querySelector(location.hash);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 96, behavior: "instant" });
+  };
+  gotoHash();
+  window.addEventListener("load", gotoHash);
+  setTimeout(gotoHash, 600);
+}
+
 /* ---------- wiring ---------- */
 
 $("impact-btn").addEventListener("click", openImpact);

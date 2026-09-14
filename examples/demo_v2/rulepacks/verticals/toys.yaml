@@ -1,0 +1,74 @@
+pack: toys.eu
+pack_type: legal
+rules:
+  - id: eu.toys.safety
+    title: "Toy safety conformity (EN 71 series) under the Toys Safety Directive"
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2011-07-20
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: toys}
+    requires:
+      - id: req.toys.en71
+        kind: evidence
+        evidence_type: en71_test_report
+        severity: blocker
+        description: "EN 71 series test reports (71-1 mechanical/physical, 71-2 flammability, 71-3 chemical migration)"
+      - id: req.toys.ce
+        kind: evidence
+        evidence_type: toys_ce_declaration
+        severity: blocker
+        description: "EU Declaration of Conformity (CE) for toys"
+    source:
+      authority: EUR-Lex
+      provision: "Directive 2009/48/EC on the safety of toys"
+      url: https://eur-lex.europa.eu/eli/dir/2009/48/oj/eng
+    last_verified: null
+
+  - id: eu.toys.warning_labels
+    title: "Age warnings and labelling (small parts, supervision warnings)"
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2011-07-20
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: toys}
+    requires:
+      - id: req.toys.labels
+        kind: product_attribute
+        attribute: toys_warning_labels
+        severity: major
+        description: "Mandatory warnings (age, supervision) marked clearly, irremovably, in the market language"
+    source:
+      authority: EUR-Lex
+      provision: "Directive 2009/48/EC Annex V — warnings"
+      url: https://eur-lex.europa.eu/eli/dir/2009/48/oj/eng
+    last_verified: null
+
+  - id: eu.toys.type_exam
+    title: "EC type-examination by a notified body (where harmonised standards not applied)"
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2011-07-20
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: toys}
+        - {fact: attributes.use_notified_body, op: eq, value: true}
+    requires:
+      - id: req.toys.typeexam
+        kind: evidence
+        evidence_type: toys_type_exam_certificate
+        severity: blocker
+        description: "EC type-examination certificate from a notified body"
+    source:
+      authority: EUR-Lex
+      provision: "Directive 2009/48/EC Art. 14 — conformity assessment"
+      url: https://eur-lex.europa.eu/eli/dir/2009/48/oj/eng
+    notes: >-
+      Applies only when manufacturers do not self-verify against harmonised
+      standards; driven by a product fact (attributes.use_notified_body).
+    last_verified: null

@@ -1,0 +1,60 @@
+pack: medical_device
+pack_type: legal
+rules:
+  - id: eu.mdr.ce_and_qms
+    title: "MDR conformity via notified body + quality management system (ISO 13485)"
+    version: "1.0.0-educational"
+    jurisdiction: EU
+    effective_from: 2021-05-26
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: medical_device}
+    requires:
+      - id: req.mdr.nb
+        kind: evidence
+        evidence_type: mdr_ce_certificate
+        severity: blocker
+        description: "CE certificate issued by a notified body under MDR (class-dependent)"
+      - id: req.mdr.qms
+        kind: evidence
+        evidence_type: iso13485_certificate
+        severity: blocker
+        description: "ISO 13485 quality management system certificate"
+      - id: req.mdr.clinical
+        kind: evidence
+        evidence_type: clinical_evaluation_report
+        severity: blocker
+        description: "Clinical evaluation report per MDR Annex XIV"
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EU) 2017/745 (MDR)"
+      url: https://eur-lex.europa.eu/eli/reg/2017/745/oj/eng
+    notes: >-
+      EDUCATIONAL SKELETON ONLY. Medical devices are a specialised regulatory
+      domain: classification (I/IIa/IIb/III), clinical evidence, UDI,
+      post-market surveillance and vigilance cannot be expressed in this
+      skeleton. Do NOT use for production decisions — engage MDR specialists.
+    last_verified: null
+
+  - id: us.fda.device
+    title: "FDA establishment registration, device listing and premarket pathway"
+    version: "1.0.0-educational"
+    jurisdiction: US
+    effective_from: 2000-01-01
+    applies_if:
+      all:
+        - {fact: offered_to_us_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: medical_device}
+    requires:
+      - id: req.fda.reg
+        kind: evidence
+        evidence_type: fda_device_listing
+        severity: blocker
+        description: "FDA establishment registration + device listing; 510(k)/De Novo/PMA as applicable by class"
+    source:
+      authority: US FDA
+      provision: "FD&C Act; 21 CFR 807 registration and listing"
+      url: https://www.fda.gov/medical-devices
+    notes: "EDUCATIONAL SKELETON ONLY — classification determines the premarket pathway."
+    last_verified: null

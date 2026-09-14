@@ -1,0 +1,93 @@
+pack: cosmetics
+pack_type: legal
+rules:
+  - id: eu.cosmetics.responsible_person_pif
+    title: "EU responsible person + Product Information File (PIF)"
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2013-07-11
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: cosmetics}
+    requires:
+      - id: req.cos.rp
+        kind: evidence
+        evidence_type: responsible_person_agreement
+        severity: blocker
+        description: "Responsible person established in the EU named on the product (Art. 11)"
+      - id: req.cos.pif
+        kind: evidence
+        evidence_type: pif_document
+        severity: blocker
+        description: "Product Information File kept accessible for authorities (Art. 11)"
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EC) No 1223/2009, Articles 11-12"
+      url: https://eur-lex.europa.eu/eli/reg/2009/1223/oj/eng
+    last_verified: null
+
+  - id: eu.cosmetics.cpnp
+    title: "CPNP portal notification before placing on the EU market"
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2013-07-11
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: cosmetics}
+    requires:
+      - id: req.cos.cpnp
+        kind: evidence
+        evidence_type: cpnp_notification
+        severity: blocker
+        description: "CPNP notification reference for the product"
+    source:
+      authority: European Commission
+      provision: "Regulation (EC) No 1223/2009 Art. 13 — CPNP notification"
+      url: https://ec.europa.eu/growth/sectors/cosmetics_en
+    last_verified: null
+
+  - id: eu.cosmetics.safety_assessment
+    title: "Cosmetic Product Safety Report by a qualified safety assessor"
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2013-07-11
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: cosmetics}
+    requires:
+      - id: req.cos.cpsr
+        kind: evidence
+        evidence_type: cpsr_safety_assessment
+        severity: blocker
+        description: "Cosmetic Product Safety Report (Part A+B) signed by a qualified assessor"
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EC) No 1223/2009 Art. 10 — safety assessment"
+      url: https://eur-lex.europa.eu/eli/reg/2009/1223/oj/eng
+    last_verified: null
+
+  - id: us.cosmetics.mocra
+    title: "MoCRA facility registration and product listing (FDA)"
+    version: "1.0.0"
+    jurisdiction: US
+    effective_from: 2024-07-01
+    applies_if:
+      all:
+        - {fact: offered_to_us_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: cosmetics}
+    requires:
+      - id: req.us.mocra
+        kind: evidence
+        evidence_type: mocra_listing
+        severity: blocker
+        description: "FDA facility registration + cosmetic product listing under MoCRA"
+    source:
+      authority: US FDA
+      provision: "Modernization of Cosmetics Regulation Act of 2022 (MoCRA)"
+      url: https://www.fda.gov/cosmetics/cosmetics-laws-regulations
+    notes: >-
+      Candidate. Enforcement dates phased; small-business exemptions may apply — verify.
+    last_verified: null

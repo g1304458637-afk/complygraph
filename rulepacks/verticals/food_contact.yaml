@@ -1,0 +1,50 @@
+pack: food_contact
+pack_type: legal
+rules:
+  - id: eu.fc.framework
+    title: "Food contact materials — framework DoC and migration compliance"
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2006-12-03
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: food_contact}
+    requires:
+      - id: req.fc.doc
+        kind: evidence
+        evidence_type: fc_declaration
+        severity: blocker
+        description: "Declaration of Compliance supporting migration compliance (Reg. (EU) 10/2011 for plastics)"
+      - id: req.fc.migration
+        kind: evidence
+        evidence_type: fc_migration_report
+        severity: major
+        description: "Overall/specific migration test report from an accredited lab"
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EC) No 1935/2004 — materials intended to contact food"
+      url: https://eur-lex.europa.eu/eli/reg/2004/1935/oj/eng
+    last_verified: null
+
+  - id: us.fc.fda
+    title: "US food contact substances — FDA compliant formulation"
+    version: "1.0.0"
+    jurisdiction: US
+    effective_from: 2000-01-01
+    applies_if:
+      all:
+        - {fact: offered_to_us_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: food_contact}
+    requires:
+      - id: req.us.fda.fc
+        kind: evidence
+        evidence_type: fda_fc_compliance_letter
+        severity: major
+        description: "Formulation compliance with 21 CFR or an effective Food Contact Notification (FCN)"
+    source:
+      authority: US FDA
+      provision: "FFDCA food contact substances; 21 CFR 174-186"
+      url: https://www.fda.gov/food/food-ingredients-packaging
+    notes: "Rule candidate — FCN is product/substance specific."
+    last_verified: null

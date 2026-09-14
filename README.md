@@ -38,7 +38,7 @@ Product facts → Legal classification → Versioned rule packs → Evidence val
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-.venv/bin/python -m pytest -q          # 62 个测试
+.venv/bin/python -m pytest -q          # 68 个测试
 
 # 网页版：SKU × 市场矩阵 + 审计下钻 + 对话评估 agent
 .venv/bin/python -m complygraph.web --port 8765   # → http://127.0.0.1:8765
@@ -62,7 +62,7 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
 - **品类**：消费电子纵向切片已含 RoHS / EMC / LVD / SCIP（欧盟）
 - **市场**：德国、法国、英国、美国（深度规则）+ 25 个骨架市场——东亚（日/韩/中/台/港待扩）、东南亚（新/马/泰/印尼/菲/越草稿）、南亚（印度）、中东（阿联酋/沙特/以色列）、欧洲（瑞士）、北美（加拿大）、拉美（巴西/墨西哥/阿根廷/智利/哥伦比亚）、非洲（南非）、欧亚（EAEU）——NTM 骨架，仅准入级检查；
-- **品类**：消费电子（电池类）最完整（GPSR/电池法/RED/运输/RoHS/EMC/LVD/SCIP），服饰仅通用骨架；**其他品类只有 GPSR/包装骨架，请勿用于玩具、化妆品、食品等未覆盖品类**；
+- **品类**：消费电子（电池类）最完整（GPSR/电池法/RED/运输/RoHS/EMC/LVD/SCIP）；玩具（EN 71/CPSIA 骨架）、化妆品（CPNP/PIF/CPSR/MoCRA 骨架）、食品接触（1935/2004/FDA 骨架）、医疗器械（**教育用骨架，绝不可用于生产决策**）；服饰仅通用骨架；**未覆盖品类只有 GPSR/包装骨架，请勿用于未覆盖品类**；
 - **规则状态**：全部为 **candidate** —— 每条挂权威源引用，但未经律师逐条核实（`last_verified` 字段标记）；
 - **本工具是决策支持，不是法律意见，不构成完整合规评估。**
 

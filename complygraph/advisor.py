@@ -165,6 +165,62 @@ EVIDENCE_HOWTO: dict[str, dict[str, str]] = {
         "zh": "哥伦比亚 MINTIC 无线设备 type approval，约 4-8 周",
         "en": "Colombia MINTIC type approval, 4-8 weeks",
     },
+    "en71_test_report": {
+        "zh": "玩具 EN 71 系列测试（71-1 机械物理 / 71-2 燃烧 / 71-3 化学迁移），认可实验室约 3-6 周",
+        "en": "Toy EN 71 series testing (mechanical, flammability, chemical migration) at an accredited lab, 3-6 weeks",
+    },
+    "toys_ce_declaration": {
+        "zh": "编制玩具 EU 符合性声明（CE），基于 EN 71 测试与安全技术文件",
+        "en": "Draft the EU Declaration of Conformity (CE) based on EN 71 results and the technical file",
+    },
+    "toys_type_exam_certificate": {
+        "zh": "未按协调标准自证时，由公告机构做 EC 型式检验，约 6-12 周",
+        "en": "EC type-examination by a notified body when not self-verifying against harmonised standards, 6-12 weeks",
+    },
+    "pif_document": {
+        "zh": "编制化妆品 PIF 产品信息档案（含稳定性、包装相容性、微生物），保存至最后一批后 10 年",
+        "en": "Compile the Cosmetic Product Information File (stability, compatibility, microbiology), keep 10 years",
+    },
+    "cpnp_notification": {
+        "zh": "上市前在欧盟 CPNP 门户完成产品通报（免费，责任人账号提交）",
+        "en": "Notify the product on the EU CPNP portal before placing on the market (free, RP account)",
+    },
+    "cpsr_safety_assessment": {
+        "zh": "由合格安全评估师出具化妆品安全报告（Part A+B），约 2-4 周",
+        "en": "Cosmetic Product Safety Report (Part A+B) signed by a qualified assessor, 2-4 weeks",
+    },
+    "mocra_listing": {
+        "zh": "美国 MoCRA：FDA 工厂注册 + 产品列名（小型企业豁免需核对）",
+        "en": "US MoCRA: FDA facility registration + product listing (check small-business exemptions)",
+    },
+    "fc_declaration": {
+        "zh": "食品接触材料：取得供应商 DoC 并确保按 (EU) 10/2011 完成迁移合规",
+        "en": "Food contact: obtain supplier DoCs and ensure migration compliance per (EU) 10/2011",
+    },
+    "fc_migration_report": {
+        "zh": "总迁移量/特定迁移量测试（认可实验室，按预期用途选择模拟物），约 2-4 周",
+        "en": "Overall/specific migration testing at an accredited lab with intended-use simulants, 2-4 weeks",
+    },
+    "fda_fc_compliance_letter": {
+        "zh": "确认配方符合 21 CFR 或已有有效 FCN（向供应商/法务索取书面确认）",
+        "en": "Confirm the formulation complies with 21 CFR or has an effective FCN (written confirmation)",
+    },
+    "mdr_ce_certificate": {
+        "zh": "医疗器械 MDR：公告机构 CE 认证（类别决定路径），通常 12-24 个月——必须聘请 MDR 专业顾问",
+        "en": "MDR notified-body CE certification (class-dependent), typically 12-24 months — engage MDR specialists",
+    },
+    "iso13485_certificate": {
+        "zh": "ISO 13485 质量管理体系认证（医疗器械 QMS），约 6-12 个月建设+审核",
+        "en": "ISO 13485 QMS certification, ~6-12 months to build and audit",
+    },
+    "clinical_evaluation_report": {
+        "zh": "临床评价报告（MDR Annex XIV），需临床/法规专家编写",
+        "en": "Clinical Evaluation Report per MDR Annex XIV — requires clinical/regulatory experts",
+    },
+    "fda_device_listing": {
+        "zh": "美国 FDA：工厂注册 + 器械列名；上市路径（510(k)/De Novo/PMA）按分类确定——需 FDA 法规顾问",
+        "en": "US FDA establishment registration + device listing; premarket pathway (510(k)/De Novo/PMA) depends on class — engage FDA consultants",
+    },
     "un383_test_summary": {
         "zh": "向电芯/电池厂索取 UN38.3 测试摘要（通常免费，厂家持有）；尚未测试时送检约 1-2 周",
         "en": "Request the UN 38.3 test summary from the cell/battery maker, or test at an accredited lab (1-2 weeks)",

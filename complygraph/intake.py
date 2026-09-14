@@ -37,6 +37,10 @@ def _rules():
     return RULES
 
 
+def _all_rules():
+    return _rules()
+
+
 LANGS = ("zh", "en")
 
 
@@ -81,6 +85,10 @@ CATALOG: list[Question] = [
               "en": "Category selects the vertical rule pack; uncovered categories only get generic rules."},
              priority=1,
              options=[{"value": "consumer_electronics", "label": {"zh": "消费电子", "en": "Consumer electronics"}},
+                      {"value": "toys", "label": {"zh": "玩具", "en": "Toys"}},
+                      {"value": "cosmetics", "label": {"zh": "化妆品", "en": "Cosmetics"}},
+                      {"value": "food_contact", "label": {"zh": "食品接触材料", "en": "Food contact materials"}},
+                      {"value": "medical_device", "label": {"zh": "医疗器械（骨架）", "en": "Medical device (skeleton)"}},
                       {"value": "apparel", "label": {"zh": "服饰", "en": "Apparel"}}]),
     Question("mkt_eu", "bool",
              {"zh": "打算在欧盟卖给消费者吗？", "en": "Selling to consumers in the EU?"},
@@ -248,28 +256,40 @@ CATALOG: list[Question] = [
              priority=8, active=lambda s: s.answers.get("mkt_us") == "yes"),
 ]
 
-# ---- rule-driven: NTM skeleton questions (generated from the seed) ----
+# ---- rule-driven: evidence questions (generated from ALL rule packs) ----
 
-def _generated_ntm_questions() -> list[Question]:
-    from .sources.ntm import generate_rules
+_STATIC_EVIDENCE_COVERAGE = {
+    "responsible_person_agreement", "safety_information", "technical_documentation",
+    "battery_conformity_declaration", "un383_test_summary", "red_test_report",
+    "fcc_test_report", "rohs_test_report", "emc_test_report", "lvd_test_report",
+}
 
-    qs = []
-    for rule in generate_rules():
+
+def _generated_evidence_questions() -> list[Question]:
+    """One evidence question per rule-required evidence type that has no static
+    question yet - questions grow automatically as rule packs grow."""
+    qs: list[Question] = []
+    seen: set[str] = set()
+    for rule in _all_rules():
         for req in rule.requires:
-            if req.kind == "evidence" and req.evidence_type:
-                iso = rule.jurisdiction
-                qs.append(Question(
-                    f"doc_ntm_{rule.id}",
-                    "bool",
-                    {"zh": f"你持有【{req.description}】吗？（{iso}）",
-                     "en": f"Do you hold [{req.description}]? ({iso})"},
-                    {"zh": f"{rule.source.authority} 的市场准入要求（{iso}）。", "en": f"Market-access requirement by {rule.source.authority} ({iso})."},
-                    priority=7,
-                    trigger_rules=[rule.id],
-                ))
+            if req.kind != "evidence" or not req.evidence_type:
+                continue
+            if req.evidence_type in _STATIC_EVIDENCE_COVERAGE or req.evidence_type in seen:
+                continue
+            seen.add(req.evidence_type)
+            qs.append(Question(
+                f"doc_ntm_{rule.id}",
+                "bool",
+                {"zh": f"你持有【{req.description}】吗？（{rule.jurisdiction}）",
+                 "en": f"Do you hold [{req.description}]? ({rule.jurisdiction})"},
+                {"zh": f"{rule.source.authority} 的市场准入要求（{rule.jurisdiction}）。",
+                 "en": f"Market-access requirement by {rule.source.authority} ({rule.jurisdiction})."},
+                priority=7,
+                trigger_rules=[rule.id],
+            ))
     return qs
 
-CATALOG.extend(_generated_ntm_questions())
+CATALOG.extend(_generated_evidence_questions())
 
 
 # ---------------------------------------------------------------- session

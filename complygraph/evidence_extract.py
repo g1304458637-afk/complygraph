@@ -160,7 +160,13 @@ def get_provider(name: str) -> LLMProvider:
         return FakeKeywordProvider()
     if name == "openai":
         return OpenAICompatibleProvider()
-    raise ValueError(f"unknown provider '{name}' (fake | openai)")
+    if name == "deepseek":
+        return OpenAICompatibleProvider(
+            base_url=os.environ.get("CG_LLM_BASE_URL", "https://api.deepseek.com"),
+            api_key=os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("CG_LLM_API_KEY", ""),
+            model=os.environ.get("CG_LLM_MODEL", "deepseek-chat"),
+        )
+    raise ValueError(f"unknown provider '{name}' (fake | openai | deepseek)")
 
 
 def extract_text(path: Path) -> str:

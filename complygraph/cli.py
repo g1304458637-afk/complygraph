@@ -213,7 +213,7 @@ def build_parser() -> argparse.ArgumentParser:
     ex = sub.add_parser("evidence-extract", help="extract a structured evidence draft from a document")
     ex.add_argument("--file", required=True, help="document path (.txt now, .pdf with pypdf installed)")
     ex.add_argument("--sku", required=True)
-    ex.add_argument("--provider", default="fake", help="fake | openai (default: fake)")
+    ex.add_argument("--provider", default="fake", help="fake | openai | deepseek (default: fake)")
     ex.add_argument("--out", help="write draft YAML here instead of stdout")
     ex.set_defaults(func=cmd_evidence_extract)
 

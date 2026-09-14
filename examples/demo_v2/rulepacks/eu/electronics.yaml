@@ -1,0 +1,95 @@
+pack: eu.electronics
+pack_type: legal
+rules:
+  - id: eu.rohs.restriction
+    title: RoHS hazardous substance restriction (10 substances) for electrical equipment
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2013-01-03
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.eu.rohs.report
+        kind: evidence
+        evidence_type: rohs_test_report
+        severity: blocker
+        description: RoHS test report / conformity per EN IEC 63000 covering the 10 restricted substances
+    source:
+      authority: EUR-Lex
+      provision: "Directive 2011/65/EU (RoHS 2) as amended by (EU) 2015/863"
+      url: https://eur-lex.europa.eu/eli/dir/2011/65/oj/eng
+    last_verified: null
+
+  - id: eu.emc.conformity
+    title: EMC conformity for electronic equipment
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2016-04-22
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.eu.emc.report
+        kind: evidence
+        evidence_type: emc_test_report
+        severity: blocker
+        description: EMC test report per harmonised standards (e.g. EN 55032 / EN 61000)
+    source:
+      authority: EUR-Lex
+      provision: "Directive 2014/30/EU (electromagnetic compatibility)"
+      url: https://eur-lex.europa.eu/eli/dir/2014/30/oj/eng
+    last_verified: null
+
+  - id: eu.lvd.conformity
+    title: Low Voltage Directive safety conformity for electrical equipment
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2016-04-20
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.eu.lvd.report
+        kind: evidence
+        evidence_type: lvd_test_report
+        severity: blocker
+        description: LVD safety test report (e.g. EN 62368-1 for AV/ICT equipment)
+    source:
+      authority: EUR-Lex
+      provision: "Directive 2014/35/EU (low voltage), safety objectives"
+      url: https://eur-lex.europa.eu/eli/dir/2014/35/oj/eng
+    notes: >-
+      Rule candidate. LVD applies within 50-1000V AC / 75-1500V DC ranges; most
+      mains/battery chargers qualify. Verify product-specific scope.
+    last_verified: null
+
+  - id: eu.scip.notification
+    title: SCIP database notification where the article contains SVHC above 0.1% w/w
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2021-01-05
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.eu.scip
+        kind: product_attribute
+        attribute: scip_notification
+        severity: blocker
+        description: >-
+          SCIP notification number (ECHA) if any SVHC exceeds 0.1% w/w, or a documented
+          "not required" assessment based on the bill of materials
+    source:
+      authority: ECHA
+      provision: "Waste Framework Directive (2008/98/EC) Art. 9(1)(i) as amended by (EU) 2020/903"
+      url: https://echa.europa.eu/scip-database
+    notes: >-
+      Rule candidate. Applicability depends on substance data the engine does not
+      yet model (bill of materials). Treat a missing attribute as "must assess",
+      not as "notification required".
+    last_verified: null

@@ -24,6 +24,7 @@ attributes:
   battery_wh_marking: 37 Wh printed on battery shell
   triman_info_tri: Triman + Info-tri printed on FR packaging
   prop65_warning: Prop 65 warning label on US packaging
+  scip_notification: ECHA SCIP dossier doss-2025-0012
 channel_fields:
   amazon.de:
     responsible_person: ACME EU Compliance GmbH, Berlin

@@ -38,7 +38,7 @@ Product facts → Legal classification → Versioned rule packs → Evidence val
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-.venv/bin/python -m pytest -q          # 57 个测试
+.venv/bin/python -m pytest -q          # 62 个测试
 
 # 网页版：SKU × 市场矩阵 + 审计下钻 + 对话评估 agent
 .venv/bin/python -m complygraph.web --port 8765   # → http://127.0.0.1:8765
@@ -60,8 +60,9 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
 ## 覆盖范围（诚实声明）
 
+- **品类**：消费电子纵向切片已含 RoHS / EMC / LVD / SCIP（欧盟）
 - **市场**：德国、法国、英国、美国（深度规则）+ 日本/韩国/加拿大/澳洲/巴西/印度/阿联酋/墨西哥/新加坡/瑞士（NTM 骨架，仅准入级检查）；
-- **品类**：消费电子（电池类）纵向切片最完整，服饰仅通用规则；其他品类只会得到 GPSR/包装等通用骨架；
+- **品类**：消费电子（电池类）最完整（GPSR/电池法/RED/运输/RoHS/EMC/LVD/SCIP），服饰仅通用骨架；**其他品类只有 GPSR/包装骨架，请勿用于玩具、化妆品、食品等未覆盖品类**；
 - **规则状态**：全部为 **candidate** —— 每条挂权威源引用，但未经律师逐条核实（`last_verified` 字段标记）；
 - **本工具是决策支持，不是法律意见，不构成完整合规评估。**
 

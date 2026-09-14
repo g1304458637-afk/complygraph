@@ -171,6 +171,26 @@ CATALOG: list[Question] = [
              {"zh": "你持有【FCC Part 15 测试报告】吗？", "en": "Do you hold an FCC Part 15 test report?"},
              {"zh": "美国市场数字电路设备的准入测试。", "en": "US market entry test for digital circuitry."},
              priority=5, trigger_rules=["us.fcc.part15b"]),
+    Question("doc_rohs", "bool",
+             {"zh": "你持有【RoHS 有害物质检测报告】吗？", "en": "Do you hold a RoHS test report?"},
+             {"zh": "欧盟 RoHS 指令十项有害物质限制。", "en": "EU RoHS restriction of 10 hazardous substances."},
+             priority=5, trigger_rules=["eu.rohs.restriction"]),
+    Question("doc_emc", "bool",
+             {"zh": "你持有【EMC 电磁兼容测试报告】吗？", "en": "Do you hold an EMC test report?"},
+             {"zh": "欧盟 EMC 指令要求。", "en": "Required by the EU EMC Directive."},
+             priority=5, trigger_rules=["eu.emc.conformity"]),
+    Question("doc_lvd", "bool",
+             {"zh": "你持有【LVD 低电压安全测试报告】吗？", "en": "Do you hold an LVD safety test report?"},
+             {"zh": "欧盟低电压指令要求。", "en": "Required by the EU Low Voltage Directive."},
+             priority=5, trigger_rules=["eu.lvd.conformity"]),
+    Question("attr_scip", "choice",
+             {"zh": "SCIP 通报状态？（含 SVHC 超 0.1% 需向 ECHA 通报）",
+              "en": "SCIP notification status? (required if any SVHC exceeds 0.1% w/w)"},
+             {"zh": "废弃物框架指令的 ECHA 数据库通报义务。", "en": "ECHA database notification duty under the Waste Framework Directive."},
+             priority=7, trigger_rules=["eu.scip.notification"],
+             options=[{"value": "notified", "label": {"zh": "已通报", "en": "Notified"}},
+                      {"value": "not-required", "label": {"zh": "经评估无需通报", "en": "Assessed: not required"}},
+                      {"value": "unknown", "label": {"zh": "不确定", "en": "Not sure"}}]),
     # ---- rule-driven: registrations ----
     Question("reg_lucid", "text",
              {"zh": "德国 LUCID 包装注册号？（没有就留空跳过）", "en": "German LUCID packaging registration number? (leave empty if none)"},
@@ -401,6 +421,11 @@ def apply_answer(session: Session, qid: str, value: Any) -> dict:
     elif qid == "trace_marking":
         if value == "yes":
             session.product.setdefault("attributes", {})["traceability_marking"] = "用户确认已标印"
+    elif qid == "attr_scip":
+        if value == "notified":
+            session.product.setdefault("attributes", {})["scip_notification"] = "ECHA SCIP 已通报"
+        elif value == "not-required":
+            session.product.setdefault("attributes", {})["scip_notification"] = "经评估无需通报（BOM 依据）"
     elif qid == "attr_triman":
         if value == "yes":
             session.product.setdefault("attributes", {})["triman_info_tri"] = "用户确认已印"
@@ -416,6 +441,9 @@ def apply_answer(session: Session, qid: str, value: Any) -> dict:
             "doc_un383": "un383_test_summary",
             "doc_red": "red_test_report",
             "doc_fcc": "fcc_test_report",
+            "doc_rohs": "rohs_test_report",
+            "doc_emc": "emc_test_report",
+            "doc_lvd": "lvd_test_report",
         }
         if qid.startswith("doc_ntm_"):
             if value == "yes":

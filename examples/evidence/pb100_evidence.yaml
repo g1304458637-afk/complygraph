@@ -57,6 +57,49 @@ evidence:
     extraction: llm
     source_file: reports/pb100-battery-doc-scan.pdf
 
+  - id: ev.rohs.001
+    sku: PB-100
+    evidence_type: rohs_test_report
+    issuer: CTI Certification Laboratory
+    model_scope: [PB-100]
+    standard: "EN IEC 63000"
+    issued: 2025-02-10
+    jurisdictions: [EU]
+    reviewed: true
+    source_file: reports/rohs-pb100.pdf
+
+  - id: ev.emc.001
+    sku: PB-100
+    evidence_type: emc_test_report
+    issuer: CTI Certification Laboratory
+    model_scope: [PB-100]
+    standard: "EN 55032 / EN 61000"
+    issued: 2025-01-20
+    jurisdictions: [EU]
+    reviewed: true
+    source_file: reports/emc-pb100.pdf
+
+  - id: ev.lvd.001
+    sku: PB-100
+    evidence_type: lvd_test_report
+    issuer: CTI Certification Laboratory
+    model_scope: [PB-100]
+    standard: "EN 62368-1"
+    issued: 2025-01-18
+    jurisdictions: [EU]
+    reviewed: true
+    source_file: reports/lvd-pb100.pdf
+
+  - id: ev.scip.001
+    sku: PB-100
+    evidence_type: scip_notification
+    issuer: ECHA SCIP (dossier doss-2025-0012)
+    model_scope: [PB-100]
+    issued: 2025-03-12
+    jurisdictions: [EU]
+    reviewed: true
+    source_file: reports/scip-pb100.pdf
+
   - id: ev.fcc.001
     sku: PB-100
     evidence_type: fcc_test_report

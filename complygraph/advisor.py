@@ -57,6 +57,18 @@ EVIDENCE_HOWTO: dict[str, dict[str, str]] = {
         "zh": "按 (EU) 2023/1542 完成电池符合性评定并出具 DoC（检测机构或品牌方出具）",
         "en": "Complete battery conformity assessment under Reg. (EU) 2023/1542 and issue a DoC",
     },
+    "rohs_test_report": {
+        "zh": "按 EN IEC 63000 做 RoHS 十项有害物质检测（认可实验室，约 2-3 周）；若已有 CB 体系报告可部分复用",
+        "en": "RoHS testing of the 10 restricted substances per EN IEC 63000 at an accredited lab (2-3 weeks)",
+    },
+    "emc_test_report": {
+        "zh": "EMC 测试（EN 55032 发射 + EN 61000 抗扰度），认可实验室约 1-2 周",
+        "en": "EMC testing (EN 55032 emissions + EN 61000 immunity) at an accredited lab, 1-2 weeks",
+    },
+    "lvd_test_report": {
+        "zh": "LVD 安全测试（ICT/AV 设备按 EN 62368-1），认可实验室约 2-3 周",
+        "en": "LVD safety testing (EN 62368-1 for ICT/AV equipment), 2-3 weeks",
+    },
     "un383_test_summary": {
         "zh": "向电芯/电池厂索取 UN38.3 测试摘要（通常免费，厂家持有）；尚未测试时送检约 1-2 周",
         "en": "Request the UN 38.3 test summary from the cell/battery maker, or test at an accredited lab (1-2 weeks)",
@@ -137,6 +149,7 @@ ELECTRICAL_EVIDENCE = {
     "pse_certificate", "telec_certificate", "kc_certificate", "ised_certificate",
     "inmetro_certificate", "anatel_certificate", "ecas_certificate", "nom_certificate",
     "fcc_test_report", "red_test_report", "rcm_declaration", "battery_conformity_declaration",
+    "rohs_test_report", "emc_test_report", "lvd_test_report",
 }
 
 CB_SCHEME_TIP = {

@@ -78,16 +78,17 @@ class Store:
 
     def catalog(self):
         out = []
-        for product_rel, evidence_rel in catalog_entries():
+        for product_rel, evidence_rel, deletable in catalog_entries():
             try:
                 out.append((load_product(ROOT / "examples" / product_rel),
-                            load_evidence(ROOT / "examples" / evidence_rel)))
+                            load_evidence(ROOT / "examples" / evidence_rel),
+                            deletable))
             except Exception:
                 continue
         return out
 
     def find(self, sku: str):
-        for product, bundle in self.catalog():
+        for product, bundle, _ in self.catalog():
             if product.sku == sku:
                 return product, bundle
         return None, None
@@ -112,7 +113,7 @@ def coverage(readiness) -> dict:
 def api_map():
     columns = get_columns()
     rows = []
-    for product, bundle in STORE.catalog():
+    for product, bundle, deletable in STORE.catalog():
         cells = []
         for col in columns:
             market = STORE.markets.markets[col["market"]]
@@ -124,7 +125,8 @@ def api_map():
                 "readiness": r.readiness,
                 "blockers": len(r.blockers),
             })
-        rows.append({"sku": product.sku, "name": product.name, "category": product.category, "cells": cells})
+        rows.append({"sku": product.sku, "name": product.name or product.sku,
+                     "category": product.category, "deletable": deletable, "cells": cells})
     return {
         "columns": columns,
         "rows": rows,
@@ -155,7 +157,9 @@ def api_eval(sku: str, market_id: str, channel: str | None):
 
 def api_impact():
     impacts = catalog_impact(
-        STORE.rules, STORE.rules_v2, STORE.catalog(), "de", STORE.markets.markets["de"], None, date.today()
+        STORE.rules, STORE.rules_v2,
+        [(p, b) for p, b, _ in STORE.catalog()],
+        "de", STORE.markets.markets["de"], None, date.today()
     )
     changes = diff_rules(STORE.rules, STORE.rules_v2)
     return {
@@ -234,10 +238,26 @@ class Handler(BaseHTTPRequestHandler):
             elif parsed.path == "/api/agent/finish":
                 session = get_session(body["session_id"])
                 self._json(finish_intake(session))
+            elif parsed.path == "/api/agent/stop":
+                SESSIONS.pop(body.get("session_id", ""), None)
+                self._json({"ok": True})
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as exc:
             self._json({"error": str(exc)}, 400)
+
+    def do_DELETE(self):  # noqa: N802 (stdlib API)
+        parsed = urlparse(self.path)
+        if parsed.path.startswith("/api/products/"):
+            from .registry import delete_user_product
+
+            sku = parsed.path.rsplit("/", 1)[-1]
+            try:
+                self._json(delete_user_product(sku))
+            except Exception as exc:
+                self._json({"error": str(exc)}, 400)
+        else:
+            self._json({"error": "not found"}, 404)
 
     def log_message(self, fmt, *args):  # quiet
         pass

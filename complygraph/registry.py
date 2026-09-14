@@ -20,13 +20,34 @@ DEMO_CATALOG = [
 
 
 def catalog_entries():
-    """Demo SKUs + user-submitted SKUs (registry read fresh on every request)."""
-    entries = list(DEMO_CATALOG)
+    """Demo SKUs + user-submitted SKUs (registry read fresh on every request).
+
+    Yields (product_rel, evidence_rel, deletable)."""
+    entries = [(p, e, False) for (p, e) in DEMO_CATALOG]
     if USER_REGISTRY.exists():
         data = yaml.safe_load(USER_REGISTRY.read_text(encoding="utf-8")) or {}
         for e in data.get("skus", []):
-            entries.append((e["product"], e["evidence"]))
+            entries.append((e["product"], e["evidence"], True))
     return entries
+
+
+def delete_user_product(sku: str) -> dict:
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,39}", sku or ""):
+        raise ValueError(f"非法 SKU: {sku!r}")
+    rel = f"products/user_{sku}.yaml"
+    if not USER_REGISTRY.exists():
+        raise ValueError(f"SKU {sku} 不存在（演示 SKU 不可删除）")
+    data = yaml.safe_load(USER_REGISTRY.read_text(encoding="utf-8")) or {"skus": []}
+    entry = next((e for e in data.get("skus", []) if e.get("product") == rel), None)
+    if not entry:
+        raise ValueError(f"SKU {sku} 不存在（演示 SKU 不可删除）")
+    (ROOT / "examples" / entry["product"]).unlink(missing_ok=True)
+    (ROOT / "examples" / entry["evidence"]).unlink(missing_ok=True)
+    data["skus"] = [e for e in data["skus"] if e is not entry]
+    USER_REGISTRY.write_text(
+        yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8"
+    )
+    return {"ok": True, "sku": sku}
 
 
 def doc_jurisdictions(doc_type: str, product: Product) -> list[str]:
@@ -55,6 +76,8 @@ def save_user_product(body: dict) -> dict:
     product = Product.model_validate(body.get("product") or {})
     if not product.sku or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,39}", product.sku):
         raise ValueError(f"SKU 只能包含字母/数字/横线/下划线: {product.sku!r}")
+    if not product.name:
+        product.name = product.sku
     product_path = ROOT / "examples" / "products" / f"user_{product.sku}.yaml"
     evidence_path = ROOT / "examples" / "evidence" / f"user_{product.sku}.yaml"
     if product_path.exists():

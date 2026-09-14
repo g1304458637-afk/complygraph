@@ -228,6 +228,12 @@ table.map th.cell-col { text-align: center; }
   background: var(--accent-bg); border: 1px solid rgba(143,158,255,.3);
 }
 .sku-name { font-weight: 650; }
+.del-btn {
+  margin-left: auto; flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid rgba(255,107,122,.35); background: transparent; color: rgba(255,107,122,.8);
+  font-size: 11px; line-height: 1; cursor: pointer; transition: all .15s ease;
+}
+.del-btn:hover { background: var(--red-bg); color: var(--red); transform: scale(1.1); }
 .sku-sub { font-size: 12px; color: var(--muted); }
 
 td.matrix { padding: 0 6px; }

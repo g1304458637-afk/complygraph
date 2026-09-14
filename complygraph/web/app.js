@@ -75,9 +75,13 @@ function renderMap(map) {
 
   $("map-body").innerHTML = map.rows
     .map((row) => {
+      const del = row.deletable
+        ? `<button class="del-btn" data-sku="${row.sku}" title="${t("delete_title")}">✕</button>`
+        : "";
       const lead = `<div class="sku-cell">
         <div class="avatar">${row.sku.split("-").join("")}</div>
-        <div><div class="sku-name">${row.sku}</div><div class="sku-sub">${row.name} · ${row.category}</div></div>
+        <div><div class="sku-name">${row.sku}</div><div class="sku-sub">${escapeHtml(row.name)} · ${row.category}</div></div>
+        ${del}
       </div>`;
       const cells = row.cells
         .map((c, i) => {
@@ -108,6 +112,17 @@ function renderMap(map) {
     btn.addEventListener("click", () =>
       openDetail(btn.dataset.sku, btn.dataset.market, btn.dataset.channel, btn.dataset.col)
     )
+  );
+  document.querySelectorAll(".del-btn").forEach((btn) =>
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if (!confirm(t("delete_confirm"))) return;
+      const res = await fetch(`/api/products/${encodeURIComponent(btn.dataset.sku)}`, { method: "DELETE" });
+      if (!res.ok) { alert((await res.json()).error || "delete failed"); return; }
+      const map = await getJSON("/api/map");
+      renderStats(map);
+      renderMap(map);
+    })
   );
 }
 

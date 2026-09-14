@@ -455,3 +455,12 @@ table.rules tr.status-expired td, table.rules tr.status-unknown td { background:
   .stat + .stat { border-left: 0; }
   .chip.subtle { display: none; }
 }
+
+
+/* ================= advisor ================= */
+.advise-row { display: flex; gap: 10px; margin: 12px 0 4px; }
+.advise-head { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+#advise-result .task { margin-top: 8px; }
+.recommend-list { display: grid; gap: 10px; }
+.rec-row { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.rec-blockers { font-size: 12px; color: var(--muted); margin: 4px 0 8px; line-height: 1.5; }

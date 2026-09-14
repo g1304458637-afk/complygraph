@@ -221,7 +221,23 @@
         <tbody id="detail-rules"></tbody>
       </table>
     </div>
+    <div class="advise-row">
+      <button id="advise-btn" class="btn primary">🧭 <span data-i18n="advise_btn"></span></button>
+      <button id="recommend-btn" class="btn ghost">🌍 <span data-i18n="recommend_btn"></span></button>
+    </div>
     <p class="receipt"><span data-i18n="receipt_label"></span> <code id="detail-receipt"></code></p>
+    <div id="advise-result" class="hidden"></div>
+  </section>
+
+  <section id="recommend" class="card hidden">
+    <div class="card-head">
+      <div>
+        <h2 data-i18n="recommend_title"></h2>
+        <p class="muted" data-i18n="recommend_sub"></p>
+      </div>
+      <button id="close-recommend" class="btn ghost" data-i18n="close"></button>
+    </div>
+    <div id="recommend-list" class="recommend-list"></div>
   </section>
 
   <section id="impact" class="card hidden">

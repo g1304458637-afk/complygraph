@@ -172,6 +172,49 @@ def cmd_evidence_approve(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_advise(args: argparse.Namespace) -> int:
+    import json as _json
+    from datetime import date as _date
+
+    from .advisor import market_recommendation, remediation_plan
+    from .engine import evaluate_market
+
+    product = load_product(Path(args.product))
+    bundle = load_evidence(Path(args.evidence)) if args.evidence else _empty_bundle()
+    registry = load_markets(Path(args.root) / "config" / "markets.yaml")
+    as_of = _date.today()
+
+    if args.market:
+        market = registry.markets[args.market]
+        readiness = evaluate_market(load_rules(default_rule_paths(Path(args.root))),
+                                    product, bundle, args.market, market, None, as_of)
+        plan = remediation_plan(readiness.rules, lang=args.lang)
+        print(f"\n[{args.market}] {readiness.state}  readiness {readiness.readiness:.1%}  "
+              f"blockers {len(readiness.blockers)}")
+        for i, item in enumerate(plan, 1):
+            print(f"  {i:2d}. [{item['kind']}] {item['text']}")
+        return 0
+
+    if args.recommend:
+        from .advisor import market_recommendation
+
+        recs = market_recommendation(product, bundle, lang=args.lang)
+        label = {"ready": "可销售", "minor": "小缺口", "fixable": "少量整改",
+                 "no-rules": "暂无适用规则", "costly": "成本较高"} if args.lang == "zh" else {
+                 "ready": "ready", "minor": "minor", "fixable": "fixable",
+                 "no-rules": "no rules", "costly": "costly"}
+        print(f"\nmarket ranking for {product.sku}:")
+        for r in recs:
+            tag = "*" if r["already_targeted"] else " "
+            print(f" {tag} {r['market'].upper():>3}  {label[r['class']]:　<6}"
+                  f"  {r['readiness']:.0%}  blockers {len(r['blockers'])}"
+                  f"  {('; '.join(x[:30] for x in r['blocker_titles'][:2])) if r['blocker_titles'] else ''}")
+        return 0
+
+    print("choose --market <id> for a remediation plan, or --recommend for market ranking")
+    return 2
+
+
 def _empty_bundle():
     from .models import EvidenceBundle
 
@@ -216,6 +259,15 @@ def build_parser() -> argparse.ArgumentParser:
     ex.add_argument("--provider", default="fake", help="fake | openai | deepseek (default: fake)")
     ex.add_argument("--out", help="write draft YAML here instead of stdout")
     ex.set_defaults(func=cmd_evidence_extract)
+
+    adv = sub.add_parser("advise", help="remediation plan and market recommendation for a SKU")
+    adv.add_argument("product", help="path to product YAML")
+    adv.add_argument("--evidence", help="path to evidence bundle YAML")
+    adv.add_argument("--market", help="remediation plan for this market")
+    adv.add_argument("--recommend", action="store_true", help="rank ALL markets for this product")
+    adv.add_argument("--lang", default="zh", choices=["zh", "en"])
+    adv.add_argument("--root", default=".")
+    adv.set_defaults(func=cmd_advise)
 
     ap = sub.add_parser("evidence-approve", help="flip reviewed: true for one evidence entry")
     ap.add_argument("--bundle", required=True, help="evidence bundle YAML")

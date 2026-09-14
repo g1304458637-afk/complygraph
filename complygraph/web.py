@@ -156,6 +156,34 @@ def api_eval(sku: str, market_id: str, channel: str | None):
     )
 
 
+def api_advise(sku: str, market_id: str):
+    from .advisor import remediation_plan
+    from .engine import evaluate_market
+
+    product, bundle = STORE.find(sku)
+    if product is None:
+        return {"error": f"unknown sku {sku}"}, 404
+    if market_id not in STORE.markets.markets:
+        return {"error": f"unknown market {market_id}"}, 404
+    readiness = evaluate_market(STORE.rules, product, bundle, market_id,
+                                STORE.markets.markets[market_id], None, date.today())
+    return {
+        "market": market_id,
+        "state": readiness.state,
+        "readiness": readiness.readiness,
+        "plan": remediation_plan(readiness.rules),
+    }, 200
+
+
+def api_recommend(sku: str):
+    from .advisor import market_recommendation
+
+    product, bundle = STORE.find(sku)
+    if product is None:
+        return {"error": f"unknown sku {sku}"}, 404
+    return {"sku": sku, "recommendations": market_recommendation(product, bundle)}, 200
+
+
 def api_impact():
     impacts = catalog_impact(
         STORE.rules, STORE.rules_v2,
@@ -202,6 +230,15 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(payload, code)
             elif route == "/api/impact":
                 self._json(api_impact())
+            elif route == "/api/advise":
+                sku = query.get("sku", [""])[0]
+                market = query.get("market", ["de"])[0]
+                payload, code = api_advise(sku, market)
+                self._json(payload, code)
+            elif route == "/api/recommend":
+                sku = query.get("sku", [""])[0]
+                payload, code = api_recommend(sku)
+                self._json(payload, code)
             elif route == "/" or route == "/index.html":
                 self._send(200, (WEB / "index.html").read_bytes(), "text/html; charset=utf-8")
             elif route == "/app.js":

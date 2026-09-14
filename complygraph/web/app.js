@@ -677,6 +677,49 @@ if (location.hash) {
   setTimeout(gotoHash, 600);
 }
 
+/* ---------- advisor: remediation plan + market recommendation ---------- */
+
+async function openAdvise(sku, market) {
+  const data = await getJSON(`/api/advise?sku=${encodeURIComponent(sku)}&market=${market}`);
+  const box = $("advise-result");
+  box.classList.remove("hidden");
+  if (data.error) { box.innerHTML = `<div class="alert"><span>${escapeHtml(data.error)}</span></div>`; return; }
+  const rows = data.plan.map((x) =>
+    `<div class="task"><span><span class="k">${x.kind}</span>${escapeHtml(x.text)}</span></div>`).join("");
+  box.innerHTML = `
+    <div class="advise-head">${t("advise_for")} <b>${market.toUpperCase()}</b> — ${data.plan.length} ${t("advise_steps")}</div>
+    ${rows || `<div class="okline">✓ ${t("advise_clear")}</div>`}`;
+}
+
+async function openRecommend(sku) {
+  const data = await getJSON(`/api/recommend?sku=${encodeURIComponent(sku)}`);
+  const clsLabel = { ready: t("cls_ready"), minor: t("cls_minor"), fixable: t("cls_fixable"),
+                     "no-rules": t("cls_norules"), costly: t("cls_costly") };
+  const tone = { ready: "green", minor: "amber", fixable: "amber", "no-rules": "amber", costly: "red" };
+  const rows = data.recommendations.map((r) => `
+    <div class="rec-row">
+      <span class="badge ${tone[r.class]}">${clsLabel[r.class]}</span>
+      <b>${r.market.toUpperCase()}</b>
+      <span>${Math.round(r.readiness * 100)}%</span>
+      <span class="muted">${r.blockers.length} ${t("blocker_n")}</span>
+      ${r.already_targeted ? `<span class="chip subtle">${t("rec_targeted")}</span>` : ""}
+    </div>
+    ${r.blocker_titles.length ? `<div class="rec-blockers">${r.blocker_titles.map((b2) => `· ${escapeHtml(b2)}`).join("<br>")}</div>` : ""}`);
+  $("recommend-list").innerHTML = rows.join("");
+  $("recommend").classList.remove("hidden");
+  $("recommend").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+$("advise-btn").addEventListener("click", () => {
+  if (!LAST_DETAIL) return;
+  openAdvise(LAST_DETAIL.sku, LAST_DETAIL.market);
+});
+$("recommend-btn").addEventListener("click", () => {
+  if (!LAST_DETAIL) return;
+  openRecommend(LAST_DETAIL.sku);
+});
+$("close-recommend").addEventListener("click", () => $("recommend").classList.add("hidden"));
+
 /* ---------- wiring ---------- */
 
 $("impact-btn").addEventListener("click", openImpact);

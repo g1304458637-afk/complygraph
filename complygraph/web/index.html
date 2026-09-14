@@ -4,30 +4,67 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ComplyGraph — Market Access Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <div class="brand">
-      <span class="logo">⬡</span>
-      <div>
-        <strong>ComplyGraph</strong>
-        <span class="tagline" data-i18n="tagline"></span>
-      </div>
+<!-- ======== floating pill nav ======== -->
+<nav class="pill-nav" id="pill-nav">
+  <div class="pill-inner">
+    <a class="brand" href="#top">
+      <svg class="logo-clover" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+        <path d="M 228 0 C 172.772 0 128 44.772 128 100 L 128 0 L 0 0 L 0 28 C 0 83.228 44.772 128 100 128 L 0 128 L 0 256 L 28 256 C 83.228 256 128 211.228 128 156 L 128 256 L 256 256 L 256 228 C 256 172.772 211.228 128 156 128 L 256 128 L 256 0 Z"/>
+      </svg>
+      <span class="brand-name">ComplyGraph</span>
+    </a>
+    <div class="pill-links">
+      <a href="#map-section" class="active" data-i18n="nav_map"></a>
+      <a href="#reveal-section" data-i18n="nav_why"></a>
+      <a href="#stats-section" data-i18n="nav_stats"></a>
     </div>
-    <div class="nav-meta">
+    <div class="pill-right">
       <div class="lang-toggle" id="lang-toggle">
         <button data-lang="en">EN</button><button data-lang="zh">中文</button>
       </div>
-      <span class="chip subtle" data-i18n="chip_meta"></span>
       <span class="chip subtle"><span data-i18n="as_of"></span>&nbsp;<span id="as-of-date"></span></span>
+      <button id="chat-btn" class="btn cta"><span data-i18n="chat_btn"></span></button>
     </div>
   </div>
 </nav>
 
-<main class="wrap">
+<!-- ======== cosmic hero ======== -->
+<header class="hero" id="top">
+  <div class="hero-layer stars" id="hero-stars"></div>
+  <div class="hero-layer nebula" id="hero-nebula"></div>
+  <div class="hero-title-wrap" id="hero-title">
+    <h1 class="gradient-title">ComplyGraph</h1>
+  </div>
+  <div class="hero-sub left" data-i18n="hero_sub_left"></div>
+  <div class="hero-sub right" data-i18n="hero_sub_right"></div>
+  <div class="hero-cue"><span data-i18n="scroll_cue"></span><i></i></div>
+</header>
+
+<main class="wrap" id="main">
+
+  <!-- ======== market marquee ======== -->
+  <section class="marquee-zone">
+    <div class="marquee"><div class="marquee-track" id="marquee-a"></div></div>
+    <div class="marquee"><div class="marquee-track reverse" id="marquee-b"></div></div>
+  </section>
+
+  <!-- ======== scroll-driven reveal ======== -->
+  <section class="reveal-section" id="reveal-section">
+    <p class="reveal-text" id="reveal-text"></p>
+  </section>
+
+  <!-- ======== big stats ======== -->
+  <section class="stats-section" id="stats-section">
+    <h2 class="stats-heading" data-i18n="stats_heading"></h2>
+    <div class="stats" id="stats"></div>
+  </section>
 
   <div id="add-modal" class="modal-overlay hidden">
     <div class="modal">
@@ -132,16 +169,13 @@
     </div>
   </div>
 
-  <section class="stats" id="stats"></section>
-
-  <section class="card">
+  <section class="card" id="map-section">
     <div class="card-head">
       <div>
         <h2 data-i18n="map_title"></h2>
         <p class="muted" data-i18n="map_sub"></p>
       </div>
       <div>
-        <button id="chat-btn" class="btn primary">🤖 <span data-i18n="chat_btn"></span></button>
         <button id="add-btn" class="btn ghost"><span data-i18n="add_btn"></span></button>
         <button id="impact-btn" class="btn ghost" data-i18n="impact_btn"></button>
       </div>

@@ -24,6 +24,7 @@ function applyLang() {
   document.querySelectorAll("#lang-toggle button").forEach((b) =>
     b.classList.toggle("active", b.dataset.lang === LANG)
   );
+  buildReveal();
   if (LAST_MAP) {
     renderStats(LAST_MAP);
     renderMap(LAST_MAP);
@@ -102,6 +103,7 @@ function renderMap(map) {
       <span><i class="dot red"></i> ${t("legend_blocked")}</span>
       <span class="muted">${t("legend_unknown")}</span>`;
 
+  buildMarquee(map.columns);
   document.querySelectorAll(".cell-btn").forEach((btn) =>
     btn.addEventListener("click", () =>
       openDetail(btn.dataset.sku, btn.dataset.market, btn.dataset.channel, btn.dataset.col)
@@ -528,6 +530,83 @@ $("chat-send").addEventListener("click", sendChatInput);
 $("chat-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendChatInput();
 });
+
+/* ---------- cosmic interactions ---------- */
+
+function buildMarquee(columns) {
+  const codes = columns.map((c) => c.market.toUpperCase());
+  const mark = (code) => `<span class="marquee-item"><i>✦</i>${code}</span>`;
+  const half = Math.ceil(codes.length / 2);
+  const rowA = codes.slice(0, half), rowB = codes.slice(half);
+  const fill = (el, arr) => {
+    if (!arr.length) arr = codes;
+    const one = arr.map(mark).join("");
+    el.innerHTML = one + one + one + one;  // x4 for seamless -50% loop
+  };
+  fill(document.getElementById("marquee-a"), rowA);
+  fill(document.getElementById("marquee-b"), rowB);
+}
+
+function buildReveal() {
+  const el = document.getElementById("reveal-text");
+  const text = t("reveal_text");
+  el.innerHTML = "";
+  [...text].forEach((ch) => {
+    const s = document.createElement("span");
+    s.className = "ch";
+    s.textContent = ch;
+    s.style.opacity = "0.25";
+    el.appendChild(s);
+  });
+  updateReveal();
+}
+
+function updateReveal() {
+  const el = document.getElementById("reveal-text");
+  if (!el || !el.children.length) return;
+  const rect = el.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const start = vh * 0.8, end = vh * 0.2;
+  const p = Math.min(1, Math.max(0, (start - rect.top) / (start - end + rect.height)));
+  const n = el.children.length;
+  for (let i = 0; i < n; i++) {
+    const local = Math.min(1, Math.max(0, p * n - i));
+    el.children[i].style.opacity = (0.25 + 0.75 * local).toFixed(3);
+  }
+}
+
+function updateParallax() {
+  const y = window.scrollY;
+  const stars = document.getElementById("hero-stars");
+  const nebula = document.getElementById("hero-nebula");
+  const title = document.getElementById("hero-title");
+  if (stars) stars.style.transform = `translateY(${y * 0.06}px)`;
+  if (nebula) nebula.style.transform = `translateY(${y * 0.12}px)`;
+  if (title) title.style.transform = `translateY(${y * 0.24}px)`;
+  const cue = document.querySelector(".hero-cue");
+  if (cue) cue.style.opacity = y > 80 ? "0" : "1";
+}
+
+let revealTick = false;
+window.addEventListener("scroll", () => {
+  if (revealTick) return;
+  revealTick = true;
+  requestAnimationFrame(() => {
+    updateParallax();
+    updateReveal();
+    revealTick = false;
+  });
+}, { passive: true });
+
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in-view"); });
+}, { rootMargin: "-80px" });
+const statObs = setInterval(() => {
+  const el = document.getElementById("stats-section");
+  if (el) { statObserver.observe(el); clearInterval(statObs); }
+}, 300);
+
+buildReveal();
 
 /* ---------- wiring ---------- */
 

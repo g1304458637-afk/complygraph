@@ -376,7 +376,7 @@ $("f-battery").addEventListener("change", () => {
    run-llama chat-ui patterns: bubbles, why-context, quick-reply chips,
    typing indicator, progress) ---------- */
 
-const chat = { sessionId: null, current: null, busy: false };
+const chat = { sessionId: null, current: null, busy: false, brain: "deterministic" };
 
 function showChat() {
   $("chat-drawer").classList.remove("hidden");
@@ -384,6 +384,8 @@ function showChat() {
   agentSay(t("chat_welcome"));
   postAgent("/api/agent/start", { lang: LANG === "zh" ? "zh" : "en" }, (data) => {
     chat.sessionId = data.session_id;
+    chat.brain = data.brain || "deterministic";
+    if (chat.brain === "llm") agentSay(t("chat_llm_hint"), "why");
     renderQuestion(data);
   });
 }
@@ -533,10 +535,41 @@ async function postAgentP(url, body) {
 }
 
 function sendChatInput() {
-  if (chat.busy || !chat.current) return;
+  if (chat.busy) return;
   const value = $("chat-input").value.trim();
-  if (!value && chat.current.kind === "text") return;
-  answerCurrent(chat.current.id, value, value);
+  if (!value) return;
+  if (chat.brain !== "llm") {
+    if (!chat.current) return;
+    if (!value && chat.current.kind === "text") return;
+    answerCurrent(chat.current.id, value, value);
+    return;
+  }
+  // LLM brain: free-form message, agent drives the structured session via tools
+  userSay(value);
+  $("chat-input").value = "";
+  postAgent("/api/agent/chat", { session_id: chat.sessionId, message: value }, (data) => {
+    agentSay(escapeHtml(data.reply || ""));
+    if (data.question) {
+      chat.current = data.question;
+      renderQuestionLive(data.question);
+    } else if (data.done) {
+      finishChat();
+    }
+  });
+}
+
+function renderQuestionLive(q) {
+  if (q.why) agentSay(escapeHtml(q.why), "why");
+  if (q.options) {
+    const chipRow = document.createElement("div");
+    chipRow.className = "chip-row";
+    q.options.forEach((o) => chipRow.appendChild(chip(o.label, () => answerCurrent(q.id, o.value, o.label))));
+    $("chat-messages").appendChild(chipRow);
+    scrollChat();
+  }
+  const input = $("chat-input");
+  input.placeholder = q.placeholder || "";
+  $("chat-input-row").classList.remove("hidden");
 }
 
 $("chat-btn").addEventListener("click", showChat);

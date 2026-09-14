@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -230,7 +231,15 @@ class Handler(BaseHTTPRequestHandler):
             if parsed.path == "/api/products":
                 self._json(save_user_product(body))
             elif parsed.path == "/api/agent/start":
-                self._json(start_intake(body.get("lang", "zh")))
+                result = start_intake(body.get("lang", "zh"))
+                result["brain"] = "llm" if (os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("CG_LLM_API_KEY")) else "deterministic"
+                self._json(result)
+            elif parsed.path == "/api/agent/chat":
+                from .agent_brain import chat as brain_chat
+
+                session = get_session(body["session_id"])
+                result = brain_chat(session, body.get("message", ""))
+                self._json({"session_id": session.id, **result})
             elif parsed.path == "/api/agent/answer":
                 session = get_session(body["session_id"])
                 result = apply_answer(session, body["qid"], body.get("value"))

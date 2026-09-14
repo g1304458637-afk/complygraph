@@ -5,9 +5,13 @@
 
 > **An open-source engine that converts product facts, regulatory sources and compliance evidence into versioned, executable, auditable market-readiness decisions.** LLM drafts, the engine decides, humans approve.
 
-[![CI](https://img.shields.io/badge/CI-pytest-brightgreen)]() [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-49%20passing-success)]()
+[![CI](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml/badge.svg)](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-49%20passing-success)]()
 
 ---
+
+![Market Access Map](docs/screenshots/matrix.png)
+
+*SKU × 市场就绪矩阵：点击任意格子查看完整审计链（规则版本 → 法条引用 → 证据文件）*
 
 ## 它解决什么问题
 
@@ -34,7 +38,7 @@ Product facts → Legal classification → Versioned rule packs → Evidence val
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-.venv/bin/python -m pytest -q          # 49 个测试
+.venv/bin/python -m pytest -q          # 57 个测试
 
 # 网页版：SKU × 市场矩阵 + 审计下钻 + 对话评估 agent
 .venv/bin/python -m complygraph.web --port 8765   # → http://127.0.0.1:8765
@@ -50,7 +54,7 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 |---|---|---|
 | 多市场就绪矩阵 | Web `/` | DE/FR/UK/US 深度规则 + 10 国 NTM 骨架，点击格子下钻审计链 |
 | 对话评估 agent | Web `🤖 对话评估` | 问题由规则包自动生成，边聊边给建议，最后产出报告并落库 |
-| 证据抽取管线 | `evidence-extract` / `evidence-approve` | 解析 PDF + LLM 抽取草稿 → 人工审核 → 入证据包。LLM 插槽：`--provider deepseek`（读 `DEEPSEEK_API_KEY`，已实测）/ `openai`（任意 OpenAI 兼容端点）/ `fake`（离线演示） |
+| 证据抽取管线 | `evidence-extract` / `evidence-approve` | 解析 PDF + LLM 抽取草稿 → 人工审核 → 入证据包。LLM 插槽：`--provider deepseek`（读 `DEEPSEEK_API_KEY`，已实测）/ `openai`（任意 OpenAI 兼容端点）/ `fake`（离线演示）。对话 agent 的 LLM 大脑需要 `pip install -e '.[brain]'` 并配置 `DEEPSEEK_API_KEY`，未配置时自动回退确定性模式 |
 | 法规变更影响 | `diff-rules` / `impact` | 规则集语义 diff → 受影响 SKU → 整改任务（Demo D） |
 | 评估回执 | `evaluate --json` | 内容寻址、可独立重放的判定凭据 |
 

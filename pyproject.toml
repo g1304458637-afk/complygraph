@@ -12,6 +12,7 @@ dependencies = ["pydantic>=2.6", "PyYAML>=6.0"]
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 extract = ["pypdf>=4"]
+brain = ["pydantic-ai-slim[openai]>=2.43"]
 
 [tool.setuptools]
 packages = ["complygraph"]

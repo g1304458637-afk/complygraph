@@ -26,7 +26,6 @@ from .registry import save_user_product
 RULES = None
 MARKETS = None
 
-MARKET_IDS = ["de", "fr", "gb", "us"]
 
 
 def _rules():
@@ -301,6 +300,11 @@ def _bundle_stub(session: Session):
     return EvidenceBundle()
 
 
+def _rules_markets() -> dict:
+    _rules()
+    return MARKETS.markets
+
+
 def rule_statuses(session: Session) -> dict[str, set[str]]:
     """rule_id -> statuses across every registered market for the partial product."""
     product = partial_product(session)
@@ -468,16 +472,16 @@ def _advice_for_turn(session: Session) -> list[dict[str, str]]:
     """Live coaching: rules that just became applicable and what they will need."""
     product = partial_product(session)
     bundle = _bundle_stub(session)
+    rules = _rules()
     advice: list[dict[str, str]] = []
-    for mid in MARKET_IDS:
+    for mid, market in _rules_markets().items():
         if not _market_selected(session, mid):
             continue
-        market = MARKETS.markets[mid]
-        readiness = evaluate_market(_rules(), product, bundle, mid, market, None, __import__("datetime").date.today())
+        readiness = evaluate_market(rules, product, bundle, mid, market, None, __import__("datetime").date.today())
         for r in readiness.rules:
             if r.status == "missing" and r.severity == "blocker" and r.rule_id not in session.seen_advice:
                 session.seen_advice.add(r.rule_id)
-                reqs = next((rule.requires for rule in _rules() if rule.id == r.rule_id), [])
+                reqs = next((rule.requires for rule in rules if rule.id == r.rule_id), [])
                 needs = "、".join(req.description for req in reqs if req.description) or r.reason
                 advice.append({
                     "market": mid,

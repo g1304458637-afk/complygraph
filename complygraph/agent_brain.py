@@ -12,6 +12,7 @@ Without a key, the deterministic dialogue keeps working unchanged.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from datetime import date
 from typing import Any
 
@@ -21,7 +22,11 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 from .intake import Session, apply_answer, next_turn, partial_product
 from .loader import load_markets
-from .registry import ROOT as PKG_ROOT
+from .registry import save_user_product  # noqa: F401 (re-exported for web layer)
+
+# Rule packs and the market registry are shipped with the package — resolve from
+# this file, NOT from registry.ROOT (tests redirect that to a temp sandbox).
+_PKG_ROOT = Path(__file__).resolve().parents[1]
 
 _MARKETS = None
 _RULES = None
@@ -30,7 +35,7 @@ _RULES = None
 def _markets():
     global _MARKETS
     if _MARKETS is None:
-        _MARKETS = load_markets(PKG_ROOT / "config" / "markets.yaml")
+        _MARKETS = load_markets(_PKG_ROOT / "config" / "markets.yaml")
     return _MARKETS
 
 
@@ -39,7 +44,7 @@ def _all_rules():
     if _RULES is None:
         from .loader import default_rule_paths, load_rules
 
-        _RULES = load_rules(default_rule_paths(PKG_ROOT))
+        _RULES = load_rules(default_rule_paths(_PKG_ROOT))
     return _RULES
 
 
@@ -47,7 +52,7 @@ def evaluate_session_market(session: Session, mid: str) -> dict[str, Any]:
     from .engine import evaluate_market
 
     readiness = evaluate_market(
-        _all_rules(), partial_product(session), EvidenceBundle(),
+        _all_rules(), partial_product(session), _bundle_stub(),
         mid, _markets().markets[mid], None, date.today(),
     )
     return {

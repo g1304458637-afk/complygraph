@@ -235,8 +235,12 @@ class Handler(BaseHTTPRequestHandler):
                 result["brain"] = "llm" if (os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("CG_LLM_API_KEY")) else "deterministic"
                 self._json(result)
             elif parsed.path == "/api/agent/chat":
-                from .agent_brain import chat as brain_chat
-
+                try:
+                    from .agent_brain import chat as brain_chat
+                except ImportError as exc:
+                    self._json({"error": "LLM 大脑未启用：pip install 'complygraph[brain]' "
+                                         f"并配置 DEEPSEEK_API_KEY（原始错误: {exc}）"}, 400)
+                    return
                 session = get_session(body["session_id"])
                 result = brain_chat(session, body.get("message", ""))
                 self._json({"session_id": session.id, **result})

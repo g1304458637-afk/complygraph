@@ -114,8 +114,8 @@ body {
 .hero-layer.building img { object-position: center bottom; }
 .hero-cue { z-index: 40; }
 .hero-title-wrap {
-  position: relative; z-index: 10; text-align: center;
-  padding-top: 13vh; will-change: transform;
+  position: relative; z-index: 40; text-align: center;
+  padding-top: 15vh; will-change: transform;
 }
 .gradient-title {
   margin: 0;

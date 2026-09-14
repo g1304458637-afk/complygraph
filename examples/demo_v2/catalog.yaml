@@ -1,0 +1,7 @@
+# Product catalog for impact analysis (Demo D).
+# Paths are relative to this file's directory; ../ points at examples/.
+skus:
+  - product: ../products/pb100.yaml
+    evidence: ../evidence/pb100_evidence.yaml
+  - product: ../products/tee21.yaml
+    evidence: ../evidence/tee21_evidence.yaml

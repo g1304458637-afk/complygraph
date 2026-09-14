@@ -1,0 +1,23 @@
+pack: de.battg
+pack_type: legal
+rules:
+  - id: de.battg.registration
+    title: Battery registration (BattG) for batteries placed on the German market
+    version: "1.0.0"
+    jurisdiction: DE
+    effective_from: 2021-01-01
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: electrical.battery.present, op: eq, value: true}
+    requires:
+      - id: req.de.battg.reg
+        kind: registration
+        registration_scheme: de.battg
+        severity: blocker
+        description: Battery registration number (Batt-Reg.-Nr.) via stiftung ear
+    source:
+      authority: stiftung ear
+      provision: "Batteriegesetz (BattG), producer registration"
+      url: https://www.stiftung-ear.de/fileadmin/redakteur/downloads/Anwendungshilfe_Batterie-o-Elektrogeraet.pdf
+    last_verified: 2026-09-14

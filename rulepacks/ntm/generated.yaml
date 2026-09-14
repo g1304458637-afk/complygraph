@@ -1,0 +1,422 @@
+# AUTO-GENERATED from data/ntm_seed.yaml — do not hand-edit.
+# Regenerate: python scripts_gen_ntm.py  (12 rules, seed v0)
+pack: ntm
+pack_type: legal
+rules:
+- id: ntm.ae.ecas
+  title: ECAS conformity for electrical products
+  version: 0.1.0
+  pack: ntm.ae
+  pack_type: legal
+  channel: null
+  jurisdiction: AE
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: AE
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.ae.ecas
+    kind: evidence
+    evidence_type: ecas_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: Emirates Conformity Assessment System certificate
+  source:
+    authority: MOIAT UAE
+    provision: UAE ECAS regulations
+    url: https://www.moiat.gov.ae/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.au.rcm
+  title: RCM mark (electrical equipment safety + EMC/radio)
+  version: 0.1.0
+  pack: ntm.au
+  pack_type: legal
+  channel: null
+  jurisdiction: AU
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: AU
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.au.rcm
+    kind: evidence
+    evidence_type: rcm_declaration
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: Regulatory Compliance Mark via EESS / ACMA supplier declaration
+  source:
+    authority: ACMA Australia
+    provision: Radiocommunications Act + Electrical Equipment Safety System
+    url: https://www.acma.gov.au/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.br.anatel
+  title: ANATEL homologation for radio equipment
+  version: 0.1.0
+  pack: ntm.br
+  pack_type: legal
+  channel: null
+  jurisdiction: BR
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: BR
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.br.anatel
+    kind: evidence
+    evidence_type: anatel_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: ANATEL homologation for telecom/radio products
+  source:
+    authority: ANATEL Brazil
+    provision: Homologation regulations
+    url: https://www.gov.br/anatel/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.br.inmetro
+  title: INMETRO conformity for electrical products
+  version: 0.1.0
+  pack: ntm.br
+  pack_type: legal
+  channel: null
+  jurisdiction: BR
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: BR
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.br.inmetro
+    kind: evidence
+    evidence_type: inmetro_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: INMETRO certification by an accredited body
+  source:
+    authority: INMETRO Brazil
+    provision: Compulsory conformity assessment regulations
+    url: https://www.gov.br/inmetro/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.ca.ised
+  title: ISED certification for radio equipment
+  version: 0.1.0
+  pack: ntm.ca
+  pack_type: legal
+  channel: null
+  jurisdiction: CA
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CA
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.ca.ised
+    kind: evidence
+    evidence_type: ised_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: "Innovation, Science and Economic Development Canada \u2014 RSS compliance"
+  source:
+    authority: ISED Canada
+    provision: Radiocommunication Information Circulars (RSS-247 etc.)
+    url: https://ised-isde.canada.ca/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.ch.lowvoltage
+  title: Swiss low-voltage / radio conformity (SEV/OFCOM path)
+  version: 0.1.0
+  pack: ntm.ch
+  pack_type: legal
+  channel: null
+  jurisdiction: CH
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: CH
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.ch.lowvoltage
+    kind: evidence
+    evidence_type: ch_conformity_declaration
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: major
+    description: Declaration of conformity under Swiss LVEV/OSmAS (CE largely accepted)
+  source:
+    authority: SEV Switzerland
+    provision: "Niederspannungsger\xE4teverordnung (LVEV)"
+    url: https://www.sev.ch/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.in.bis
+  title: BIS CRS registration for electronics
+  version: 0.1.0
+  pack: ntm.in
+  pack_type: legal
+  channel: null
+  jurisdiction: IN
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: IN
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.in.bis
+    kind: evidence
+    evidence_type: bis_registration
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: BIS Compulsory Registration Scheme registration
+  source:
+    authority: BIS India
+    provision: Electronics and IT Goods (Requirement of Compulsory Registration) Order
+    url: https://www.bis.gov.in/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.jp.pse
+  title: PSE conformity (DENAN law) for electrical appliances incl. lithium batteries
+  version: 0.1.0
+  pack: ntm.jp
+  pack_type: legal
+  channel: null
+  jurisdiction: JP
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: JP
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.jp.pse
+    kind: evidence
+    evidence_type: pse_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: PSE conformity certificate/notification via METI for electrical products
+  source:
+    authority: METI Japan
+    provision: Electrical Appliances and Materials Safety Law (DENAN)
+    url: https://www.meti.go.jp/policy/safety_security/industrial_safety/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.jp.telec
+  title: "Technical conformity (\u6280\u9069) for radio equipment"
+  version: 0.1.0
+  pack: ntm.jp
+  pack_type: legal
+  channel: null
+  jurisdiction: JP
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: JP
+    - fact: hs_code
+      op: startswith
+      value: '85'
+    - fact: features.wireless_charging
+      op: eq
+      value: true
+  requires:
+  - id: req.ntm.jp.telec
+    kind: evidence
+    evidence_type: telec_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: MIC technical conformity certification for radio equipment
+  source:
+    authority: MIC Japan
+    provision: "Radio Act \u2014 technical regulations conformity certification"
+    url: https://www.soumu.go.jp/main_sosiki/joho_tsusin/eng/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.kr.kc
+  title: KC certification for electrical/electronic products
+  version: 0.1.0
+  pack: ntm.kr
+  pack_type: legal
+  channel: null
+  jurisdiction: KR
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: KR
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.kr.kc
+    kind: evidence
+    evidence_type: kc_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: KC safety + EMC certification (KATS/MSIT)
+  source:
+    authority: KATS Korea
+    provision: Electrical Products Safety Control Act
+    url: https://www.kats.go.kr/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.mx.nom
+  title: NOM certification for electronic appliances
+  version: 0.1.0
+  pack: ntm.mx
+  pack_type: legal
+  channel: null
+  jurisdiction: MX
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: MX
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.mx.nom
+    kind: evidence
+    evidence_type: nom_certificate
+    registration_scheme: null
+    attribute: null
+    field: null
+    severity: blocker
+    description: NOM safety certification by an accredited lab
+  source:
+    authority: SE Mexico
+    provision: NOM standards (NOM-024 etc.)
+    url: https://www.gob.mx/se/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'
+- id: ntm.sg.safety
+  title: Safety Mark registration (Consumer Protection Registration Scheme)
+  version: 0.1.0
+  pack: ntm.sg
+  pack_type: legal
+  channel: null
+  jurisdiction: SG
+  effective_from: '2000-01-01'
+  effective_to: null
+  superseded_by: null
+  applies_if:
+    all:
+    - fact: target_markets
+      op: contains
+      value: SG
+    - fact: hs_code
+      op: startswith
+      value: '85'
+  requires:
+  - id: req.ntm.sg.safety
+    kind: registration
+    evidence_type: null
+    registration_scheme: sg.safety
+    attribute: null
+    field: null
+    severity: blocker
+    description: Registered Controlled Goods with SAFETY Mark
+  source:
+    authority: Enterprise Singapore
+    provision: Consumer Protection (Safety Requirements) Registration Scheme
+    url: https://www.enterprisesg.gov.sg/
+  last_verified: null
+  notes: 'Generated from NTM seed v0 (candidate, last_verified: null). Refresh via
+    TRAINS/WITS connector.'

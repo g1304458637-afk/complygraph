@@ -1,0 +1,45 @@
+sku: PB-100
+name: PowerCore 10000 power bank
+category: consumer_electronics
+manufacturer:
+  name: Shenzhen Volt Electronics Co.
+  country: CN
+  established_in_eu: false
+offered_to_eu_consumer: true
+offered_to_uk_consumer: true
+offered_to_us_consumer: true
+features:
+  wireless_charging: false
+electrical:
+  battery:
+    present: true
+    chemistry: li_ion
+    capacity_mah: 10000
+    voltage_v: 3.7
+    watt_hours: 37
+packaging:
+  packaged_for_end_consumer: true
+attributes:
+  traceability_marking: Manufacturer address + PB-100 model printed on shell
+  battery_wh_marking: 37 Wh printed on battery shell
+  triman_info_tri: Triman + Info-tri printed on FR packaging
+  prop65_warning: Prop 65 warning label on US packaging
+channel_fields:
+  amazon.de:
+    responsible_person: ACME EU Compliance GmbH, Berlin
+    safety_information_document: gpsr-safety-doc-pb100.pdf
+  amazon.us:
+    battery_watt_hours: '37'
+    lithium_battery_un383: UN38.3 summary ev.un383.001 attached
+hs_code: '8507.60'
+target_markets:
+- JP
+- KR
+- AU
+- BR
+- IN
+- AE
+- MX
+- SG
+- CH
+- VN

@@ -1,0 +1,29 @@
+sku: TEE-21
+name: Organic cotton tee
+category: apparel
+manufacturer:
+  name: Lisbon Textiles Lda.
+  country: PT
+  established_in_eu: true
+offered_to_eu_consumer: true
+offered_to_uk_consumer: true
+offered_to_us_consumer: true
+features:
+  wireless_charging: false
+electrical:
+  battery:
+    present: false
+packaging:
+  packaged_for_end_consumer: true
+attributes:
+  traceability_marking: Manufacturer address + TEE-21 model printed on label
+  triman_info_tri: Triman + Info-tri printed on FR packaging
+  prop65_warning: Not required (no listed substances) — statement on file
+  recyclability_info: 100% organic cotton, mono-material packaging, recyclable
+channel_fields:
+  amazon.de:
+    responsible_person: Manufacturer (EU-established)
+    safety_information_document: tee21-safety-doc.pdf
+hs_code: '6109.10'
+target_markets:
+- SG

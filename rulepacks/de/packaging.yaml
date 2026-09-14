@@ -1,0 +1,27 @@
+pack: de.packaging
+pack_type: legal
+rules:
+  - id: de.packaging.lucid
+    title: Packaging registration in LUCID (VerpackG) for consumer packaging in Germany
+    version: "1.0.0"
+    jurisdiction: DE
+    effective_from: 2019-01-01
+    applies_if:
+      fact: packaging.packaged_for_end_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.de.lucid.reg
+        kind: registration
+        registration_scheme: de.lucid
+        severity: blocker
+        description: LUCID registration number from ZSVR before placing packaged goods on the market
+    source:
+      authority: ZSVR (Verpackungsregister)
+      provision: "VerpackG, system participation & LUCID registration; PPWR/VerpackDG changes from 2026-08-12"
+      url: https://www.verpackungsregister.org/en/i-want-to-know-what-changed-on-12-august-2026
+    notes: >-
+      v2 candidate pending: the 2026-08-12 PPWR/VerpackDG changes add
+      obligations that should become a separate versioned rule with its own
+      fixtures (see Phase 4 of the execution plan).
+    last_verified: 2026-09-14

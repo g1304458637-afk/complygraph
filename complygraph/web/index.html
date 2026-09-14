@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ComplyGraph — Market Access Map</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="logo">⬡</span>
+      <div>
+        <strong>ComplyGraph</strong>
+        <span class="tagline" data-i18n="tagline"></span>
+      </div>
+    </div>
+    <div class="nav-meta">
+      <div class="lang-toggle" id="lang-toggle">
+        <button data-lang="en">EN</button><button data-lang="zh">中文</button>
+      </div>
+      <span class="chip subtle" data-i18n="chip_meta"></span>
+      <span class="chip subtle"><span data-i18n="as_of"></span>&nbsp;<span id="as-of-date"></span></span>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <div id="add-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 data-i18n="form_title"></h2>
+        <button id="close-add" class="btn ghost" data-i18n="close"></button>
+      </div>
+      <p class="muted" data-i18n="form_sub"></p>
+
+      <div class="form-grid">
+        <label class="field"><span data-i18n="f_sku"></span> *<input id="f-sku" type="text" placeholder="PB-200"></label>
+        <label class="field"><span data-i18n="f_name"></span> *<input id="f-name" type="text"></label>
+        <label class="field"><span data-i18n="f_cat"></span>
+          <select id="f-cat">
+            <option value="consumer_electronics">consumer_electronics</option>
+            <option value="apparel">apparel</option>
+          </select></label>
+        <div class="field spans2">
+          <span data-i18n="f_mkts"></span>
+          <div class="checks">
+            <label class="check"><input id="f-eu" type="checkbox" checked><span data-i18n="f_eu"></span></label>
+            <label class="check"><input id="f-uk" type="checkbox"><span data-i18n="f_uk"></span></label>
+            <label class="check"><input id="f-us" type="checkbox"><span data-i18n="f_us"></span></label>
+          </div>
+        </div>
+
+        <label class="field"><span data-i18n="f_mfr"></span><input id="f-mfr" type="text"></label>
+        <label class="field"><span data-i18n="f_mfr_country"></span><input id="f-mfr-country" type="text" placeholder="CN"></label>
+        <label class="field"><span data-i18n="f_mfr_eu"></span>
+          <select id="f-mfr-eu">
+            <option value="no" data-i18n="opt_no"></option>
+            <option value="yes" data-i18n="opt_yes"></option>
+            <option value="unknown" data-i18n="opt_unknown"></option>
+          </select></label>
+
+        <div class="field spans2"><span data-i18n="f_feats"></span>
+          <div class="checks">
+            <label class="check"><input id="f-wireless" type="checkbox"><span data-i18n="f_wireless"></span></label>
+          </div>
+        </div>
+
+        <div class="field spans2"><span data-i18n="f_battery"></span>
+          <div class="checks">
+            <label class="check"><input id="f-battery" type="checkbox" checked><span data-i18n="f_has_battery"></span></label>
+          </div>
+          <div class="row3" id="battery-details">
+            <label class="field"><span data-i18n="f_mah"></span><input id="f-mah" type="number" value="10000"></label>
+            <label class="field"><span data-i18n="f_volt"></span><input id="f-volt" type="number" step="0.1" value="3.7"></label>
+            <label class="field"><span data-i18n="f_wh"></span><input id="f-wh" type="number" value="37"></label>
+          </div>
+        </div>
+
+        <div class="field spans2"><span data-i18n="f_marks"></span>
+          <div class="checks">
+            <label class="check"><input id="f-retail" type="checkbox" checked><span data-i18n="f_retail"></span></label>
+            <label class="check"><input id="f-trace" type="checkbox" checked><span data-i18n="f_trace"></span></label>
+            <label class="check"><input id="f-triman" type="checkbox"><span data-i18n="f_triman"></span></label>
+            <label class="check"><input id="f-prop65" type="checkbox"><span data-i18n="f_prop65"></span></label>
+          </div>
+        </div>
+
+        <div class="field spans2"><span data-i18n="f_docs"></span>
+          <div class="checks wrap">
+            <label class="check"><input id="f-doc-rpa" type="checkbox"><span data-i18n="d_rpa"></span></label>
+            <label class="check"><input id="f-doc-safety" type="checkbox"><span data-i18n="d_safety"></span></label>
+            <label class="check"><input id="f-doc-techdoc" type="checkbox"><span data-i18n="d_techdoc"></span></label>
+            <label class="check"><input id="f-doc-batdec" type="checkbox"><span data-i18n="d_batdec"></span></label>
+            <label class="check"><input id="f-doc-un383" type="checkbox"><span data-i18n="d_un383"></span></label>
+            <label class="check"><input id="f-doc-red" type="checkbox"><span data-i18n="d_red"></span></label>
+            <label class="check"><input id="f-doc-fcc" type="checkbox"><span data-i18n="d_fcc"></span></label>
+          </div>
+          <p class="hintline" data-i18n="f_docs_hint"></p>
+        </div>
+
+        <div class="field spans2"><span data-i18n="f_regs"></span>
+          <div class="row3">
+            <label class="field"><span>LUCID（DE 包装）</span><input id="f-reg-lucid" type="text"></label>
+            <label class="field"><span>WEEE（DE）</span><input id="f-reg-weee" type="text"></label>
+            <label class="field"><span>BattG（DE 电池）</span><input id="f-reg-battg" type="text"></label>
+            <label class="field"><span>IDU 包装（FR）</span><input id="f-reg-frpack" type="text"></label>
+            <label class="field"><span>IDU WEEE（FR）</span><input id="f-reg-frweee" type="text"></label>
+            <label class="field"><span>IDU 电池（FR）</span><input id="f-reg-frbat" type="text"></label>
+            <label class="field"><span>UK WEEE 注册</span><input id="f-reg-gbweee" type="text"></label>
+            <label class="field"><span>UK 包装 EPR</span><input id="f-reg-gbpack" type="text"></label>
+            <label class="field"><span>UK 电池注册</span><input id="f-reg-gbbat" type="text"></label>
+          </div>
+          <p class="hintline" data-i18n="f_regs_hint"></p>
+        </div>
+
+        <div class="field spans2"><span data-i18n="f_channel"></span>
+          <div class="checks">
+            <label class="check"><input id="f-ch-de" type="checkbox"><span data-i18n="f_chde"></span></label>
+            <label class="check"><input id="f-ch-us" type="checkbox"><span data-i18n="f_chus"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <div id="form-error" class="form-error hidden"></div>
+      <div class="modal-foot">
+        <button id="submit-add" class="btn primary" data-i18n="form_submit"></button>
+      </div>
+    </div>
+  </div>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2 data-i18n="map_title"></h2>
+        <p class="muted" data-i18n="map_sub"></p>
+      </div>
+      <div>
+        <button id="chat-btn" class="btn primary">🤖 <span data-i18n="chat_btn"></span></button>
+        <button id="add-btn" class="btn ghost"><span data-i18n="add_btn"></span></button>
+        <button id="impact-btn" class="btn ghost" data-i18n="impact_btn"></button>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <span class="dis-icon">§</span>
+      <span data-i18n="disclaimer"></span>
+    </div>
+    <div class="table-scroll">
+      <table class="map" id="map">
+        <thead><tr id="map-head"></tr></thead>
+        <tbody id="map-body"></tbody>
+      </table>
+    </div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section id="detail" class="card hidden">
+    <div class="card-head">
+      <div>
+        <h2 id="detail-title"></h2>
+        <p class="muted" id="detail-sub"></p>
+      </div>
+      <button id="close-detail" class="btn ghost" data-i18n="close"></button>
+    </div>
+    <div class="summary" id="detail-summary"></div>
+    <div id="detail-blockers"></div>
+    <div class="table-scroll">
+      <table class="rules">
+        <thead>
+          <tr>
+            <th style="width:34%" data-i18n="th_rule"></th>
+            <th data-i18n="th_status"></th>
+            <th data-i18n="th_detail"></th>
+            <th style="width:22%" data-i18n="th_source"></th>
+          </tr>
+        </thead>
+        <tbody id="detail-rules"></tbody>
+      </table>
+    </div>
+    <p class="receipt"><span data-i18n="receipt_label"></span> <code id="detail-receipt"></code></p>
+  </section>
+
+  <section id="impact" class="card hidden">
+    <div class="card-head">
+      <div>
+        <h2><span data-i18n="impact_title"></span> <span class="chip subtle" data-i18n="impact_chip"></span></h2>
+        <p class="muted" data-i18n="impact_sub"></p>
+      </div>
+      <button id="close-impact" class="btn ghost" data-i18n="close"></button>
+    </div>
+    <div id="impact-changes" class="impact-changes"></div>
+    <div id="impact-skus" class="impact-skus"></div>
+  </section>
+
+</main>
+
+<footer class="footer" id="footer"></footer>
+
+<div id="chat-drawer" class="chat-drawer hidden">
+  <div class="chat-head">
+    <div class="chat-title">🤖 <b data-i18n="chat_title"></b></div>
+    <div class="chat-progress"><i id="chat-progress-bar" style="width:0%"></i></div>
+    <button id="close-chat" class="btn ghost">✕</button>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-input-row" id="chat-input-row">
+    <input id="chat-input" type="text" autocomplete="off">
+    <button id="chat-send" class="btn primary" data-i18n="chat_send"></button>
+  </div>
+</div>
+
+<script src="/i18n.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

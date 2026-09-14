@@ -1,0 +1,23 @@
+pack: de.weee
+pack_type: legal
+rules:
+  - id: de.weee.registration
+    title: WEEE registration with stiftung ear (ElektroG) for electrical equipment sold in Germany
+    version: "1.0.0"
+    jurisdiction: DE
+    effective_from: 2015-10-24
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.de.weee.reg
+        kind: registration
+        registration_scheme: de.weee
+        severity: blocker
+        description: WEEE-Reg.-Nr. issued by stiftung ear for the distributor/producer
+    source:
+      authority: stiftung ear
+      provision: "Elektro- und Elektronikgerätegesetz (ElektroG), registration obligations"
+      url: https://www.stiftung-ear.de/en
+    last_verified: 2026-09-14

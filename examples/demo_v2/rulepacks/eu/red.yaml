@@ -1,0 +1,27 @@
+pack: eu.red
+pack_type: legal
+rules:
+  - id: eu.red.radio_equipment
+    title: Radio Equipment Directive path when the product has a wireless feature
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2014-06-12
+    applies_if:
+      fact: features.wireless_charging
+      op: eq
+      value: true
+    requires:
+      - id: req.red.test_report
+        kind: evidence
+        evidence_type: red_test_report
+        severity: blocker
+        description: RED test report / DoC covering the radio function
+    source:
+      authority: EUR-Lex
+      provision: "Directive 2014/53/EU (radio equipment), Art. 3 compliance"
+      url: https://eur-lex.europa.eu/eli/dir/2014/53/oj/eng
+    notes: >-
+      Rule candidate. Wireless charging triggers a RED assessment path per
+      Commission practice; confirm exact scope against the directive text and
+      harmonised standards before promoting beyond candidate.
+    last_verified: 2026-09-14

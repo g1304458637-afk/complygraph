@@ -1,0 +1,33 @@
+# Evidence bundle for TEE-21 (EU-established manufacturer, apparel, no battery).
+evidence:
+  - id: ev.rpa.tee21
+    sku: TEE-21
+    evidence_type: responsible_person_agreement
+    issuer: n/a — manufacturer established in the EU
+    model_scope: [TEE-21]
+    issued: 2024-01-01
+    jurisdictions: [EU]
+    reviewed: true
+  - id: ev.safety.tee21
+    sku: TEE-21
+    evidence_type: safety_information
+    issuer: Lisbon Textiles Lda.
+    model_scope: [TEE-21]
+    issued: 2025-06-01
+    jurisdictions: [EU]
+    reviewed: true
+  - id: ev.techdoc.tee21
+    sku: TEE-21
+    evidence_type: technical_documentation
+    issuer: Lisbon Textiles Lda.
+    model_scope: [TEE-21]
+    issued: 2025-06-01
+    jurisdictions: [EU]
+    reviewed: true
+
+registrations:
+  - id: reg.lucid.tee21
+    sku: TEE-21
+    scheme: de.lucid
+    number: "DE9876543210987"
+    jurisdictions: [DE]

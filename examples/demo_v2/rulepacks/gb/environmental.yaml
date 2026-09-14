@@ -1,0 +1,71 @@
+pack: gb.environmental
+pack_type: legal
+rules:
+  - id: uk.weee.registration
+    title: WEEE producer registration for electrical equipment placed on the UK market
+    version: "1.0.0"
+    jurisdiction: GB
+    effective_from: 2014-01-01
+    applies_if:
+      all:
+        - {fact: offered_to_uk_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.uk.weee.reg
+        kind: registration
+        registration_scheme: gb.weee
+        severity: blocker
+        description: Producer registration via a UK WEEE compliance scheme (NPWD)
+    source:
+      authority: legislation.gov.uk
+      provision: "Waste Electrical and Electronic Equipment Regulations 2013 (SI 2013/3113), producer registration"
+      url: https://www.legislation.gov.uk/uksi/2013/3113
+    notes: Rule candidate — verify producer/distributor distinction and distance-selling obligations.
+    last_verified: null
+
+  - id: uk.batteries.registration
+    title: Battery producer registration for portable batteries placed on the UK market
+    version: "1.0.0"
+    jurisdiction: GB
+    effective_from: 2008-09-26
+    applies_if:
+      all:
+        - {fact: offered_to_uk_consumer, op: eq, value: true}
+        - {fact: electrical.battery.present, op: eq, value: true}
+    requires:
+      - id: req.uk.battery.reg
+        kind: registration
+        registration_scheme: gb.batteries
+        severity: blocker
+        description: Portable battery producer registration (UK Batteries and Accumulators Regulations 2008)
+    source:
+      authority: legislation.gov.uk
+      provision: "Batteries and Accumulators (Placing on the Market) Regulations 2008 (SI 2008/2164)"
+      url: https://www.legislation.gov.uk/uksi/2008/2164
+    notes: Rule candidate — verify compliance-scheme membership requirements.
+    last_verified: null
+
+  - id: uk.packaging.epr
+    title: Packaging EPR producer registration for packaged consumer goods in the UK
+    version: "1.0.0"
+    jurisdiction: GB
+    effective_from: 2023-01-01
+    applies_if:
+      all:
+        - {fact: offered_to_uk_consumer, op: eq, value: true}
+        - {fact: packaging.packaged_for_end_consumer, op: eq, value: true}
+    requires:
+      - id: req.uk.packaging.reg
+        kind: registration
+        registration_scheme: gb.packaging
+        severity: blocker
+        description: Registration as a packaging producer (pEPR) on NPWD / relevant environment agency register
+    source:
+      authority: GOV.UK
+      provision: "Producer Responsibility Obligations (Packaging Waste) Regulations 2007 as amended; extended producer responsibility for packaging from 2023"
+      url: https://www.gov.uk/guidance/packaging-producer-responsibilities
+    notes: >-
+      Rule candidate. pEPR obligations phased 2023-2027 (data, then disposal
+      fees); verify turnover/threshold tests (small vs large producer) before
+      promotion.
+    last_verified: null

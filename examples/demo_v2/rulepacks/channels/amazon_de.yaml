@@ -1,0 +1,45 @@
+pack: channel.amazon_de
+pack_type: channel
+channel: amazon.de
+rules:
+  - id: channel.amazon_de.gpsr_responsible_person
+    title: Amazon.de GPSR responsible-party listing field
+    version: "1.0.0"
+    jurisdiction: DE
+    effective_from: 2024-12-13
+    applies_if:
+      fact: offered_to_eu_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.ch.responsible_person
+        kind: listing_field
+        field: responsible_person
+        severity: blocker
+        description: Responsible party attribute must be filled for EU listings
+    source:
+      authority: Amazon SP-API
+      provision: "GPSR listing attributes (manufacturer / responsible party / safety compliance)"
+      url: https://developer-docs.amazon.com/sp-api/changelog/developers-can-use-attributes-in-their-programmatic-listings-submissions-to-comply-with-gpsr
+    last_verified: 2026-09-14
+
+  - id: channel.amazon_de.gpsr_safety_document
+    title: Amazon.de GPSR safety information document field
+    version: "1.0.0"
+    jurisdiction: DE
+    effective_from: 2024-12-13
+    applies_if:
+      fact: offered_to_eu_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.ch.safety_document
+        kind: listing_field
+        field: safety_information_document
+        severity: blocker
+        description: Product-safety document / images attached per Amazon GPSR requirements
+    source:
+      authority: Amazon SP-API
+      provision: "GPSR listing attributes (safety attestation / compliance media)"
+      url: https://developer-docs.amazon.com/sp-api/changelog/developers-can-use-attributes-in-their-programmatic-listings-submissions-to-comply-with-gpsr
+    last_verified: 2026-09-14

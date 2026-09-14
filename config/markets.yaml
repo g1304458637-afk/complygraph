@@ -1,0 +1,108 @@
+markets:
+  de:
+    country: DE
+    jurisdictions:
+    - EU
+    - DE
+    - GLOBAL
+    eu_member: true
+    language: de
+  fr:
+    country: FR
+    jurisdictions:
+    - EU
+    - FR
+    - GLOBAL
+    eu_member: true
+    language: fr
+  gb:
+    country: GB
+    jurisdictions:
+    - GB
+    - GLOBAL
+    eu_member: false
+    language: en
+  us:
+    country: US
+    jurisdictions:
+    - US
+    - GLOBAL
+    eu_member: false
+    language: en
+  jp:
+    country: JP
+    jurisdictions:
+    - JP
+    - GLOBAL
+    eu_member: false
+    language: en
+  kr:
+    country: KR
+    jurisdictions:
+    - KR
+    - GLOBAL
+    eu_member: false
+    language: en
+  ca:
+    country: CA
+    jurisdictions:
+    - CA
+    - GLOBAL
+    eu_member: false
+    language: en
+  au:
+    country: AU
+    jurisdictions:
+    - AU
+    - GLOBAL
+    eu_member: false
+    language: en
+  br:
+    country: BR
+    jurisdictions:
+    - BR
+    - GLOBAL
+    eu_member: false
+    language: en
+  in:
+    country: IN
+    jurisdictions:
+    - IN
+    - GLOBAL
+    eu_member: false
+    language: en
+  ae:
+    country: AE
+    jurisdictions:
+    - AE
+    - GLOBAL
+    eu_member: false
+    language: en
+  mx:
+    country: MX
+    jurisdictions:
+    - MX
+    - GLOBAL
+    eu_member: false
+    language: en
+  sg:
+    country: SG
+    jurisdictions:
+    - SG
+    - GLOBAL
+    eu_member: false
+    language: en
+  ch:
+    country: CH
+    jurisdictions:
+    - CH
+    - GLOBAL
+    eu_member: false
+    language: en
+  vn:
+    country: VN
+    jurisdictions:
+    - VN
+    - GLOBAL
+    eu_member: false
+    language: vi

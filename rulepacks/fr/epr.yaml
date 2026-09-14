@@ -1,0 +1,65 @@
+pack: fr.epr
+pack_type: legal
+rules:
+  - id: fr.epr.packaging_idu
+    title: French EPR packaging — unique identifier (IDU) from the ADEME producer registry
+    version: "1.0.0"
+    jurisdiction: FR
+    effective_from: 2023-01-01
+    applies_if:
+      fact: packaging.packaged_for_end_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.fr.packaging.idu
+        kind: registration
+        registration_scheme: fr.epr.packaging
+        severity: blocker
+        description: IDU (identifiant unique) for the packaging filiere, issued via a French eco-organisation
+    source:
+      authority: ADEME / Legifrance
+      provision: "Loi AGEC (2020-105) Art. 17 + decret n° 2022-748 — registre des producteurs, identifiant unique"
+      url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000045757254
+    notes: >-
+      Rule candidate: effective date is the AGEC phased rollout; verify the
+      exact filiere-specific deadline against the decree text before promotion.
+  - id: fr.epr.weee_idu
+    title: French EPR WEEE — unique identifier for electrical equipment
+    version: "1.0.0"
+    jurisdiction: FR
+    effective_from: 2023-01-01
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.fr.weee.idu
+        kind: registration
+        registration_scheme: fr.epr.weee
+        severity: blocker
+        description: "IDU for the WEEE filiere (eco-organisations: Ecosystem, Ecologic, ERP)"
+    source:
+      authority: ADEME / Legifrance
+      provision: "Loi AGEC (2020-105) Art. 17 + decret n° 2022-748"
+      url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000045757254
+    notes: Rule candidate — verify filiere deadline against the decree text.
+  - id: fr.epr.battery_idu
+    title: French EPR batteries — unique identifier for portable batteries
+    version: "1.0.0"
+    jurisdiction: FR
+    effective_from: 2023-01-01
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: electrical.battery.present, op: eq, value: true}
+    requires:
+      - id: req.fr.battery.idu
+        kind: registration
+        registration_scheme: fr.epr.battery
+        severity: blocker
+        description: IDU for the batteries filiere (Screlec / Corepile)
+    source:
+      authority: ADEME / Legifrance
+      provision: "Loi AGEC (2020-105) Art. 17 + decret n° 2022-748"
+      url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000045757254
+    notes: Rule candidate — verify filiere deadline against the decree text.

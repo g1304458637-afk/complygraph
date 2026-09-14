@@ -1,0 +1,53 @@
+# =============================================================
+# ComplyGraph 产品事实填空模板
+# 把 <> 里的内容填好、删掉用不到的字段，发给引擎评估即可。
+# 原则：事实决定规则路径——宁可留空（引擎会报 unknown）也不要猜。
+# =============================================================
+
+sku: <你的SKU编号，如 PB-200>
+name: <产品名称>
+category: <品类，当前规则包支持 consumer_electronics / apparel>
+
+# ---- 谁 in 卖：目标市场（true/false，不确定就留空）----
+offered_to_eu_consumer: <在欧盟卖给消费者？>
+offered_to_us_consumer: <在美国卖？>
+offered_to_uk_consumer: <在英国卖？（脱欧后是独立法域，UKCA/英国责任人/英国EPR）>
+
+# ---- 制造商（GPSR 责任人规则的关键事实）----
+manufacturer:
+  name: <制造商名称>
+  country: <生产国，如 CN>
+  established_in_eu: <制造商是否在欧盟境内注册？true/false>
+
+# ---- 产品特征（决定法规路径，一个词都不能错）----
+features:
+  wireless_charging: <有无无线充电/蓝牙/WiFi？true 会触发 RED 无线电设备指令>
+
+# ---- 电气/电池（有电池才填）----
+electrical:
+  battery:
+    present: <有无电池？>
+    chemistry: <li_ion / lipo / nimh ...>
+    capacity_mah: <容量>
+    voltage_v: <电压>
+    watt_hours: <瓦时数 = 容量×电压/1000，>20 会触发额外运输标记要求>
+
+# ---- 包装（触发各国包装法/EPR）----
+packaging:
+  packaged_for_end_consumer: <以零售包装直接卖给终端消费者？>
+
+# ---- 产品本体上的标记（规则会核对，缺了会出 blocker/warning）----
+attributes:
+  traceability_marking: <产品上有无制造商名称+地址+型号标识？填"有，印于外壳"或具体内容>
+  battery_wh_marking: <电池本体有无 Wh 标记？无电池删掉此行>
+  triman_info_tri: <法国包装上有无 Triman+Info-tri 标印？（卖法国才需要）>
+  prop65_warning: <美国包装上有无加州65号警告？（卖美国才需要）>
+
+# ---- 渠道 listing 字段（法律合规 ≠ 平台字段填完，这是第二层）----
+channel_fields:
+  amazon.de:
+    responsible_person: <Amazon 后台 GPSR 责任人字段填了什么？没填就留空>
+    safety_information_document: <安全信息文档是否已上传？>
+  amazon.us:
+    battery_watt_hours: <listing 里的 Wh 申报值>
+    lithium_battery_un383: <UN38.3 摘要是否附在 listing？>

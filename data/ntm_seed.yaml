@@ -1,0 +1,193 @@
+# =============================================================
+# NTM seed dataset v0 — 全球市场准入骨架（手工精选种子）
+#
+# 定位：UNCTAD TRAINS / ITC MacMap 全量数据的"可运行子集"。
+# 每条 requirement 描述一个国家对某 HS 章节产品的强制性准入要求。
+# 全部为 candidate 状态（last_verified: null），正式依赖前需人工核实。
+#
+# 刷新路径：sources/ntm.py 的 WITS/TRAINS 连接器（需 WITS 账号拉取
+# 全量 NTM bulk 文件）→ 重新生成本文件，覆盖面自动扩大到 ~190 国。
+# =============================================================
+meta:
+  source: "Hand-curated seed v0 — UNCTAD NTM classification branches (TBT/SPS/pre-shipment) mapped to requirement types"
+  train_refresh: pending_wits_account
+  applies_to: "keyed by HS chapter; generate via sources/ntm.py"
+
+markets:
+  # ---------- 日本 ----------
+  - iso: JP
+    requirements:
+      - id: pse
+        title: "PSE conformity (DENAN law) for electrical appliances incl. lithium batteries"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: pse_certificate
+          severity: blocker
+          description: "PSE conformity certificate/notification via METI for electrical products"
+        source:
+          authority: METI Japan
+          provision: "Electrical Appliances and Materials Safety Law (DENAN)"
+          url: "https://www.meti.go.jp/policy/safety_security/industrial_safety/"
+      - id: telec
+        title: "Technical conformity (技適) for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          kind: evidence
+          evidence_type: telec_certificate
+          severity: blocker
+          description: "MIC technical conformity certification for radio equipment"
+        source:
+          authority: MIC Japan
+          provision: "Radio Act — technical regulations conformity certification"
+          url: "https://www.soumu.go.jp/main_sosiki/joho_tsusin/eng/"
+  # ---------- 韩国 ----------
+  - iso: KR
+    requirements:
+      - id: kc
+        title: "KC certification for electrical/electronic products"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: kc_certificate
+          severity: blocker
+          description: "KC safety + EMC certification (KATS/MSIT)"
+        source:
+          authority: KATS Korea
+          provision: "Electrical Products Safety Control Act"
+          url: "https://www.kats.go.kr/"
+  # ---------- 加拿大 ----------
+  - iso: CA
+    requirements:
+      - id: ised
+        title: "ISED certification for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          kind: evidence
+          evidence_type: ised_certificate
+          severity: blocker
+          description: "Innovation, Science and Economic Development Canada — RSS compliance"
+        source:
+          authority: ISED Canada
+          provision: "Radiocommunication Information Circulars (RSS-247 etc.)"
+          url: "https://ised-isde.canada.ca/"
+  # ---------- 澳大利亚 ----------
+  - iso: AU
+    requirements:
+      - id: rcm
+        title: "RCM mark (electrical equipment safety + EMC/radio)"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: rcm_declaration
+          severity: blocker
+          description: "Regulatory Compliance Mark via EESS / ACMA supplier declaration"
+        source:
+          authority: ACMA Australia
+          provision: "Radiocommunications Act + Electrical Equipment Safety System"
+          url: "https://www.acma.gov.au/"
+  # ---------- 巴西 ----------
+  - iso: BR
+    requirements:
+      - id: inmetro
+        title: "INMETRO conformity for electrical products"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: inmetro_certificate
+          severity: blocker
+          description: "INMETRO certification by an accredited body"
+        source:
+          authority: INMETRO Brazil
+          provision: "Compulsory conformity assessment regulations"
+          url: "https://www.gov.br/inmetro/"
+      - id: anatel
+        title: "ANATEL homologation for radio equipment"
+        applies_hs: ["85"]
+        applies_feature: wireless_charging
+        requires:
+          kind: evidence
+          evidence_type: anatel_certificate
+          severity: blocker
+          description: "ANATEL homologation for telecom/radio products"
+        source:
+          authority: ANATEL Brazil
+          provision: "Homologation regulations"
+          url: "https://www.gov.br/anatel/"
+  # ---------- 印度 ----------
+  - iso: IN
+    requirements:
+      - id: bis
+        title: "BIS CRS registration for electronics"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: bis_registration
+          severity: blocker
+          description: "BIS Compulsory Registration Scheme registration"
+        source:
+          authority: BIS India
+          provision: "Electronics and IT Goods (Requirement of Compulsory Registration) Order"
+          url: "https://www.bis.gov.in/"
+  # ---------- 阿联酋 ----------
+  - iso: AE
+    requirements:
+      - id: ecas
+        title: "ECAS conformity for electrical products"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: ecas_certificate
+          severity: blocker
+          description: "Emirates Conformity Assessment System certificate"
+        source:
+          authority: MOIAT UAE
+          provision: "UAE ECAS regulations"
+          url: "https://www.moiat.gov.ae/"
+  # ---------- 墨西哥 ----------
+  - iso: MX
+    requirements:
+      - id: nom
+        title: "NOM certification for electronic appliances"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: nom_certificate
+          severity: blocker
+          description: "NOM safety certification by an accredited lab"
+        source:
+          authority: SE Mexico
+          provision: "NOM standards (NOM-024 etc.)"
+          url: "https://www.gob.mx/se/"
+  # ---------- 新加坡 ----------
+  - iso: SG
+    requirements:
+      - id: safety
+        title: "Safety Mark registration (Consumer Protection Registration Scheme)"
+        applies_hs: ["85"]
+        requires:
+          kind: registration
+          registration_scheme: sg.safety
+          severity: blocker
+          description: "Registered Controlled Goods with SAFETY Mark"
+        source:
+          authority: Enterprise Singapore
+          provision: "Consumer Protection (Safety Requirements) Registration Scheme"
+          url: "https://www.enterprisesg.gov.sg/"
+  # ---------- 瑞士 ----------
+  - iso: CH
+    requirements:
+      - id: lowvoltage
+        title: "Swiss low-voltage / radio conformity (SEV/OFCOM path)"
+        applies_hs: ["85"]
+        requires:
+          kind: evidence
+          evidence_type: ch_conformity_declaration
+          severity: major
+          description: "Declaration of conformity under Swiss LVEV/OSmAS (CE largely accepted)"
+        source:
+          authority: SEV Switzerland
+          provision: "Niederspannungsgeräteverordnung (LVEV)"
+          url: "https://www.sev.ch/"

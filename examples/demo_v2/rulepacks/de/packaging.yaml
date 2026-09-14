@@ -1,0 +1,31 @@
+pack: de.packaging
+pack_type: legal
+rules:
+  - id: de.packaging.lucid
+    title: Packaging registration in LUCID (VerpackG) + recyclability information for consumer packaging in Germany
+    version: "2.0.0"
+    jurisdiction: DE
+    effective_from: 2026-08-12
+    applies_if:
+      fact: packaging.packaged_for_end_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.de.lucid.reg
+        kind: registration
+        registration_scheme: de.lucid
+        severity: blocker
+        description: LUCID registration number from ZSVR before placing packaged goods on the market
+      - id: req.de.lucid.recyclability
+        kind: product_attribute
+        attribute: recyclability_info
+        severity: major
+        description: Recyclability / material information for the packaging per the 2026-08-12 PPWR/VerpackDG changes
+    source:
+      authority: ZSVR (Verpackungsregister)
+      provision: "VerpackG as amended by the PPWR/VerpackDG changes effective 2026-08-12"
+      url: https://www.verpackungsregister.org/en/i-want-to-know-what-changed-on-12-august-2026
+    notes: >-
+      Demo D fixture: v2 adds the recyclability information obligation to the
+      v1 registration rule. The v1 pack (rulepacks/) is the "before" state.
+    last_verified: 2026-09-14

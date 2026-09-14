@@ -1,0 +1,32 @@
+pack: vn.mic
+pack_type: legal
+rules:
+  - id: vn.mic.qcvn101
+    title: "Vietnam MIC DoC for lithium batteries (QCVN 101:2020/BTTTT)"
+    version: "0.1.0-draft"
+    jurisdiction: VN
+    effective_from: 2021-07-01
+    applies_if:
+      all:
+        - {fact: target_markets, op: contains, value: VN}
+        - {fact: electrical.battery.present, op: eq, value: true}
+    requires:
+      - id: req.vn.mic.doc
+        kind: evidence
+        evidence_type: mic_doc_certificate
+        severity: blocker
+        description: >-
+          Declaration of Conformity under QCVN 101:2020/BTTTT with IEC 62133 / IEC 61960
+          test reports from an accepted lab
+    source:
+      authority: MIC Vietnam (drafted from agent research — primary source verification pending)
+      provision: "QCVN 101:2020/BTTTT; Circular 15/2020/TT-BTTTT (effective 2021-07-01)"
+      url: "https://extendmax.vn/vietnam-lithium-battery-pack-certification-doc-in-depth-guidance"
+    notes: >-
+      DRAFT — created by the research agent on 2026-09-14 from secondary sources
+      (certification consultancies / TÜV / CSA). OPEN LEGAL QUESTION: QCVN 101 textually
+      applies to batteries of handheld devices (phones/tablets/laptops); whether a
+      standalone power bank falls under it (vs QCVN 47 safety) requires expert
+      verification against the official Vietnamese text before this rule is promoted
+      out of candidate. DO NOT ship goods on the basis of this rule alone.
+    last_verified: null

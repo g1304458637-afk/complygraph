@@ -1,0 +1,70 @@
+pack: eu.gpsr
+pack_type: legal
+rules:
+  - id: eu.gpsr.responsible_person
+    title: EU responsible economic operator + consumer safety information
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2024-12-13
+    applies_if:
+      all:
+        - {fact: offered_to_eu_consumer, op: eq, value: true}
+        - {fact: manufacturer.established_in_eu, op: eq, value: false}
+    requires:
+      - id: req.gpsr.rpa
+        kind: evidence
+        evidence_type: responsible_person_agreement
+        severity: blocker
+        description: Signed agreement naming the EU responsible economic operator (Art. 16)
+      - id: req.gpsr.safety_info
+        kind: evidence
+        evidence_type: safety_information
+        severity: blocker
+        description: Safety information and warnings available to consumers (Art. 19)
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EU) 2023/988, Articles 16 & 19"
+      url: https://eur-lex.europa.eu/eli/reg/2023/988/oj/eng
+    last_verified: 2026-09-14
+
+  - id: eu.gpsr.technical_documentation
+    title: Technical documentation available for the product
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2024-12-13
+    applies_if:
+      fact: offered_to_eu_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.gpsr.techdoc
+        kind: evidence
+        evidence_type: technical_documentation
+        severity: blocker
+        description: Internal technical documentation / risk assessment per Art. 9
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EU) 2023/988, Articles 9 & 13"
+      url: https://eur-lex.europa.eu/eli/reg/2023/988/oj/eng
+    last_verified: 2026-09-14
+
+  - id: eu.gpsr.traceability_marking
+    title: Traceability marking (manufacturer contact + product identifier on product)
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2024-12-13
+    applies_if:
+      fact: offered_to_eu_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.gpsr.traceability
+        kind: product_attribute
+        attribute: traceability_marking
+        severity: major
+        description: Manufacturer name, postal and electronic address, product identifier marked on the product
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EU) 2023/988, Article 9(5)-(6)"
+      url: https://eur-lex.europa.eu/eli/reg/2023/988/oj/eng
+    last_verified: 2026-09-14

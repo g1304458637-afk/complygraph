@@ -1,0 +1,48 @@
+pack: us.federal
+pack_type: legal
+rules:
+  - id: us.fcc.part15b
+    title: FCC Part 15 Subpart B (unintentional radiator) conformity for digital electronics
+    version: "1.0.0"
+    jurisdiction: US
+    effective_from: 2017-11-02
+    applies_if:
+      all:
+        - {fact: offered_to_us_consumer, op: eq, value: true}
+        - {fact: category, op: eq, value: consumer_electronics}
+    requires:
+      - id: req.us.fcc.report
+        kind: evidence
+        evidence_type: fcc_test_report
+        severity: blocker
+        description: FCC Part 15B test report / Supplier's Declaration of Conformity (SDoC)
+    source:
+      authority: FCC
+      provision: "47 CFR Part 15 Subpart B — SDoC rule effective 2017-11-02"
+      url: https://www.fcc.gov/engineering-technology/policy-and-rules-division/general/radio-spectrum-equipment
+    notes: >-
+      Rule candidate. Digital circuitry scope assumed via category; confirm
+      whether the specific device falls under Part 15B vs Part 18 (ISM).
+  - id: us.prop65.warning
+    title: California Proposition 65 warning exposure
+    version: "1.0.0"
+    jurisdiction: US
+    effective_from: 2018-08-30
+    applies_if:
+      fact: offered_to_us_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.us.prop65
+        kind: product_attribute
+        attribute: prop65_warning
+        severity: major
+        description: Prop 65 warning wording/label where the product contains a listed substance
+    source:
+      authority: OEHHA (California)
+      provision: "Title 27 CCR Art. 6 — clear and reasonable warnings (revised safe harbor)"
+      url: https://oehha.ca.gov/proposition-65
+    notes: >-
+      Rule candidate. Warning is required only when a listed substance is
+      present above safe-harbor levels; refine with a chemical-exposure fact
+      when substance data exists (Phase 3+).

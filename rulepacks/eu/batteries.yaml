@@ -1,0 +1,23 @@
+pack: eu.batteries
+pack_type: legal
+rules:
+  - id: eu.batteries.conformity
+    title: Battery conformity assessment + CE marking under the EU Batteries Regulation
+    version: "1.0.0"
+    jurisdiction: EU
+    effective_from: 2024-08-18
+    applies_if:
+      fact: electrical.battery.present
+      op: eq
+      value: true
+    requires:
+      - id: req.batteries.declaration
+        kind: evidence
+        evidence_type: battery_conformity_declaration
+        severity: blocker
+        description: Declaration of conformity / test evidence for the battery under Reg. (EU) 2023/1542
+    source:
+      authority: EUR-Lex
+      provision: "Regulation (EU) 2023/1542 (batteries), conformity and CE marking obligations"
+      url: https://eur-lex.europa.eu/eli/reg/2023/1542/oj/eng
+    last_verified: 2026-09-14

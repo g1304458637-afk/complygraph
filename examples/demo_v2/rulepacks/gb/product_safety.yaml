@@ -1,0 +1,57 @@
+pack: gb.product_safety
+pack_type: legal
+rules:
+  - id: uk.product_safety.responsible_person
+    title: UK responsible producer + consumer safety information for goods sold into Great Britain
+    version: "1.0.0"
+    jurisdiction: GB
+    effective_from: 2005-10-01
+    applies_if:
+      fact: offered_to_uk_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.uk.rpa
+        kind: evidence
+        evidence_type: responsible_person_agreement
+        severity: blocker
+        description: Agreement with a UK-established responsible person for product-safety communications
+      - id: req.uk.safety_info
+        kind: evidence
+        evidence_type: safety_information
+        severity: blocker
+        description: Safety information / warnings available to UK consumers in English
+    source:
+      authority: legislation.gov.uk
+      provision: "General Product Safety Regulations 2005 (SI 2005/1803), producer obligations"
+      url: https://www.legislation.gov.uk/uksi/2005/1803
+    notes: >-
+      Rule candidate. Post-Brexit GB regime: GPSR 2005 remains in force; the
+      Product Regulation and Metrology Act 2025 tightens duties — refine when
+      secondary legislation lands. UK Responsible Person scope should be
+      refined with a manufacturer.established_in_uk fact when modelled.
+    last_verified: null
+
+  - id: uk.radio_equipment
+    title: Radio Equipment Regulations 2017 path (UKCA or recognised CE conformity) for wireless products
+    version: "1.0.0"
+    jurisdiction: GB
+    effective_from: 2017-07-13
+    applies_if:
+      all:
+        - {fact: offered_to_uk_consumer, op: eq, value: true}
+        - {fact: features.wireless_charging, op: eq, value: true}
+    requires:
+      - id: req.uk.radio.report
+        kind: evidence
+        evidence_type: red_test_report
+        severity: blocker
+        description: Test report / declaration covering the radio function under RER 2017 (UKCA) or recognised CE
+    source:
+      authority: legislation.gov.uk
+      provision: "Radio Equipment Regulations 2017 (SI 2017/1206); CE recognition for GB per DBT guidance (2024)"
+      url: https://www.gov.uk/guidance/using-the-ukca-marking
+    notes: >-
+      Rule candidate. CE marking continues to be recognised in Great Britain
+      for most goods (DBT statement, Jan 2024); confirm per-product regime.
+    last_verified: null

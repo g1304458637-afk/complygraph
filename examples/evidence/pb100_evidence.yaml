@@ -1,0 +1,101 @@
+# Evidence bundle for PB-100.
+# reviewed: false => LLM-extracted, pending human confirmation -> can never
+# produce `verified` (False Green invariant).
+evidence:
+  - id: ev.rpa.001
+    sku: PB-100
+    evidence_type: responsible_person_agreement
+    issuer: ACME EU Compliance GmbH
+    model_scope: [PB-100]
+    issued: 2025-01-10
+    jurisdictions: [EU]
+    reviewed: true
+    source_file: agreements/acme-rpa-pb100.pdf
+
+  - id: ev.safety.001
+    sku: PB-100
+    evidence_type: safety_information
+    issuer: Shenzhen Volt Electronics Co.
+    model_scope: [PB-100]
+    issued: 2025-01-05
+    jurisdictions: [EU]
+    language: de
+    reviewed: true
+    source_file: manuals/pb100-safety-de.pdf
+
+  - id: ev.techdoc.001
+    sku: PB-100
+    evidence_type: technical_documentation
+    issuer: Shenzhen Volt Electronics Co.
+    model_scope: [PB-100]
+    issued: 2025-01-05
+    jurisdictions: [EU]
+    reviewed: true
+    source_file: techfile/pb100-technical-file.pdf
+
+  - id: ev.un383.001
+    sku: PB-100
+    evidence_type: un383_test_summary
+    issuer: CTI Certification Laboratory
+    model_scope: [PB-100]
+    standard: "UN 38.3 (Rev.7)"
+    issued: 2025-02-20
+    jurisdictions: [GLOBAL]
+    reviewed: true
+    source_file: reports/un383-pb100.pdf
+
+  # LLM-extracted from supplier PDF, pending human review -> stays amber.
+  - id: ev.batdec.001
+    sku: PB-100
+    evidence_type: battery_conformity_declaration
+    issuer: Shenzhen Volt Electronics Co.
+    model_scope: [PB-100]
+    standard: "Reg. (EU) 2023/1542"
+    issued: 2025-03-01
+    jurisdictions: [EU]
+    reviewed: false
+    extraction: llm
+    source_file: reports/pb100-battery-doc-scan.pdf
+
+  - id: ev.fcc.001
+    sku: PB-100
+    evidence_type: fcc_test_report
+    issuer: Bureau Veritas EMCI Lab
+    model_scope: [PB-100]
+    standard: "FCC Part 15 Subpart B"
+    issued: 2025-01-15
+    jurisdictions: [US]
+    reviewed: true
+    source_file: reports/fcc-part15b-pb100.pdf
+
+registrations:
+  - id: reg.lucid.001
+    sku: PB-100
+    scheme: de.lucid
+    number: "DE1234567890123"
+    jurisdictions: [DE]
+  - id: reg.weee.001
+    sku: PB-100
+    scheme: de.weee
+    number: "DE 51234567"
+    jurisdictions: [DE]
+  - id: reg.battg.001
+    sku: PB-100
+    scheme: de.battg
+    number: "DE/BATT/0098765"
+    jurisdictions: [DE]
+  - id: reg.fr.packaging.001
+    sku: PB-100
+    scheme: fr.epr.packaging
+    number: "FR314-123456"
+    jurisdictions: [FR]
+  - id: reg.fr.weee.001
+    sku: PB-100
+    scheme: fr.epr.weee
+    number: "FR004567_89WXYZ"
+    jurisdictions: [FR]
+  - id: reg.fr.battery.001
+    sku: PB-100
+    scheme: fr.epr.battery
+    number: "FR007890_12ABCD"
+    jurisdictions: [FR]

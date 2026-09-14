@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "complygraph"
+version = "0.1.0"
+description = "Open-source SKU-level market-access compliance engine: product facts + versioned rule packs + evidence -> auditable readiness."
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.6", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+extract = ["pypdf>=4"]
+
+[tool.setuptools]
+packages = ["complygraph"]

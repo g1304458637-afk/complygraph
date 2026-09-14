@@ -1,0 +1,44 @@
+pack: channel.amazon_us
+pack_type: channel
+channel: amazon.us
+rules:
+  - id: channel.amazon_us.battery_wh_declaration
+    title: Amazon US battery watt-hour listing declaration
+    version: "1.0.0"
+    jurisdiction: US
+    effective_from: 2020-01-01
+    applies_if:
+      fact: electrical.battery.present
+      op: eq
+      value: true
+    requires:
+      - id: req.ch.us.wh
+        kind: listing_field
+        field: battery_watt_hours
+        severity: blocker
+        description: Watt-hour rating must be declared in listing attributes for lithium batteries
+    source:
+      authority: Amazon Seller Central
+      provision: "Lithium battery listing requirements (Wh declaration + UN 38.3)"
+      url: https://sellercentral.amazon.com/help/hub/reference/external/GVQP5AKFFAZK33CK
+    notes: Rule candidate — verify current help-page reference.
+  - id: channel.amazon_us.un383_reference
+    title: Amazon US UN 38.3 compliance reference field
+    version: "1.0.0"
+    jurisdiction: US
+    effective_from: 2020-01-01
+    applies_if:
+      fact: electrical.battery.present
+      op: eq
+      value: true
+    requires:
+      - id: req.ch.us.un383
+        kind: listing_field
+        field: lithium_battery_un383
+        severity: major
+        description: UN 38.3 test-summary reference attached to the listing
+    source:
+      authority: Amazon Seller Central
+      provision: "Lithium battery listing requirements"
+      url: https://sellercentral.amazon.com/help/hub/reference/external/GVQP5AKFFAZK33CK
+    notes: Rule candidate — verify current help-page reference.

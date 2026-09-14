@@ -1,0 +1,106 @@
+# ⬡ ComplyGraph
+
+**Open-source, AI-native market-access engine for physical products.**
+输入产品事实与证据文件 → 对照版本化规则包 → 确定性输出：这个 SKU 在各目标市场**能不能卖、缺什么、下一步做什么**——每条判定可追溯、可重放、可审计。
+
+> **An open-source engine that converts product facts, regulatory sources and compliance evidence into versioned, executable, auditable market-readiness decisions.** LLM drafts, the engine decides, humans approve.
+
+[![CI](https://img.shields.io/badge/CI-pytest-brightgreen)]() [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-49%20passing-success)]()
+
+---
+
+## 它解决什么问题
+
+跨境卖家不缺法规信息，缺的是一个 **SKU 级的状态层**。ComplyGraph 把：
+
+```
+查法规 → 找服务商 → 收供应商 PDF → Excel 记录 → 平台重复录入 → 法规变化后重新排查
+```
+
+变成一条确定性的流水线：
+
+```
+Product facts → Legal classification → Versioned rule packs → Evidence validation → Market readiness + Blockers + Tasks
+```
+
+## 核心不变式（代码级保证，非约定）
+
+1. **`unknown` 永远不是 pass** —— 事实不足以判定适用性时，规则为 `unknown` 且必然红牌；
+2. **LLM 永远不裁决** —— 模型只能通过证据草稿进入（`reviewed: false` 最高到 `satisfied_unverified`），人工审核后才可能 `verified`；
+3. **每个绿色判定可审计** —— 结果与「规则版本 + 法规条款引用 + 证据」绑定，产出 SHA-256 寻址、可独立重放的评估回执；
+4. **法律规则与渠道规则分层** —— 平台字段填完 ≠ 法律合规。
+
+## Quickstart
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
+.venv/bin/python -m pytest -q          # 49 个测试
+
+# 网页版：SKU × 市场矩阵 + 审计下钻 + 对话评估 agent
+.venv/bin/python -m complygraph.web --port 8765   # → http://127.0.0.1:8765
+
+# CLI：单 SKU 评估
+.venv/bin/python -m complygraph.cli evaluate examples/products/pb100.yaml \
+  --evidence examples/evidence/pb100_evidence.yaml --market de --channel amazon.de
+```
+
+## 功能总览
+
+| 能力 | 入口 | 说明 |
+|---|---|---|
+| 多市场就绪矩阵 | Web `/` | DE/FR/UK/US 深度规则 + 10 国 NTM 骨架，点击格子下钻审计链 |
+| 对话评估 agent | Web `🤖 对话评估` | 问题由规则包自动生成，边聊边给建议，最后产出报告并落库 |
+| 证据抽取管线 | `evidence-extract` / `evidence-approve` | 解析 PDF + LLM 抽取草稿 → 人工审核 → 入证据包 |
+| 法规变更影响 | `diff-rules` / `impact` | 规则集语义 diff → 受影响 SKU → 整改任务（Demo D） |
+| 评估回执 | `evaluate --json` | 内容寻址、可独立重放的判定凭据 |
+
+## 覆盖范围（诚实声明）
+
+- **市场**：德国、法国、英国、美国（深度规则）+ 日本/韩国/加拿大/澳洲/巴西/印度/阿联酋/墨西哥/新加坡/瑞士（NTM 骨架，仅准入级检查）；
+- **品类**：消费电子（电池类）纵向切片最完整，服饰仅通用规则；其他品类只会得到 GPSR/包装等通用骨架；
+- **规则状态**：全部为 **candidate** —— 每条挂权威源引用，但未经律师逐条核实（`last_verified` 字段标记）；
+- **本工具是决策支持，不是法律意见，不构成完整合规评估。**
+
+宽度来自 [UNCTAD TRAINS / ITC MacMap](https://www.macmap.org/) 的 NTM 数据结构（见 `complygraph/sources/ntm.py`，全量刷新需免费 WITS 账号）；深度按市场逐个建设。
+
+## 架构
+
+```
+Web UI（矩阵 / 对话 agent / 影响视图）
+        │
+  complygraph.web          ← stdlib http.server, 零依赖
+        │
+  engine.py  确定性评估器（事实谓词 / 证据检查 / readiness）
+  loader.py  YAML 规则 DSL（稳定 id + version + 权威源引用 + fixtures）
+        │
+  rulepacks/  eu/ de/ fr/ gb/ us/ global/ channels/ ntm/
+        │                         ▲
+  diff.py + impact.py        sources/ntm.py   ← TRAINS/WITS 数据管道
+  evidence_extract.py（LLM 插槽：fake | openai 兼容端点）
+        │
+  receipt.py  cg.receipt.v1（SHA-256 内容寻址、可重放）
+```
+
+## 加一条规则（贡献流程）
+
+1. 在对应 rulepack 加 YAML（candidate 状态），必须带 `source` 权威源引用；
+2. 补 positive / negative / date-boundary fixture 测试；
+3. 人工核对后填写 `last_verified`。**没有引用和测试的规则进不了主分支。**
+
+## Roadmap
+
+- [x] Phase 0–2：引擎 + 纵向切片 + DE/FR/UK/US
+- [x] Phase 3：证据抽取管线（审核流）
+- [x] Phase 4：规则 diff + 变更影响
+- [x] Tier-1 全球骨架：NTM 数据管道 + 10 国
+- [ ] Tier-2：官方立法 API + LLM 规则挖掘（EUR-Lex / eCFR / e-Gov）
+- [ ] 100 SKU 合成目录 benchmark（**False Green Rate = 0 为发版红线**）+ 市场密度数据源接入
+- [ ] MCP server：让任意 agent 调用合规判定
+
+## License
+
+MIT。规则包内容（`rulepacks/`、`data/`）为 candidate 状态的候选数据，引用请以各权威源原文为准。
+
+---
+
+*This project is decision support tooling. It does not provide legal advice and does not guarantee compliance in any jurisdiction.*

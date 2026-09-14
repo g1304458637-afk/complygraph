@@ -1,0 +1,44 @@
+pack: transport.lithium
+pack_type: legal
+rules:
+  - id: transport.un383.test_summary
+    title: UN 38.3 test summary available for lithium batteries
+    version: "1.0.0"
+    jurisdiction: GLOBAL
+    effective_from: 2020-01-01
+    applies_if:
+      fact: electrical.battery.present
+      op: eq
+      value: true
+    requires:
+      - id: req.transport.un383
+        kind: evidence
+        evidence_type: un383_test_summary
+        severity: blocker
+        description: UN 38.3 test summary from the battery manufacturer, scope covering the cell/battery
+    source:
+      authority: IATA
+      provision: "ICAO Technical Instructions / IATA Dangerous Goods Regulations — lithium battery test summary"
+      url: https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf
+    last_verified: 2026-09-14
+
+  - id: transport.lithium.wh_marking
+    title: Watt-hour rating marking for lithium-ion batteries above 20 Wh
+    version: "1.0.0"
+    jurisdiction: GLOBAL
+    effective_from: 2020-01-01
+    applies_if:
+      all:
+        - {fact: electrical.battery.present, op: eq, value: true}
+        - {fact: electrical.battery.watt_hours, op: gt, value: 20}
+    requires:
+      - id: req.transport.wh_marking
+        kind: product_attribute
+        attribute: battery_wh_marking
+        severity: major
+        description: Rated watt-hours marked on the battery (20 Wh < Wh <= 100 Wh batteries)
+    source:
+      authority: IATA
+      provision: "IATA Lithium Battery Guidance Document — Wh marking requirements"
+      url: https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf
+    last_verified: 2026-09-14

@@ -1,0 +1,23 @@
+pack: fr.labeling
+pack_type: legal
+rules:
+  - id: fr.labeling.triman_info_tri
+    title: Triman + Info-tri sorting label on consumer packaging (France)
+    version: "1.0.0"
+    jurisdiction: FR
+    effective_from: 2023-03-01
+    applies_if:
+      fact: packaging.packaged_for_end_consumer
+      op: eq
+      value: true
+    requires:
+      - id: req.fr.triman
+        kind: product_attribute
+        attribute: triman_info_tri
+        severity: major
+        description: Triman logo + Info-tri sorting information printed on the packaging
+    source:
+      authority: Legifrance
+      provision: "Loi AGEC (2020-105) Art. 17 ; arrete du 29/04/2009 modifie (Triman), arrete Info-tri"
+      url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000044977858
+    notes: Rule candidate — verify current Info-tri arrete reference.

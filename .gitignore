@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.log
+.DS_Store
+receipt*.json
+# user-submitted data stays local
+examples/user_catalog.yaml
+examples/products/user_*.yaml
+examples/evidence/user_*.yaml

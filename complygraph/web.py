@@ -205,6 +205,14 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(200, (WEB / "i18n.js").read_bytes(), "text/javascript; charset=utf-8")
             elif route == "/style.css":
                 self._send(200, (WEB / "style.css").read_bytes(), "text/css; charset=utf-8")
+            elif route.startswith("/assets/"):
+                fname = Path(route[len("/assets/"):]).name
+                f = WEB / "assets" / fname
+                mime = "image/png" if f.suffix == ".png" else "application/octet-stream"
+                if f.exists():
+                    self._send(200, f.read_bytes(), mime)
+                else:
+                    self._json({"error": "not found"}, 404)
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as exc:  # surface API errors to the page

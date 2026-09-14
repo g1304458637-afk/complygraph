@@ -577,14 +577,23 @@ function updateReveal() {
 
 function updateParallax() {
   const y = window.scrollY;
-  const stars = document.getElementById("hero-stars");
-  const nebula = document.getElementById("hero-nebula");
+  const sky = document.getElementById("hero-sky");
+  const building = document.getElementById("hero-building");
   const title = document.getElementById("hero-title");
-  if (stars) stars.style.transform = `translateY(${y * 0.06}px)`;
-  if (nebula) nebula.style.transform = `translateY(${y * 0.12}px)`;
-  if (title) title.style.transform = `translateY(${y * 0.24}px)`;
+  if (sky) sky.style.transform = `translateY(${y * 0.08}px)`;
+  if (building) building.style.transform = `translateY(${y * 0.08}px)`;
+  if (title) title.style.transform = `translateY(${y * 0.22}px)`;
   const cue = document.querySelector(".hero-cue");
   if (cue) cue.style.opacity = y > 80 ? "0" : "1";
+  // mountain layer: 0 -> -20vh across the wrapper's scroll span
+  const mw = document.getElementById("mountain-wrap");
+  const mimg = document.getElementById("mountain-img");
+  if (mw && mimg) {
+    const r = mw.getBoundingClientRect();
+    const span = Math.max(1, r.height + window.innerHeight);
+    const prog = Math.min(1, Math.max(0, -r.top / span));
+    mimg.style.transform = `translateY(${(-prog * window.innerHeight * 0.2).toFixed(1)}px)`;
+  }
 }
 
 let revealTick = false;

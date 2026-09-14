@@ -50,7 +50,7 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 |---|---|---|
 | 多市场就绪矩阵 | Web `/` | DE/FR/UK/US 深度规则 + 10 国 NTM 骨架，点击格子下钻审计链 |
 | 对话评估 agent | Web `🤖 对话评估` | 问题由规则包自动生成，边聊边给建议，最后产出报告并落库 |
-| 证据抽取管线 | `evidence-extract` / `evidence-approve` | 解析 PDF + LLM 抽取草稿 → 人工审核 → 入证据包 |
+| 证据抽取管线 | `evidence-extract` / `evidence-approve` | 解析 PDF + LLM 抽取草稿 → 人工审核 → 入证据包。LLM 插槽：`--provider deepseek`（读 `DEEPSEEK_API_KEY`，已实测）/ `openai`（任意 OpenAI 兼容端点）/ `fake`（离线演示） |
 | 法规变更影响 | `diff-rules` / `impact` | 规则集语义 diff → 受影响 SKU → 整改任务（Demo D） |
 | 评估回执 | `evaluate --json` | 内容寻址、可独立重放的判定凭据 |
 

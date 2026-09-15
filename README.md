@@ -5,7 +5,7 @@ Enter your product facts and evidence files → check them against versioned rul
 
 > An open-source engine that converts product facts, regulatory sources and compliance evidence into versioned, executable, auditable market-readiness decisions. **LLM drafts, the engine decides, humans approve.**
 
-[中文文档](README.zh-CN.md) · [![CI](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml/badge.svg)](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-68%20passing-success)]()
+[中文文档](README.zh-CN.md) · [![CI](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml/badge.svg)](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-76%20passing-success)]()
 
 ---
 
@@ -40,7 +40,7 @@ Product facts → Legal classification → Versioned rule packs → Evidence val
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-.venv/bin/python -m pytest -q          # 68 tests
+.venv/bin/python -m pytest -q          # 76 tests
 
 # Web UI: SKU × market matrix + audit drill-down + conversational agent
 .venv/bin/python -m complygraph.web --port 8765   # → http://127.0.0.1:8765
@@ -54,12 +54,13 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
 | Capability | Entry point | What it does |
 |---|---|---|
-| Multi-market readiness matrix | Web `/` | DE/FR/UK/US deep rules + 25-country NTM skeleton; click any cell for the full audit trail |
+| Multi-market readiness matrix | Web `/` | DE/FR/UK/US deep rules + 25-country NTM skeleton; click any cell for the full audit trail; one-click CSV export |
 | Conversational intake agent | Web `🤖 Agent intake` | Questions are *derived from the rule packs*; free-text chat powered by an LLM brain (PydanticAI + DeepSeek) with deterministic fallback |
 | Evidence pipeline | `evidence-extract` / `evidence-approve` | PDF parsing + LLM extraction drafts → human approval → evidence bundle |
+| Expiry radar | Web `⏰ Expiry radar` / `GET /api/expiring` | Declarations on file expire — flags evidence & registrations that lapsed or lapse within the window, before a market flips red |
 | Regulation-change impact | `diff-rules` / `impact` | Semantic rule diff → affected SKUs → remediation tasks |
 | Evaluation receipts | `evaluate --json` | Content-addressed, independently replayable decision credentials |
-| Advisory layer | `advise` CLI + Web buttons | Remediation how-tos, what-if product changes, compliance-driven market ranking |
+| Advisory layer | `advise` CLI + Web buttons + `POST /api/whatif` | Remediation how-tos, what-if counterfactuals (also a chat-brain tool), compliance-driven market ranking |
 
 ## Coverage (honest scope statement)
 

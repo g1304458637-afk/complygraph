@@ -14,6 +14,8 @@ Status = Literal[
     "mismatch",
     "expired",
     "not_applicable",
+    # reserved: produced by no rule path yet. Evidence conflicts are surfaced
+    # via RequirementResult.reason instead of flipping the winning status.
     "needs_human_review",
     "unknown",
 ]

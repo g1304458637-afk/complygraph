@@ -369,6 +369,7 @@ const REASON_PATTERNS = [
   [/^rule has no modelled requirements$/, "规则未建模任何要求，无法判定"],
   [/^requirement misconfigured: no evidence_type$/, "要求配置错误：缺少证据类型"],
   [/^requirement misconfigured: no registration_scheme$/, "要求配置错误：缺少注册计划"],
+  [/^(\d+) further document\(s\) of this type failed scope\/validity checks — human review recommended$/, "另有 $1 份同类文件未通过型号范围/有效期核查——建议人工复核"],
 ];
 
 function trReason(reason) {

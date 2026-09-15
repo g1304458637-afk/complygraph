@@ -87,7 +87,7 @@ rules:
     source:
       authority: US FDA
       provision: "Modernization of Cosmetics Regulation Act of 2022 (MoCRA)"
-      url: https://www.fda.gov/cosmetics/cosmetics-laws-regulations
+      url: https://www.fda.gov/cosmetics/cosmetics-laws-regulations/modernization-cosmetics-regulation-act-2022-mocra
     notes: >-
       Candidate. Enforcement dates phased; small-business exemptions may apply — verify.
     last_verified: null

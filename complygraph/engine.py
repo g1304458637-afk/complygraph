@@ -163,8 +163,17 @@ def evaluate_requirement(
                 passing.append(ev)
         if passing:
             best = "verified" if any(e.reviewed for e in passing) else "satisfied_unverified"
-            reason = "" if best == "verified" else "evidence not yet human-reviewed"
-            return result(best, [e.id for e in passing], reason)  # type: ignore[arg-type]
+            notes = []
+            if best == "satisfied_unverified":
+                notes.append("evidence not yet human-reviewed")
+            if failures:
+                # passing docs win, but conflicting siblings of the same type
+                # must be visible in the audit trail, not silently ignored
+                notes.append(
+                    f"{len(failures)} further document(s) of this type failed scope/validity checks"
+                    " — human review recommended"
+                )
+            return result(best, [e.id for e in passing], "; ".join(notes))  # type: ignore[arg-type]
         worst = min(failures, key=lambda s: RANK[s])
         ids = [e.id for e in candidates]
         if worst == "expired":

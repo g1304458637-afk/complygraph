@@ -169,3 +169,21 @@ def test_rule_without_requires_is_unknown_not_crash():
                            EvidenceBundle(), market, None, date.today())
     assert result.status == "unknown"
     assert "no modelled requirements" in result.reason
+
+
+def test_conflicting_evidence_sibling_is_surfaced_in_reason(run_factory, product, bundle):
+    """When passing and failing documents of one type coexist (family cert +
+    stale model-specific cert), the passing doc still decides — but the
+    conflict must appear in the audit reason, not vanish."""
+    bundle2 = copy.deepcopy(bundle)
+    bundle2.evidence.append(
+        Evidence(
+            id="ev.un383.stale", sku="PB-100", evidence_type="un383_test_summary",
+            issuer="Old Lab", model_scope=["PB-100-OLD"], issued=date(2020, 1, 1),
+            jurisdictions=["GLOBAL"],
+        )
+    )
+    readiness = run_factory(None, None, product, bundle2, market="de")
+    result = next(r for r in readiness.rules if r.rule_id == "transport.un383.test_summary")
+    assert result.status in ("verified", "satisfied_unverified")
+    assert "further document" in result.reason

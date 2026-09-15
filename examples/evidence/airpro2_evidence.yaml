@@ -1,0 +1,157 @@
+# Evidence bundle for AirPro 2 — a realistic mid-size Shenzhen TWS seller:
+# strong on EU (CE family, EPR registrations done), UN38.3 and FCC in hand,
+# but Japan (PSE / giteki) and UK-specific items not yet done, and the LVD
+# report is a fresh LLM extraction awaiting human review.
+
+evidence:
+  - id: ev.airpro2.rpa.eu
+    sku: AIRPRO-2
+    evidence_type: responsible_person_agreement
+    issuer: AirPro EU GmbH (Berlin)
+    model_scope: [AIRPRO-2]
+    issued: 2025-11-03
+    jurisdictions: [EU]
+    reviewed: true
+    extraction: human
+    source_file: agreements/airpro-eu-rpa.pdf
+
+  - id: ev.airpro2.safety.de
+    sku: AIRPRO-2
+    evidence_type: safety_information
+    issuer: Shenzhen AirPro Audio Co.
+    model_scope: [AIRPRO-2]
+    issued: 2025-11-20
+    jurisdictions: [EU]
+    language: de
+    reviewed: true
+    extraction: human
+    source_file: manuals/airpro2-safety-de.pdf
+
+  - id: ev.airpro2.techdoc
+    sku: AIRPRO-2
+    evidence_type: technical_documentation
+    issuer: Shenzhen AirPro Audio Co.
+    model_scope: [AIRPRO-2]
+    issued: 2025-11-15
+    jurisdictions: [EU]
+    reviewed: true
+    extraction: human
+    source_file: techfile/airpro2-techfile.pdf
+
+  - id: ev.airpro2.red
+    sku: AIRPRO-2
+    evidence_type: red_test_report
+    issuer: TÜV Rheinland (Shenzhen lab)
+    model_scope: [AIRPRO-2]
+    standard: "EN 300 328 / EN 301 489 / EN 62368-1"
+    issued: 2025-10-12
+    jurisdictions: [EU]
+    reviewed: true
+    extraction: human
+    source_file: reports/airpro2-red.pdf
+
+  - id: ev.airpro2.rohs
+    sku: AIRPRO-2
+    evidence_type: rohs_test_report
+    issuer: CTI Certification Laboratory
+    model_scope: [AIRPRO-2]
+    standard: "EN IEC 63000"
+    issued: 2025-09-30
+    jurisdictions: [EU]
+    reviewed: true
+    extraction: human
+    source_file: reports/airpro2-rohs.pdf
+
+  - id: ev.airpro2.emc
+    sku: AIRPRO-2
+    evidence_type: emc_test_report
+    issuer: CTI Certification Laboratory
+    model_scope: [AIRPRO-2]
+    standard: "EN 55032 / EN 61000"
+    issued: 2025-10-02
+    jurisdictions: [EU]
+    reviewed: true
+    extraction: human
+    source_file: reports/airpro2-emc.pdf
+
+  # fresh LLM extraction from a supplier PDF — awaiting human review,
+  # so it can never satisfy the LVD blocker as "verified" (False Green demo)
+  - id: ev.airpro2.lvd.draft
+    sku: AIRPRO-2
+    evidence_type: lvd_test_report
+    issuer: Shenzhen AirPro Audio Co.
+    model_scope: [AIRPRO-2]
+    standard: "EN 62368-1"
+    issued: 2025-12-08
+    jurisdictions: [EU]
+    reviewed: false
+    extraction: llm
+    source_file: reports/airpro2-lvd-draft.pdf
+
+  - id: ev.airpro2.un383
+    sku: AIRPRO-2
+    evidence_type: un383_test_summary
+    issuer: CTI Certification Laboratory
+    model_scope: [AIRPRO-2]
+    standard: "UN 38.3 (Rev.7)"
+    issued: 2025-08-14
+    jurisdictions: [GLOBAL]
+    reviewed: true
+    extraction: human
+    source_file: reports/airpro2-un383.pdf
+
+  - id: ev.airpro2.batdec
+    sku: AIRPRO-2
+    evidence_type: battery_conformity_declaration
+    issuer: Shenzhen AirPro Audio Co.
+    model_scope: [AIRPRO-2]
+    standard: "Regulation (EU) 2023/1542"
+    issued: 2025-11-28
+    jurisdictions: [EU]
+    reviewed: true
+    extraction: human
+    source_file: reports/airpro2-battery-doc.pdf
+
+  - id: ev.airpro2.fcc
+    sku: AIRPRO-2
+    evidence_type: fcc_test_report
+    issuer: Bureau Veritas (Shenzhen)
+    model_scope: [AIRPRO-2]
+    standard: "FCC Part 15 Subpart C (BLE)"
+    issued: 2025-10-25
+    jurisdictions: [US]
+    reviewed: true
+    extraction: human
+    source_file: reports/airpro2-fcc.pdf
+
+registrations:
+  - id: reg.airpro2.lucid
+    sku: AIRPRO-2
+    scheme: de.lucid
+    number: "DE73550122"
+    jurisdictions: [DE]
+  - id: reg.airpro2.weee
+    sku: AIRPRO-2
+    scheme: de.weee
+    number: "DE 88997766"
+    jurisdictions: [DE]
+  - id: reg.airpro2.battg
+    sku: AIRPRO-2
+    scheme: de.battg
+    number: "DE/BATT/778899"
+    jurisdictions: [DE]
+  - id: reg.airpro2.frpack
+    sku: AIRPRO-2
+    scheme: fr.epr.packaging
+    number: "FR314-889900"
+    jurisdictions: [FR]
+  - id: reg.airpro2.frweee
+    sku: AIRPRO-2
+    scheme: fr.epr.weee
+    number: "FR0055-22AIR"
+    jurisdictions: [FR]
+  - id: reg.airpro2.frbat
+    sku: AIRPRO-2
+    scheme: fr.epr.battery
+    number: "FR0077-88AIR"
+    jurisdictions: [FR]

@@ -1,0 +1,35 @@
+sku: AIRPRO-2
+name: AirPro 2 TWS Wireless Earbuds
+category: consumer_electronics
+manufacturer:
+  name: Shenzhen AirPro Audio Co., Ltd.
+  country: CN
+  established_in_eu: false
+offered_to_eu_consumer: true
+offered_to_uk_consumer: true
+offered_to_us_consumer: true
+target_markets: [JP]
+features:
+  wireless_charging: true
+electrical:
+  battery:
+    present: true
+    chemistry: li_ion
+    capacity_mah: 555
+    voltage_v: 3.7
+    watt_hours: 2.4
+packaging:
+  packaged_for_end_consumer: true
+attributes:
+  traceability_marking: "AirPro Audio + CE + model printed on case"
+  battery_wh_marking: "2.4 Wh printed on case"
+  triman_info_tri: "Triman + Info-tri printed on FR packaging"
+  prop65_warning: "Prop 65 warning label on US packaging"
+  scip_notification: "ECHA SCIP dossier doss-2025-0331"
+channel_fields:
+  amazon.de:
+    responsible_person: "AirPro EU GmbH, Berlin"
+    safety_information_document: "airpro2-safety-doc-de.pdf"
+  amazon.us:
+    battery_watt_hours: "2.4"
+    lithium_battery_un383: "UN38.3 summary attached"

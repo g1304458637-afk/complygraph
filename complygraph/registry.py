@@ -16,6 +16,7 @@ USER_REGISTRY = ROOT / "examples" / "user_catalog.yaml"
 DEMO_CATALOG = [
     ("products/pb100.yaml", "evidence/pb100_evidence.yaml"),
     ("products/tee21.yaml", "evidence/tee21_evidence.yaml"),
+    ("products/airpro2.yaml", "evidence/airpro2_evidence.yaml"),
 ]
 
 

@@ -74,12 +74,15 @@ def evidence_type_for(rules, rule_id: str) -> str | None:
     return None
 
 
-def full_bundle(rules, product: Product, rng: random.Random) -> EvidenceBundle:
-    """Evidence + registrations satisfying EVERY requirement that could apply."""
+def full_bundle(rules, product: Product, rng: random.Random, market_id: str = "de",
+                market=None) -> EvidenceBundle:
+    """Evidence + registrations satisfying EVERY requirement that could apply
+    in the given market (not-applicable rules are skipped)."""
+    market = market if market is not None else _MARKETS.markets[market_id]
     docs: dict[str, Evidence] = {}
     regs: dict[str, Registration] = {}
     for rule in rules:
-        res = evaluate_market([rule], product, EvidenceBundle(), "de", _DE, None, AS_OF)
+        res = evaluate_market([rule], product, EvidenceBundle(), market_id, market, None, AS_OF)
         if res.rules and res.rules[0].status == "not_applicable":
             continue
         for req in rule.requires:
@@ -110,21 +113,24 @@ def _init():
         _DE = _MARKETS.markets["de"]
 
 
-def one_case(rng: random.Random, i: int) -> dict:
+def one_case(rng: random.Random, i: int, market_id: str = "de") -> dict:
     """Build a green-by-construction SKU, remove one blocker item, re-evaluate."""
     _init()
+    if market_id not in _MARKETS.markets:
+        raise SystemExit(f"unknown market {market_id} (known: {', '.join(_MARKETS.markets)})")
+    market = _MARKETS.markets[market_id]
     rules = _rules()
     product = synthetic_product(rng, i)
-    bundle = full_bundle(rules, product, rng)
+    bundle = full_bundle(rules, product, rng, market_id, market)
 
-    base = evaluate_market(rules, product, bundle, "de", _DE, None, AS_OF)
+    base = evaluate_market(rules, product, bundle, market_id, market, None, AS_OF)
     if base.state != "green":
         return {"sku": product.sku, "skipped": f"baseline not green ({base.state})", "false_green": False}
 
     # collect removable (evidence, registration) items backing blocker rules
     removable: list[tuple[str, str]] = []
     for rule in rules:
-        res = evaluate_market([rule], product, bundle, "de", _DE, None, AS_OF)
+        res = evaluate_market([rule], product, bundle, market_id, market, None, AS_OF)
         if not res.rules or res.rules[0].status != "verified":
             continue
         if res.rules[0].severity != "blocker":
@@ -143,9 +149,10 @@ def one_case(rng: random.Random, i: int) -> dict:
     else:
         bundle.registrations = [r for r in bundle.registrations if r.scheme != key]
 
-    after = evaluate_market(rules, product, bundle, "de", _DE, None, AS_OF)
+    after = evaluate_market(rules, product, bundle, market_id, market, None, AS_OF)
     return {
         "sku": product.sku,
+        "market": market_id,
         "removed": f"{kind}:{key}",
         "state_before": base.state,
         "state_after": after.state,
@@ -159,10 +166,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="benchmark_false_green")
     parser.add_argument("--n", type=int, default=100)
     parser.add_argument("--seed", type=int, default=20260916)
+    parser.add_argument("--market", default="de", help="any modelled market id (de/fr/gb/us/jp/...)")
     args = parser.parse_args(argv)
 
     rng = random.Random(args.seed)
-    results = [one_case(rng, i) for i in range(args.n)]
+    results = [one_case(rng, i, args.market) for i in range(args.n)]
     false_greens = [r for r in results if r["false_green"]]
     skipped = [r for r in results if "skipped" in r]
     effective = len(results) - len(skipped)

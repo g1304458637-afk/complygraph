@@ -19,6 +19,13 @@ def test_no_false_greens_on_seeded_batch():
     assert main(["--n", "20", "--seed", "42"]) == 0
 
 
+def test_no_false_greens_across_markets():
+    """Deep markets and NTM-skeleton markets alike must never go green when a
+    blocker-backed item is removed."""
+    for market in ("de", "gb", "jp"):
+        assert main(["--n", "10", "--seed", "9", "--market", market]) == 0
+
+
 def test_case_contract_removal_flips_green_to_red():
     """Every effective case: green by construction -> red after removing a
     blocker-backed item. Never green."""

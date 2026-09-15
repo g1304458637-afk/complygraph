@@ -83,6 +83,9 @@ You have tools that read and drive a STRUCTURED INTAKE SESSION:
 - evaluate_market(market_id): run the deterministic engine for one market
 - list_blockers(market_id): current blockers for one market
 - list_markets: available market ids
+- what_if(market_id, changes): hypothetical — apply fact changes (dotted path
+  -> value, e.g. {"attributes.traceability_marking": "marked"}) to a COPY of
+  the product and report which rules would flip. Use for 'what if I...' questions.
 
 HARD RULES:
 1. When the user's message answers the current question, call answer_current_question
@@ -137,6 +140,23 @@ def _list_markets(ctx: RunContext[Session]) -> list[str]:
     return sorted(_markets().markets.keys())
 
 
+def _what_if(ctx: RunContext[Session], market_id: str, changes: dict[str, Any]) -> dict[str, Any]:
+    """Counterfactual: apply fact changes (dotted path -> value) to a copy of
+    the product and report which rule statuses would flip in that market.
+    Use it to answer 'what would change if I did X?' — never mutate the session."""
+    mid = market_id.lower().strip()
+    if mid not in _markets().markets:
+        return {"error": f"unknown market {market_id}"}
+    if not isinstance(changes, dict) or not changes:
+        return {"error": "changes must be a non-empty object of {fact.path: value}"}
+    from .advisor import what_if
+
+    return what_if(
+        partial_product(ctx.deps).model_dump(), changes,
+        _markets().markets, mid, _bundle_stub(), _all_rules(), ctx.deps.lang,
+    )
+
+
 def _build_agent(lang: str) -> Agent:
     model = OpenAIChatModel(
         os.environ.get("CG_LLM_MODEL", "deepseek-chat"),
@@ -149,7 +169,7 @@ def _build_agent(lang: str) -> Agent:
         model,
         instructions=INSTRUCTIONS.format(lang=lang),
         deps_type=Session,
-        tools=[_current_question, _answer_current_question, _evaluate_market, _list_blockers, _list_markets],
+        tools=[_current_question, _answer_current_question, _evaluate_market, _list_blockers, _list_markets, _what_if],
     )
 
 

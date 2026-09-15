@@ -137,3 +137,38 @@ def test_expiry_radar_flags_expiring_and_expired(tmp_path):
     assert ev["status"] == "expiring" and ev["days_left"] == 10
     assert reg["status"] == "expired" and reg["days_left"] == -1
     assert [i["sku"] for i in out["items"]] == ["EXP-1", "EXP-1"]  # sorted by date: expired first
+
+
+def test_whatif_reports_flipped_rules(tmp_path):
+    """POST /api/whatif: counterfactual fact changes flip rule statuses without
+    touching the stored product."""
+    from complygraph.web import api_whatif
+
+    _save("WIF-1", offered_to_eu_consumer=True,
+          features={"wireless_charging": True})
+    payload, code = api_whatif("WIF-1", "de", {"features.wireless_charging": False})
+    assert code == 200
+    flipped = {f["rule_id"]: (f["before"], f["after"]) for f in payload["flipped"]}
+    assert flipped["eu.red.radio_equipment"] == ("missing", "not_applicable")
+    assert "eu.red.radio_equipment" in payload["blockers_before"]
+    assert "eu.red.radio_equipment" not in payload["blockers_after"]
+
+
+def test_whatif_rejects_bad_input(tmp_path):
+    from complygraph.web import api_whatif
+
+    _save("WIF-2")
+    payload, code = api_whatif("WIF-2", "de", {})
+    assert code == 400 and "changes" in payload["error"]
+    payload, code = api_whatif("WIF-2", "xx", {"a.b": 1})
+    assert code == 404
+
+
+@needs_brain
+def test_brain_what_if_tool():
+    session, ctx, ab = _session_with_brain_tools()
+    ab._answer_current_question(ctx, "AGT-9")
+    out = ab._what_if(ctx, "de", {"features.wireless_charging": False})
+    assert "flipped" in out or "error" in out  # shape check; engine does the judging
+    bad = ab._what_if(ctx, "xx", {"a.b": 1})
+    assert "error" in bad

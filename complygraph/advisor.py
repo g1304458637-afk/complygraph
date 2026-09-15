@@ -322,7 +322,6 @@ def remediation_plan(rules_results, lang: str = "zh") -> list[dict[str, str]]:
     plan: list[dict[str, str]] = []
     lang_key = "zh" if lang == "zh" else "en"
     electrical_certs_missing = 0
-    items: list[dict[str, str]] = []
     for r in sorted(rules_results, key=lambda x: {"blocker": 0, "major": 1, "minor": 2}[x.severity]):
         if r.status not in ("missing", "mismatch", "expired", "unknown"):
             continue
@@ -338,23 +337,21 @@ def remediation_plan(rules_results, lang: str = "zh") -> list[dict[str, str]]:
                 text = howto[lang_key]
                 if etype in ELECTRICAL_EVIDENCE and req_res.status in ("missing", "mismatch", "expired"):
                     electrical_certs_missing += 1
-                items.append({"rule_id": r.rule_id, "kind": "evidence", "text": text})
+                plan.append({"rule_id": r.rule_id, "kind": "evidence", "text": text})
             elif kind == "registration":
                 scheme = _guess_scheme(r, req_res.requirement)
                 howto = REGISTRATION_HOWTO.get(scheme)
                 if howto:
-                    items.append({"rule_id": r.rule_id, "kind": "registration", "text": howto[lang_key]})
+                    plan.append({"rule_id": r.rule_id, "kind": "registration", "text": howto[lang_key]})
             elif kind == "product_attribute":
-                items.append({"rule_id": r.rule_id, "kind": "attribute",
+                plan.append({"rule_id": r.rule_id, "kind": "attribute",
                               "text": (req_res.reason or "") + ("（印制/标注后即可消除此项）" if lang == "zh" else " (add the marking to clear this)")})
             elif kind == "listing_field":
-                items.append({"rule_id": r.rule_id, "kind": "channel",
+                plan.append({"rule_id": r.rule_id, "kind": "channel",
                               "text": (req_res.reason or "") + ("——在平台后台补填即可" if lang == "zh" else " — fill it in Seller Central")})
         if r.status == "unknown" and not r.requirements:
-            items.append({"rule_id": r.rule_id, "kind": "facts",
-                          "text": (r.reason or "") + ("——补充产品事实后自动重判" if lang == "zh" else " — complete product facts to re-evaluate")})
-    for it in items:
-        plan.append(it)
+            plan.append({"rule_id": r.rule_id, "kind": "facts",
+                         "text": (r.reason or "") + ("——补充产品事实后自动重判" if lang == "zh" else " — complete product facts to re-evaluate")})
     if electrical_certs_missing >= 2:
         plan.insert(0, {"rule_id": "cb-scheme", "kind": "tip", "text": CB_SCHEME_TIP[lang_key]})
     return plan
@@ -403,12 +400,15 @@ def what_if(session_like_product: dict, changes: dict[str, Any], markets_registr
     for r_after in after.rules:
         r_before = next((x for x in base.rules if x.rule_id == r_after.rule_id), None)
         before = r_before.status if r_before else None
-        if before != r_after.status and r_after.status != "not_applicable":
+        # report every delta, including flips TO not_applicable — "this change
+        # makes the obligation disappear" is exactly what was asked
+        if before != r_after.status:
             flipped.append({"rule_id": r_after.rule_id, "before": before, "after": r_after.status})
     return {
         "market": market_id,
         "state_before": base.state, "state_after": after.state,
         "readiness_before": base.readiness, "readiness_after": after.readiness,
+        "blockers_before": base.blockers, "blockers_after": after.blockers,
         "flipped": flipped,
     }
 
@@ -430,10 +430,6 @@ def market_recommendation(product: Product, bundle: EvidenceBundle, lang: str = 
         trial.target_markets = sorted(set(base_target) | {market.country})
         readiness = evaluate_market(rules, trial, bundle, mid, market, None, date.today())
         applicable = [r for r in readiness.rules if r.status != "not_applicable"]
-        fixables = [
-            r for r in applicable
-            if r.severity == "blocker" and r.status in ("missing", "mismatch", "expired")
-        ]
         if not applicable:
             cls = "no-rules"
         elif readiness.state == "green":

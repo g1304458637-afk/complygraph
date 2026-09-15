@@ -8,6 +8,7 @@ Endpoints:
   GET /api/eval?sku=&market=&channel=  -> full evaluation + receipt
   GET /api/impact?market=  -> regulation-change impact (Demo D)
   GET /api/expiring?days=  -> evidence & registration expiry radar
+  POST /api/whatif         -> counterfactual fact changes -> flipped rules
 """
 
 from __future__ import annotations
@@ -214,6 +215,21 @@ def api_recommend(sku: str):
     return {"sku": sku, "recommendations": market_recommendation(product, bundle)}, 200
 
 
+def api_whatif(sku: str, market_id: str, changes: dict):
+    """Counterfactual: apply dotted-path fact changes to a copy of the product
+    and report which rule statuses would flip in the given market."""
+    from .advisor import what_if
+
+    product, bundle = STORE.find(sku)
+    if product is None:
+        return {"error": f"unknown sku {sku}"}, 404
+    if market_id not in STORE.markets.markets:
+        return {"error": f"unknown market {market_id}"}, 404
+    if not isinstance(changes, dict) or not changes:
+        return {"error": "body must include a non-empty 'changes' object of {fact.path: value}"}, 400
+    return what_if(product.model_dump(), changes, STORE.markets.markets, market_id, bundle, STORE.rules), 200
+
+
 def api_impact(market_id: str = "de", channel: str | None = None):
     if market_id not in STORE.markets.markets:
         market_id = "de"
@@ -329,6 +345,12 @@ class Handler(BaseHTTPRequestHandler):
             elif parsed.path == "/api/agent/finish":
                 session = get_session(body["session_id"])
                 self._json(finish_intake(session))
+            elif parsed.path == "/api/whatif":
+                product_sku = body.get("sku", "")
+                payload, code = api_whatif(
+                    product_sku, body.get("market", "de"), body.get("changes") or {}
+                )
+                self._json(payload, code)
             elif parsed.path == "/api/agent/stop":
                 SESSIONS.pop(body.get("session_id", ""), None)
                 self._json({"ok": True})

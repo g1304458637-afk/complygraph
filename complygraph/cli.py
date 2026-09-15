@@ -186,8 +186,28 @@ def cmd_advise(args: argparse.Namespace) -> int:
 
     if args.market:
         market = registry.markets[args.market]
-        readiness = evaluate_market(load_rules(default_rule_paths(Path(args.root))),
-                                    product, bundle, args.market, market, None, as_of)
+        rules = load_rules(default_rule_paths(Path(args.root)))
+        readiness = evaluate_market(rules, product, bundle, args.market, market, None, as_of)
+        if args.what_if:
+            from .advisor import what_if
+
+            changes: dict = {}
+            for pair in args.what_if.split(","):
+                path, _, raw = pair.partition("=")
+                if not path or not raw:
+                    print(f"error: --what-if expects path=value pairs, got '{pair}'", file=sys.stderr)
+                    return 2
+                try:
+                    changes[path.strip()] = json.loads(raw)
+                except json.JSONDecodeError:
+                    changes[path.strip()] = raw
+            out = what_if(product.model_dump(), changes, registry.markets, args.market, bundle, rules, args.lang)
+            arrow = " -> "
+            print(f"\nwhat-if on {args.market}: {out['state_before']} {out['readiness_before']:.1%}"
+                  f"{arrow}{out['state_after']} {out['readiness_after']:.1%}")
+            for f in out["flipped"]:
+                print(f"  {f['rule_id']}: {f['before']} {arrow} {f['after']}")
+            return 0
         plan = remediation_plan(readiness.rules, lang=args.lang)
         print(f"\n[{args.market}] {readiness.state}  readiness {readiness.readiness:.1%}  "
               f"blockers {len(readiness.blockers)}")
@@ -264,6 +284,9 @@ def build_parser() -> argparse.ArgumentParser:
     adv.add_argument("product", help="path to product YAML")
     adv.add_argument("--evidence", help="path to evidence bundle YAML")
     adv.add_argument("--market", help="remediation plan for this market")
+    adv.add_argument("--what-if", metavar="CHANGES",
+                     help="with --market: counterfactual fact changes 'path=value[,path=value]' "
+                          "(e.g. 'attributes.traceability_marking=marked,features.wireless_charging=false')")
     adv.add_argument("--recommend", action="store_true", help="rank ALL markets for this product")
     adv.add_argument("--lang", default="zh", choices=["zh", "en"])
     adv.add_argument("--root", default=".")

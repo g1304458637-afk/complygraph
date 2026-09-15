@@ -307,6 +307,7 @@ class Session:
     sku: str = ""
     seen_advice: set = field(default_factory=set)
     ntm_documents: list = field(default_factory=list)  # [{rule, evidence_type, jurisdiction}]
+    facts_version: int = 0  # bumped on every answer; keys the rule-status cache
 
 
 SESSIONS: dict[str, Session] = {}
@@ -346,7 +347,13 @@ def _rules_markets() -> dict:
 
 
 def rule_statuses(session: Session) -> dict[str, set[str]]:
-    """rule_id -> statuses across every registered market for the partial product."""
+    """rule_id -> statuses across every registered market for the partial product.
+
+    Cached per facts_version: question activation re-evaluates the whole matrix
+    for every unanswered question, which made each chat answer take ~300ms."""
+    cache = getattr(session, "_status_cache", None)
+    if cache is not None and cache[0] == session.facts_version:
+        return cache[1]
     product = partial_product(session)
     bundle = _bundle_stub(session)
     rules = _rules()
@@ -355,6 +362,7 @@ def rule_statuses(session: Session) -> dict[str, set[str]]:
         readiness = evaluate_market(rules, product, bundle, mid, market, None, __import__("datetime").date.today())
         for r in readiness.rules:
             statuses.setdefault(r.rule_id, set()).add(r.status)
+    session._status_cache = (session.facts_version, statuses)
     return statuses
 
 
@@ -399,6 +407,7 @@ def apply_answer(session: Session, qid: str, value: Any) -> dict:
     if q is None:
         raise ValueError(f"unknown question {qid}")
     session.answers[qid] = value
+    session.facts_version += 1
 
     # route the answer into product facts / attestations
     if qid == "sku":

@@ -413,12 +413,12 @@ def apply_answer(session: Session, qid: str, value: Any) -> dict:
         session.product["target_markets"] = codes
     elif qid == "hs_code":
         session.product["hs_code"] = (str(value).strip() or None) if value else None
-    elif qid == "mkt_eu":
-        session.product["offered_to_eu_consumer"] = value == "yes"
-    elif qid == "mkt_uk":
-        session.product["offered_to_uk_consumer"] = value == "yes"
-    elif qid == "mkt_us":
-        session.product["offered_to_us_consumer"] = value == "yes"
+    elif qid in ("mkt_eu", "mkt_uk", "mkt_us"):
+        # "unknown" must stay undetermined (None): a maybe-market is never a no-market
+        key = {"mkt_eu": "offered_to_eu_consumer",
+               "mkt_uk": "offered_to_uk_consumer",
+               "mkt_us": "offered_to_us_consumer"}[qid]
+        session.product[key] = {"yes": True, "no": False}.get(value)
     elif qid == "mfr_eu":
         session.product.setdefault("manufacturer", {})
         session.product["manufacturer"]["established_in_eu"] = None if value == "unknown" else value == "yes"
@@ -426,8 +426,11 @@ def apply_answer(session: Session, qid: str, value: Any) -> dict:
         session.product.setdefault("manufacturer", {})
         session.product["manufacturer"]["name"] = value or None
     elif qid == "battery":
-        session.product.setdefault("electrical", {}).setdefault("battery", {})
-        session.product["electrical"]["battery"]["present"] = value == "yes"
+        battery = session.product.setdefault("electrical", {}).setdefault("battery", {})
+        if value in ("yes", "no"):
+            battery["present"] = value == "yes"
+        else:
+            battery.pop("present", None)  # unknown: leave undecidable, rules stay unknown
     elif qid == "battery_wh":
         if value is not None and value != "":
             session.product.setdefault("electrical", {}).setdefault("battery", {})
@@ -435,9 +438,17 @@ def apply_answer(session: Session, qid: str, value: Any) -> dict:
             b["watt_hours"] = float(value)
             b["chemistry"] = "li_ion"
     elif qid == "wireless":
-        session.product.setdefault("features", {})["wireless_charging"] = value == "yes"
+        feats = session.product.setdefault("features", {})
+        if value in ("yes", "no"):
+            feats["wireless_charging"] = value == "yes"
+        else:
+            feats.pop("wireless_charging", None)
     elif qid == "retail":
-        session.product.setdefault("packaging", {})["packaged_for_end_consumer"] = value == "yes"
+        pkg = session.product.setdefault("packaging", {})
+        if value in ("yes", "no"):
+            pkg["packaged_for_end_consumer"] = value == "yes"
+        else:
+            pkg.pop("packaged_for_end_consumer", None)
     elif qid == "trace_marking":
         if value == "yes":
             session.product.setdefault("attributes", {})["traceability_marking"] = "用户确认已标印"
@@ -477,7 +488,7 @@ def apply_answer(session: Session, qid: str, value: Any) -> dict:
                         "evidence_type": req.evidence_type if req else rule_id,
                         "jurisdiction": rule.jurisdiction if rule else "GLOBAL",
                     })
-        elif qid == "doc_rpa" or qid == "doc_safety" or qid == "doc_techdoc" or qid == "doc_batdec" or qid == "doc_un383" or qid == "doc_red" or qid == "doc_fcc":
+        elif qid in mapping:
             etype = mapping[qid]
             if value == "yes" and etype not in session.documents:
                 session.documents.append(etype)
@@ -567,7 +578,9 @@ def finish(session: Session) -> dict:
         "product": product.model_dump(mode="json"),
         "documents": session.documents,
         "extra_evidence": [
-            {"evidence_type": d["evidence_type"], "jurisdiction": d["jurisdiction"]}
+            # save_user_product reads `jurisdictions` (plural) — a wrong key here
+            # silently widens every NTM attestation to GLOBAL scope
+            {"evidence_type": d["evidence_type"], "jurisdictions": [d["jurisdiction"]]}
             for d in session.ntm_documents
         ],
         "registrations": session.registrations,

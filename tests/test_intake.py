@@ -147,3 +147,51 @@ def json_of(market_report) -> str:
     import json
 
     return json.dumps(market_report, ensure_ascii=False)
+
+
+def test_eu_electronics_doc_attestations_all_recorded():
+    """RoHS/EMC/LVD 'yes' answers must land in the evidence attestation set
+    (regression: the handler chain silently dropped these three)."""
+    session = SESSIONS[start()["session_id"]]
+    for qid, value in [("sku", "AGT-6"), ("doc_rohs", "yes"),
+                       ("doc_emc", "yes"), ("doc_lvd", "yes")]:
+        apply_answer(session, qid, value)
+    assert {"rohs_test_report", "emc_test_report", "lvd_test_report"} <= set(session.documents)
+
+
+def test_unknown_answers_stay_unknown_not_no():
+    """'不确定' keeps the fact undetermined: a maybe-battery is never a
+    no-battery, and unknown markets must not flip rules to not_applicable."""
+    session = SESSIONS[start()["session_id"]]
+    apply_answer(session, "sku", "AGT-7")
+    apply_answer(session, "mkt_eu", "unknown")
+    apply_answer(session, "battery", "unknown")
+    apply_answer(session, "wireless", "unknown")
+    apply_answer(session, "retail", "unknown")
+    p = intake.partial_product(session)
+    assert p.offered_to_eu_consumer is None
+    assert "present" not in p.electrical.get("battery", {})
+    assert "wireless_charging" not in p.features
+    assert "packaged_for_end_consumer" not in p.packaging
+
+
+def test_ntm_attestation_keeps_its_jurisdiction():
+    """finish() must hand the rule's jurisdiction to save_user_product under the
+    `jurisdictions` key (regression: singular `jurisdiction` was silently widened
+    to GLOBAL, letting one country's evidence cover every market)."""
+    import yaml
+
+    from complygraph import registry
+
+    ntm_qid = next(q.id for q in intake.CATALOG if q.id.startswith("doc_ntm_ntm.ae"))
+    session = SESSIONS[start()["session_id"]]
+    apply_answer(session, "sku", "AGT-8")
+    apply_answer(session, "name", "Jurisdiction probe")
+    apply_answer(session, ntm_qid, "yes")
+    report = finish(session)
+    assert report["ok"]
+    data = yaml.safe_load(
+        (registry.ROOT / "examples" / "evidence" / "user_AGT-8.yaml").read_text(encoding="utf-8")
+    )
+    ecas = next(e for e in data["evidence"] if e["evidence_type"] == "ecas_certificate")
+    assert ecas["jurisdictions"] == ["AE"]

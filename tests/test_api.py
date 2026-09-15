@@ -107,3 +107,33 @@ def test_brain_evaluate_market_unknown_id():
     assert "error" in out
     out2 = ab._evaluate_market(ctx, "de")
     assert "state" in out2 and "blockers" in out2
+
+
+def test_expiry_radar_flags_expiring_and_expired(tmp_path):
+    """The expiry radar lists evidence/registrations that lapse within the
+    window (expired -> red) and ignores undated entries."""
+    from datetime import date, timedelta
+
+    import yaml
+
+    from complygraph.web import api_expiring
+
+    save_user_product({
+        "product": {"sku": "EXP-1", "name": "Radar probe", "category": "consumer_electronics"},
+        "documents": ["un383_test_summary"],
+        "registrations": [{"scheme": "de.lucid", "number": "L-1", "jurisdictions": ["DE"]}],
+    })
+    today = date.today()
+    ev_path = registry.ROOT / "examples" / "evidence" / "user_EXP-1.yaml"
+    data = yaml.safe_load(ev_path.read_text(encoding="utf-8"))
+    data["evidence"][0]["valid_until"] = (today + timedelta(days=10)).isoformat()
+    data["registrations"][0]["valid_until"] = (today - timedelta(days=1)).isoformat()
+    ev_path.write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8")
+
+    out = api_expiring(days=90)
+    by_id = {i["id"]: i for i in out["items"]}
+    ev = next(v for k, v in by_id.items() if k.startswith("ev."))
+    reg = next(v for k, v in by_id.items() if k.startswith("reg."))
+    assert ev["status"] == "expiring" and ev["days_left"] == 10
+    assert reg["status"] == "expired" and reg["days_left"] == -1
+    assert [i["sku"] for i in out["items"]] == ["EXP-1", "EXP-1"]  # sorted by date: expired first

@@ -36,7 +36,15 @@ EVIDENCE_TYPES = [
     "other",
 ]
 
-JURISDICTION_TOKENS = ["EU", "DE", "FR", "US", "GLOBAL"]
+# Evidence jurisdictions: EU + every market the registry models. Extraction
+# must be able to tag GB/JP/... or UK/NTM rules can never accept the document.
+JURISDICTION_TOKENS = [
+    "EU", "GLOBAL",
+    "DE", "FR", "GB", "US", "VN",
+    "JP", "KR", "CA", "AU", "BR", "IN", "AE", "MX", "SG", "CH",
+    "CN", "TW", "ID", "TH", "MY", "PH", "SA", "IL", "ZA", "TR",
+    "RU", "AR", "CL", "CO",
+]
 
 EXTRACTION_PROMPT = """You extract structured compliance-evidence metadata from documents.
 Return ONLY a JSON object with exactly these fields:
@@ -100,6 +108,8 @@ class FakeKeywordProvider:
             "EU": ["eu ", "european union"],
             "DE": ["germany", "de "],
             "FR": ["france", "fr "],
+            "GB": ["united kingdom", " uk ", "great britain"],
+            "JP": ["japan"],
             "US": ["united states", "usa", " us "],
         }.items():
             if any(n in low for n in needles):

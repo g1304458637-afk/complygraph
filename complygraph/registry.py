@@ -113,6 +113,10 @@ def save_user_product(body: dict) -> dict:
         etype = extra.get("evidence_type")
         if not etype:
             continue
+        jurisdictions = (
+            extra.get("jurisdictions")
+            or ([extra["jurisdiction"]] if extra.get("jurisdiction") else ["GLOBAL"])
+        )
         docs.append(
             Evidence(
                 id=f"ev.user.{etype}.{product.sku}",
@@ -121,7 +125,7 @@ def save_user_product(body: dict) -> dict:
                 issuer="user-attested（用户确认持有）",
                 model_scope=[product.sku],
                 issued=date.today().isoformat(),
-                jurisdictions=extra.get("jurisdictions") or ["GLOBAL"],
+                jurisdictions=jurisdictions,
                 reviewed=True,
                 extraction="human",
             )

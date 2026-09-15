@@ -144,6 +144,9 @@
             <label class="check"><input id="f-doc-un383" type="checkbox"><span data-i18n="d_un383"></span></label>
             <label class="check"><input id="f-doc-red" type="checkbox"><span data-i18n="d_red"></span></label>
             <label class="check"><input id="f-doc-fcc" type="checkbox"><span data-i18n="d_fcc"></span></label>
+            <label class="check"><input id="f-doc-rohs" type="checkbox"><span data-i18n="d_rohs"></span></label>
+            <label class="check"><input id="f-doc-emc" type="checkbox"><span data-i18n="d_emc"></span></label>
+            <label class="check"><input id="f-doc-lvd" type="checkbox"><span data-i18n="d_lvd"></span></label>
           </div>
           <p class="hintline" data-i18n="f_docs_hint"></p>
         </div>
@@ -187,6 +190,8 @@
       <div>
         <button id="add-btn" class="btn ghost"><span data-i18n="add_btn"></span></button>
         <button id="impact-btn" class="btn ghost" data-i18n="impact_btn"></button>
+        <button id="expiry-btn" class="btn ghost" data-i18n="expiry_btn"></button>
+        <button id="csv-btn" class="btn ghost" data-i18n="export_csv"></button>
       </div>
     </div>
     <div class="disclaimer">
@@ -242,6 +247,17 @@
       <button id="close-recommend" class="btn ghost" data-i18n="close"></button>
     </div>
     <div id="recommend-list" class="recommend-list"></div>
+  </section>
+
+  <section id="expiry" class="card hidden">
+    <div class="card-head">
+      <div>
+        <h2 data-i18n="expiry_title"></h2>
+        <p class="muted" data-i18n="expiry_sub"></p>
+      </div>
+      <button id="close-expiry" class="btn ghost" data-i18n="close"></button>
+    </div>
+    <div id="expiry-list" class="recommend-list"></div>
   </section>
 
   <section id="impact" class="card hidden">

@@ -257,6 +257,10 @@ def evaluate_rule(
         )
     if applies is False:
         return result("not_applicable", "applicability condition not met")
+    if not rule.requires:
+        # a rule with no modelled requirements proves nothing: unevaluable,
+        # never vacuously satisfied (unknown is never pass)
+        return result("unknown", "rule has no modelled requirements")
 
     req_results = [
         evaluate_requirement(req, product, bundle, market, channel, as_of) for req in rule.requires

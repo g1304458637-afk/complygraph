@@ -6,7 +6,8 @@ Endpoints:
   GET /app.js, /style.css  -> static assets
   GET /api/map             -> SKU x market/channel readiness matrix
   GET /api/eval?sku=&market=&channel=  -> full evaluation + receipt
-  GET /api/impact          -> regulation-change impact (Demo D)
+  GET /api/impact?market=  -> regulation-change impact (Demo D)
+  GET /api/expiring?days=  -> evidence & registration expiry radar
 """
 
 from __future__ import annotations
@@ -14,7 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from datetime import date
+from datetime import date, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -32,16 +33,15 @@ from .loader import (
     resolve_rule_inputs,
 )
 from .receipt import build_receipt
-from .registry import ROOT, catalog_entries, save_user_product
+from . import registry
+from .registry import catalog_entries, save_user_product
 
 WEB = Path(__file__).resolve().parent / "web"
 
-CHANNEL_LABELS = {
-    ("de", "amazon.de"): "DE / Amazon.de",
-    ("fr", None): "FR / direct",
-    ("gb", None): "UK / direct",
-    ("us", "amazon.us"): "US / Amazon.us",
-}
+# Rule packs / market config ship with the package — resolve from this file, NOT
+# registry.ROOT (tests redirect that to a tmp sandbox); user SKUs, however, must
+# follow registry.ROOT at call time.
+_PKG_ROOT = Path(__file__).resolve().parents[1]
 
 # NTM skeleton markets (Tier-1 global coverage) — generated from the seed
 try:
@@ -65,7 +65,6 @@ def get_columns():
     for mid in sorted(STORE.markets.markets.keys()):
         if mid in seen:
             continue
-        channel = "amazon.de" if False else None  # channels stay curated for now
         star = "*" if mid in NTM_MARKETS else ""
         columns.append({"market": mid, "channel": None, "label": f"{mid.upper()} / direct{star}"})
         seen.add(mid)
@@ -73,16 +72,16 @@ def get_columns():
 
 class Store:
     def __init__(self) -> None:
-        self.rules = load_rules(default_rule_paths(ROOT))
-        self.markets = load_markets(ROOT / "config" / "markets.yaml")
-        self.rules_v2 = load_rules(resolve_rule_inputs([ROOT / "examples" / "demo_v2" / "rulepacks"]))
+        self.rules = load_rules(default_rule_paths(_PKG_ROOT))
+        self.markets = load_markets(_PKG_ROOT / "config" / "markets.yaml")
+        self.rules_v2 = load_rules(resolve_rule_inputs([_PKG_ROOT / "examples" / "demo_v2" / "rulepacks"]))
 
     def catalog(self):
         out = []
         for product_rel, evidence_rel, deletable in catalog_entries():
             try:
-                out.append((load_product(ROOT / "examples" / product_rel),
-                            load_evidence(ROOT / "examples" / evidence_rel),
+                out.append((load_product(registry.ROOT / "examples" / product_rel),
+                            load_evidence(registry.ROOT / "examples" / evidence_rel),
                             deletable))
             except Exception:
                 continue
@@ -96,6 +95,37 @@ class Store:
 
 
 STORE = Store()
+
+
+def api_expiring(days: int = 90):
+    """Evidence & registration expiry radar (mature-suite pattern: declarations
+    on file expire — surface what lapses soon, before it blocks a market)."""
+    today = date.today()
+    horizon = today + timedelta(days=max(1, min(days, 365)))
+    items = []
+    for product, bundle, _ in STORE.catalog():
+        for ev in bundle.evidence:
+            if ev.valid_until is None:
+                continue
+            status = "expired" if ev.valid_until < today else ("expiring" if ev.valid_until <= horizon else None)
+            if status:
+                items.append({
+                    "sku": product.sku, "kind": "evidence", "id": ev.id,
+                    "label": ev.evidence_type, "valid_until": ev.valid_until.isoformat(),
+                    "days_left": (ev.valid_until - today).days, "status": status,
+                })
+        for reg in bundle.registrations:
+            if reg.valid_until is None:
+                continue
+            status = "expired" if reg.valid_until < today else ("expiring" if reg.valid_until <= horizon else None)
+            if status:
+                items.append({
+                    "sku": product.sku, "kind": "registration", "id": reg.id,
+                    "label": f"{reg.scheme} ({reg.number})", "valid_until": reg.valid_until.isoformat(),
+                    "days_left": (reg.valid_until - today).days, "status": status,
+                })
+    items.sort(key=lambda x: x["valid_until"])
+    return {"as_of": today.isoformat(), "days": days, "items": items}
 
 
 def coverage(readiness) -> dict:
@@ -184,15 +214,17 @@ def api_recommend(sku: str):
     return {"sku": sku, "recommendations": market_recommendation(product, bundle)}, 200
 
 
-def api_impact():
+def api_impact(market_id: str = "de", channel: str | None = None):
+    if market_id not in STORE.markets.markets:
+        market_id = "de"
     impacts = catalog_impact(
         STORE.rules, STORE.rules_v2,
         [(p, b) for p, b, _ in STORE.catalog()],
-        "de", STORE.markets.markets["de"], None, date.today()
+        market_id, STORE.markets.markets[market_id], channel, date.today()
     )
     changes = diff_rules(STORE.rules, STORE.rules_v2)
     return {
-        "market": "de",
+        "market": market_id,
         "changes": [
             {"kind": c.kind, "rule_id": c.rule_id, "old_version": c.old_version,
              "new_version": c.new_version, "fields": c.fields_changed}
@@ -229,7 +261,16 @@ class Handler(BaseHTTPRequestHandler):
                 )
                 self._json(payload, code)
             elif route == "/api/impact":
-                self._json(api_impact())
+                self._json(api_impact(
+                    query.get("market", ["de"])[0],
+                    query.get("channel", [None])[0],
+                ))
+            elif route == "/api/expiring":
+                try:
+                    days = int(query.get("days", ["90"])[0])
+                except ValueError:
+                    days = 90
+                self._json(api_expiring(days))
             elif route == "/api/advise":
                 sku = query.get("sku", [""])[0]
                 market = query.get("market", ["de"])[0]

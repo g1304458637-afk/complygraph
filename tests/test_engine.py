@@ -150,3 +150,22 @@ def test_us_channel_fields_verified(run_factory, product, bundle):
     readiness = run_factory(None, None, product, bundle, market="us", channel="amazon.us")
     assert status_of(readiness, "channel.amazon_us.battery_wh_declaration") == "verified"
     assert status_of(readiness, "channel.amazon_us.un383_reference") == "verified"
+
+
+def test_rule_without_requires_is_unknown_not_crash():
+    """A rule pack entry with no modelled requirements proves nothing: it must
+    evaluate to `unknown` (never vacuous `verified`, never a crash)."""
+    from complygraph.engine import evaluate_rule
+    from complygraph.models import EvidenceBundle, MarketConfig, Rule, Source
+
+    rule = Rule(
+        id="test.empty", title="Empty rule", version="1", pack="test", pack_type="legal",
+        jurisdiction="DE", effective_from=date(2020, 1, 1),
+        applies_if={"fact": "sku", "op": "exists"}, requires=[],
+        source=Source(authority="Test Authority", provision="s.0"),
+    )
+    market = MarketConfig(country="DE", jurisdictions=["DE"], eu_member=True, language="de")
+    result = evaluate_rule(rule, Product(sku="X", name="X", category="consumer_electronics"),
+                           EvidenceBundle(), market, None, date.today())
+    assert result.status == "unknown"
+    assert "no modelled requirements" in result.reason

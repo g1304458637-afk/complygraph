@@ -214,7 +214,10 @@ function escapeHtml(s) {
 /* ---------- impact (Demo D) ---------- */
 
 async function openImpact() {
-  const data = await getJSON("/api/impact");
+  const market = LAST_DETAIL?.market || "de";
+  const data = await getJSON(`/api/impact?market=${encodeURIComponent(market)}`);
+  const chip = document.querySelector("#impact .chip.subtle");
+  if (chip) chip.textContent = t("impact_chip_mkt", { mkt: (data.market || "de").toUpperCase() });
   $("impact-changes").innerHTML = data.changes
     .map((c) => `<span class="diff-chip"><span class="kind">${trChangeKind(c.kind)}</span> ${c.rule_id} · v${c.old_version} → v${c.new_version}${c.fields.length ? ` · ${c.fields.join(", ")}` : ""}</span>`)
     .join("");
@@ -306,6 +309,9 @@ function buildPayload() {
     ["f-doc-un383", "un383_test_summary"],
     ["f-doc-red", "red_test_report"],
     ["f-doc-fcc", "fcc_test_report"],
+    ["f-doc-rohs", "rohs_test_report"],
+    ["f-doc-emc", "emc_test_report"],
+    ["f-doc-lvd", "lvd_test_report"],
   ]) {
     if (checked(id)) documents.push(type);
   }
@@ -720,9 +726,53 @@ $("recommend-btn").addEventListener("click", () => {
 });
 $("close-recommend").addEventListener("click", () => $("recommend").classList.add("hidden"));
 
+/* ---------- expiry radar (declarations on file expire — renew early) ---------- */
+
+async function openExpiry() {
+  const data = await getJSON("/api/expiring?days=90");
+  const rows = data.items.map((it) => {
+    const tone = it.status === "expired" ? "red" : "amber";
+    const badge = it.status === "expired" ? t("expiry_expired") : t("expiry_soon");
+    const kind = t(it.kind === "evidence" ? "expiry_kind_evidence" : "expiry_kind_registration");
+    return `<div class="rec-row">
+      <span class="badge ${tone}">${badge}</span>
+      <b>${escapeHtml(it.sku)}</b>
+      <span>${kind}: ${escapeHtml(it.label)}</span>
+      <span class="muted">${it.valid_until} · ${t("expiry_days_left", { n: it.days_left })}</span>
+    </div>`;
+  }).join("");
+  $("expiry-list").innerHTML = rows || `<div class="okline">✓ ${t("expiry_none")}</div>`;
+  $("expiry").classList.remove("hidden");
+  $("expiry").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ---------- map CSV export ---------- */
+
+function exportCsv() {
+  if (!LAST_MAP) return;
+  const esc = (v) => `"${String(v ?? "").replaceAll('"', '""')}"`;
+  const lines = [["sku", "name", "category", "market", "channel", "state", "readiness", "blockers"]
+    .join(",")];
+  for (const row of LAST_MAP.rows) {
+    for (const c of row.cells) {
+      lines.push([esc(row.sku), esc(row.name), esc(row.category), esc(c.market),
+        esc(c.channel || ""), esc(c.state), c.readiness, c.blockers].join(","));
+    }
+  }
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `complygraph-map-${LAST_MAP.as_of}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 /* ---------- wiring ---------- */
 
 $("impact-btn").addEventListener("click", openImpact);
+$("expiry-btn").addEventListener("click", openExpiry);
+$("close-expiry").addEventListener("click", () => $("expiry").classList.add("hidden"));
+$("csv-btn").addEventListener("click", exportCsv);
 $("close-detail").addEventListener("click", () => $("detail").classList.add("hidden"));
 $("close-impact").addEventListener("click", () => $("impact").classList.add("hidden"));
 document.querySelectorAll("#lang-toggle button").forEach((b) =>

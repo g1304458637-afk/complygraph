@@ -5,7 +5,7 @@ Enter your product facts and evidence files → check them against versioned rul
 
 > An open-source engine that converts product facts, regulatory sources and compliance evidence into versioned, executable, auditable market-readiness decisions. **LLM drafts, the engine decides, humans approve.**
 
-[中文文档](README.zh-CN.md) · [![CI](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml/badge.svg)](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-76%20passing-success)]()
+[中文文档](README.zh-CN.md) · [![CI](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml/badge.svg)](https://github.com/g1304458637-afk/complygraph/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]() [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)]() [![Tests](https://img.shields.io/badge/tests-90%20passing-success)]()
 
 ---
 
@@ -40,7 +40,7 @@ Product facts → Legal classification → Versioned rule packs → Evidence val
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-.venv/bin/python -m pytest -q          # 76 tests
+.venv/bin/python -m pytest -q          # 90 tests
 
 # Web UI: SKU × market matrix + audit drill-down + conversational agent
 .venv/bin/python -m complygraph.web --port 8765   # → http://127.0.0.1:8765
@@ -91,6 +91,22 @@ Web UI (matrix / conversational agent / impact view)      MCP stdio server
 ```
 
 **LLM boundary**: the model has exactly two jobs — drafting evidence (capped at `satisfied_unverified` until human review) and conversational orchestration (via tools that drive the structured session). The engine retains exclusive judging rights; without an API key everything falls back to deterministic mode.
+
+## HTTP API (same verdicts as the UI — also callable via MCP)
+
+| Endpoint | What it returns |
+|---|---|
+| `GET /api/map` | SKU × market/channel readiness matrix |
+| `GET /api/eval?sku=&market=&channel=` | Full per-rule evaluation + `receipt_sha256` |
+| `GET /api/advise?sku=&market=` | Remediation plan (how to obtain each missing item) |
+| `GET /api/recommend?sku=` | All modelled markets ranked ready → costly |
+| `GET /api/impact?market=` | Rule-change impact: affected SKUs + tasks |
+| `GET /api/expiring?days=90` | Evidence & registration expiry radar |
+| `POST /api/whatif` | Counterfactual fact changes → flipped rules |
+| `POST /api/products` · `DELETE /api/products/{sku}` | Add / remove user SKUs |
+| `POST /api/agent/start` / `answer` / `chat` / `finish` / `stop` | Conversational intake (deterministic or LLM brain) |
+
+Audit offline: `complygraph evaluate --receipt r.json`, later `complygraph verify-receipt r.json` → hash integrity + rule-drift check + exact replay.
 
 ## Adding a rule (contribution workflow)
 

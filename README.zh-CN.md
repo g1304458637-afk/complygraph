@@ -42,7 +42,7 @@ Product facts → Legal classification → Versioned rule packs → Evidence val
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-.venv/bin/python -m pytest -q          # 76 个测试
+.venv/bin/python -m pytest -q          # 90 个测试
 
 # 网页版：SKU × 市场矩阵 + 审计下钻 + 对话评估 agent
 .venv/bin/python -m complygraph.web --port 8765   # → http://127.0.0.1:8765

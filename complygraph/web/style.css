@@ -464,3 +464,18 @@ table.rules tr.status-expired td, table.rules tr.status-unknown td { background:
 .recommend-list { display: grid; gap: 10px; }
 .rec-row { display: flex; align-items: center; gap: 12px; font-size: 14px; }
 .rec-blockers { font-size: 12px; color: var(--muted); margin: 4px 0 8px; line-height: 1.5; }
+
+/* screenshot mode (?nofx=1): disable compositing-heavy effects for headless capture */
+.nofx .card, .nofx .chat-drawer, .nofx .modal, .nofx .pill-inner, .nofx .tile,
+.nofx .impact-card, .nofx .cell-btn, .nofx .msg .bubble {
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+.nofx *, .nofx *::before, .nofx *::after {
+  animation: none !important; transition: none !important;
+}
+.nofx .hero-layer { position: absolute; }
+
+.compact .hero { display: none !important; }
+
+.compact .marquee-zone, .compact .wrap { margin-top: 0; }
+.compact .marquee-zone { padding-top: 86px; }

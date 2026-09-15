@@ -9,9 +9,11 @@
 
 ---
 
-![Market Access Map](docs/screenshots/matrix.png)
+![ComplyGraph hero](docs/screenshots/hero.png)
 
-*SKU × 市场就绪矩阵：点击任意格子查看完整审计链（规则版本 → 法条引用 → 证据文件）*
+![Global Market Access Map](docs/screenshots/matrix.png)
+
+*Every cell is a deterministic, auditable decision — click through to the rule version, legal provision and evidence behind it.*
 
 ## 它解决什么问题
 

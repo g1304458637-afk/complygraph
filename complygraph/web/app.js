@@ -733,6 +733,26 @@ applyLang();
 getJSON("/api/map").then((map) => {
   renderStats(map);
   renderMap(map);
+  // deep-link: ?open=SKU&market=de opens the audit drill-down for that cell
+  const params = new URLSearchParams(location.search);
+  if (params.has("nofx")) document.documentElement.classList.add("nofx");
+  if (params.has("compact")) document.body.classList.add("compact");
+  const openSku = params.get("open");
+  if (openSku) {
+    const mk = params.get("market") || "de";
+    const col = (map.columns.find((c) => c.market === mk)) || { label: mk.toUpperCase() };
+    const chan = (map.columns.find((c) => c.market === mk) || {}).channel || null;
+    openDetail(openSku, mk, chan, col.label);
+  }
+  const scrollTo = params.get("scrollto");
+  if (scrollTo) {
+    const [sid, offStr] = scrollTo.split(":");
+    const el = document.getElementById(sid);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 96 - (parseInt(offStr, 10) || 0);
+      window.scrollTo({ top, behavior: "auto" });
+    }
+  }
   const dis = document.querySelector(".disclaimer span[data-i18n]");
   if (dis && map.modelled_rules) {
     dis.innerHTML = t("disclaimer_dyn", { rules: map.modelled_rules, markets: map.modelled_markets });

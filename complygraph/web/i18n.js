@@ -25,14 +25,6 @@ const I18N = {
     scroll_cue: "SCROLL",
     stats_heading: "Only verified numbers here",
     reveal_text: "We turn product facts, versioned regulations and your evidence into one auditable traffic light — so that every green decision can be traced back to an exact provision, a rule version and a file.",
-    nav_map: "矩阵",
-    nav_why: "理念",
-    nav_stats: "数字",
-    hero_sub_left: "跨市场合规，一眼可见",
-    hero_sub_right: "每一格都可审计",
-    scroll_cue: "向下滚动",
-    stats_heading: "只放经过验证的数字",
-    reveal_text: "我们相信，跨境合规不应该是一场信息迷雾。ComplyGraph 把你的产品事实、版本化的法规和手里的证据，压缩成一张可审计的红绿灯——每一个绿色判定，都能追溯到具体的条款、规则版本与证据文件。",
     map_sub: "Every cell is a deterministic decision — click to open the full audit trail.",
     disclaimer: "Scope notice: this engine only checks the modelled rule packs below. It is decision support, not legal advice, and not a full compliance determination. Rules are versioned candidates — verify against cited sources.",
     impact_btn: "⚡ Regulation change impact",
@@ -189,6 +181,14 @@ const I18N = {
     stat_avg_hint: "全部格子",
     map_title: "全球市场准入地图",
     map_sub: "每个格子都是一次确定性判定——点击查看完整审计链。",
+    nav_map: "矩阵",
+    nav_why: "理念",
+    nav_stats: "数字",
+    hero_sub_left: "跨市场合规，一眼可见",
+    hero_sub_right: "每一格都可审计",
+    scroll_cue: "向下滚动",
+    stats_heading: "只放经过验证的数字",
+    reveal_text: "我们相信，跨境合规不应该是一场信息迷雾。ComplyGraph 把你的产品事实、版本化的法规和手里的证据，压缩成一张可审计的红绿灯——每一个绿色判定，都能追溯到具体的条款、规则版本与证据文件。",
     disclaimer: "覆盖范围声明：引擎仅核查下方已建模的规则包，属于决策支持工具，不构成法律意见或完整合规评估。规则均为带引用的候选版本，请对照权威源核实。",
     impact_btn: "⚡ 法规变更影响",
     col_sku: "SKU",
@@ -257,6 +257,19 @@ const I18N = {
     chat_btn: "对话评估（推荐）",
     chat_title: "合规问答助手",
     chat_llm_hint: "（LLM 大脑已激活——自由输入，或点按钮。我只汇报确定性引擎返回的结果。）",
+    advise_btn: "整改建议",
+    recommend_btn: "市场推荐",
+    advise_for: "整改计划 ·",
+    advise_steps: "项行动",
+    advise_clear: "已建模范围内没有缺失——做得好。",
+    recommend_title: "市场推荐",
+    recommend_sub: "为本产品排序所有已注册市场（NTM 骨架市场仅准入级检查）",
+    cls_ready: "可直接销售",
+    cls_minor: "小缺口",
+    cls_fixable: "少量整改",
+    cls_norules: "暂无适用规则",
+    cls_costly: "成本较高",
+    rec_targeted: "已选市场",
     chat_send: "发送",
     chat_skip: "跳过 / 不确定",
     chat_welcome: "你好！我会问你几个关于产品的问题，判断哪些规则适用于你，并明确告诉你还缺什么。拿不准的就跳过——unknown 永远不是 pass。",
@@ -306,7 +319,9 @@ const I18N = {
   },
 };
 
+const URL_LANG = new URLSearchParams(location.search).get("lang");
 let LANG =
+  (URL_LANG && ["en", "zh"].includes(URL_LANG) ? URL_LANG : null) ||
   localStorage.getItem("cg-lang") ||
   ((navigator.language || "en").toLowerCase().startsWith("zh") ? "zh" : "en");
 

@@ -74,10 +74,10 @@ Breadth comes from the [UNCTAD TRAINS / ITC MacMap](https://www.macmap.org/) NTM
 ## Architecture
 
 ```
-Web UI (matrix / conversational agent / impact view)
-        │
-  complygraph.web          ← stdlib http.server, zero runtime deps
-        │
+Web UI (matrix / conversational agent / impact view)      MCP stdio server
+        │                                                        │
+  complygraph.web          ← stdlib http.server    complygraph.mcp_server ← JSON-RPC 2.0
+        │                any MCP host can call the verdict                │
   engine.py  deterministic evaluator (fact predicates / evidence checks / readiness)
   loader.py  YAML rule DSL (stable ids + versions + authoritative citations + fixtures)
         │
@@ -105,8 +105,8 @@ Web UI (matrix / conversational agent / impact view)
 - [x] Phase 4: rule diff + change impact
 - [x] Tier-1 global skeleton: NTM pipeline + 25 markets
 - [x] 100-SKU synthetic benchmark (**False Green Rate = 0 is the release gate**) — `scripts/benchmark_false_green.py`: outcomes known by construction, not by engine oracle; CI runs a seeded batch in `tests/test_false_green.py`
-- [ ] Tier-2: official legislation APIs + LLM rule mining (EUR-Lex / eCFR / e-Gov)
-- [ ] MCP server: let any agent call the compliance verdict
+- [x] MCP server: any MCP host (Claude, Cursor, ...) can call the compliance verdict — `python -m complygraph.mcp_server` (7 tools: evaluate_market, map_overview, advise, recommend_markets, expiring, what_if, list_catalog)
+- [ ] Tier-2: official legislation APIs + LLM rule mining (EUR-Lex / eCFR / e-Gov) — live rule mining still open
 
 ## License
 

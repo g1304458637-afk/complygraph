@@ -104,8 +104,8 @@ Web UI (matrix / conversational agent / impact view)
 - [x] Phase 3: evidence pipeline (human-approval gate)
 - [x] Phase 4: rule diff + change impact
 - [x] Tier-1 global skeleton: NTM pipeline + 25 markets
+- [x] 100-SKU synthetic benchmark (**False Green Rate = 0 is the release gate**) — `scripts/benchmark_false_green.py`: outcomes known by construction, not by engine oracle; CI runs a seeded batch in `tests/test_false_green.py`
 - [ ] Tier-2: official legislation APIs + LLM rule mining (EUR-Lex / eCFR / e-Gov)
-- [ ] 100-SKU synthetic benchmark (**False Green Rate = 0 is the release gate**)
 - [ ] MCP server: let any agent call the compliance verdict
 
 ## License

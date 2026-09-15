@@ -172,3 +172,13 @@ def test_brain_what_if_tool():
     assert "flipped" in out or "error" in out  # shape check; engine does the judging
     bad = ab._what_if(ctx, "xx", {"a.b": 1})
     assert "error" in bad
+
+
+@needs_brain
+def test_brain_instructions_render():
+    """INSTRUCTIONS contains JSON braces — .format() must survive them
+    (regression: an unescaped brace made every /api/agent/chat 500)."""
+    from complygraph.agent_brain import INSTRUCTIONS
+
+    rendered = INSTRUCTIONS.format(lang="zh")
+    assert "what_if" in rendered and "{lang}" not in rendered

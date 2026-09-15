@@ -311,11 +311,15 @@ class Session:
 
 
 SESSIONS: dict[str, Session] = {}
+MAX_SESSIONS = 200  # best-effort leak guard: drop oldest when over budget
 
 
 def start(lang: str = "zh") -> dict:
     lang = lang if lang in LANGS else "zh"
     session = Session(id=uuid.uuid4().hex[:12], lang=lang)
+    if len(SESSIONS) >= MAX_SESSIONS:
+        for oldest in list(SESSIONS)[: len(SESSIONS) - MAX_SESSIONS + 1]:
+            SESSIONS.pop(oldest, None)
     SESSIONS[session.id] = session
     return {"session_id": session.id, **next_turn(session)}
 

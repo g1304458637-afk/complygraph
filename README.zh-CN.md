@@ -56,11 +56,13 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
 | 能力 | 入口 | 说明 |
 |---|---|---|
-| 多市场就绪矩阵 | Web `/` | DE/FR/UK/US 深度规则 + 10 国 NTM 骨架，点击格子下钻审计链 |
+| 多市场就绪矩阵 | Web `/` | DE/FR/UK/US 深度规则 + 25 国 NTM 骨架，点击格子下钻审计链，一键导出 CSV |
 | 对话评估 agent | Web `🤖 对话评估` | 问题由规则包自动生成，边聊边给建议，最后产出报告并落库 |
 | 证据抽取管线 | `evidence-extract` / `evidence-approve` | 解析 PDF + LLM 抽取草稿 → 人工审核 → 入证据包。LLM 插槽：`--provider deepseek`（读 `DEEPSEEK_API_KEY`，已实测）/ `openai`（任意 OpenAI 兼容端点）/ `fake`（离线演示）。对话 agent 的 LLM 大脑需要 `pip install -e '.[brain]'` 并配置 `DEEPSEEK_API_KEY`，未配置时自动回退确定性模式 |
+| 到期雷达 | Web `⏰ 到期雷达` / `GET /api/expiring` | 手里的声明文件会过期——提前标出已失效/窗口期内到期的证据与注册，别等市场变红才发现 |
 | 法规变更影响 | `diff-rules` / `impact` | 规则集语义 diff → 受影响 SKU → 整改任务（Demo D） |
 | 评估回执 | `evaluate --json` | 内容寻址、可独立重放的判定凭据 |
+| 顾问层 | `advise` CLI + Web 按钮 + `POST /api/whatif` | 整改怎么办（怎么取证/去哪注册）、what-if 反事实推演（也是对话大脑的工具）、全市场就绪度排序 |
 
 ## 覆盖范围（诚实声明）
 

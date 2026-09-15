@@ -105,3 +105,15 @@ def test_market_recommendation_ranks_sensibly(pb100, bundle):
     assert top["class"] in ("ready", "minor", "fixable")
     # already-targeted flag present
     assert any("already_targeted" in r for r in recs)
+
+
+def test_what_if_maps_aliases_and_rejects_unknown_paths(product, bundle, rules, markets):
+    """Short LLM-style names map to canonical fact paths; unknown paths return
+    the known-path list instead of a silently-empty flip result."""
+    probe = product.model_dump()
+    probe["features"] = {"wireless_charging": True}
+    out = what_if(probe, {"wireless": False}, markets.markets, "de", bundle, rules)
+    flipped = {f["rule_id"] for f in out["flipped"]}
+    assert "eu.red.radio_equipment" in flipped
+    bad = what_if(probe, {"wireles": False}, markets.markets, "de", bundle, rules)
+    assert "error" in bad and "features.wireless_charging" in bad["error"]

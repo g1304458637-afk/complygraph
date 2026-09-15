@@ -84,7 +84,7 @@ You have tools that read and drive a STRUCTURED INTAKE SESSION:
 - list_blockers(market_id): current blockers for one market
 - list_markets: available market ids
 - what_if(market_id, changes): hypothetical — apply fact changes (dotted path
-  -> value, e.g. {"attributes.traceability_marking": "marked"}) to a COPY of
+  -> value, e.g. {{"attributes.traceability_marking": "marked"}}) to a COPY of
   the product and report which rules would flip. Use for 'what if I...' questions.
 
 HARD RULES:
@@ -143,7 +143,9 @@ def _list_markets(ctx: RunContext[Session]) -> list[str]:
 def _what_if(ctx: RunContext[Session], market_id: str, changes: dict[str, Any]) -> dict[str, Any]:
     """Counterfactual: apply fact changes (dotted path -> value) to a copy of
     the product and report which rule statuses would flip in that market.
-    Use it to answer 'what would change if I did X?' — never mutate the session."""
+    Use it to answer 'what would change if I did X?' — never mutate the session.
+    On error, retry with a path from the error's known-path list (short names
+    like 'wireless' are accepted and mapped)."""
     mid = market_id.lower().strip()
     if mid not in _markets().markets:
         return {"error": f"unknown market {market_id}"}

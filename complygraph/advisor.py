@@ -379,6 +379,28 @@ def _guess_scheme(rule_result, req_id: str) -> str | None:
 
 # ------------------------------------------------------------- what-if
 
+# free-text-friendly aliases -> canonical dotted fact paths (LLM brains guess
+# short names; without this they get a silently-empty flip list)
+WHAT_IF_ALIASES: dict[str, str] = {
+    "wireless": "features.wireless_charging",
+    "has_wireless": "features.wireless_charging",
+    "wireless_charging": "features.wireless_charging",
+    "battery": "electrical.battery.present",
+    "has_battery": "electrical.battery.present",
+    "offered_to_eu_consumer": "offered_to_eu_consumer",
+    "offered_to_uk_consumer": "offered_to_uk_consumer",
+    "offered_to_us_consumer": "offered_to_us_consumer",
+}
+
+
+def _fact_paths(obj: Any, prefix: str = ""):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            path = f"{prefix}.{k}" if prefix else k
+            yield from _fact_paths(v, path)
+    else:
+        yield prefix
+
 
 def what_if(session_like_product: dict, changes: dict[str, Any], markets_registry, market_id: str,
             bundle: EvidenceBundle, rules: list, lang: str = "zh") -> dict[str, Any]:
@@ -386,8 +408,24 @@ def what_if(session_like_product: dict, changes: dict[str, Any], markets_registr
     base_product = Product.model_validate(session_like_product)
     base = evaluate_market(rules, base_product, bundle, market_id, markets_registry[market_id], None, date.today())
 
-    trial = dict(session_like_product)
+    known = set(_fact_paths(session_like_product)) | set(WHAT_IF_ALIASES.values())
+    known_prefixes = {p.rsplit(".", 1)[0] for p in known}
+    normalized: dict[str, Any] = {}
+    unknown: list[str] = []
     for path, value in changes.items():
+        canonical = WHAT_IF_ALIASES.get(path, path)
+        if canonical not in known and canonical not in known_prefixes:
+            unknown.append(path)
+        else:
+            normalized[canonical] = value
+    if unknown:
+        return {
+            "error": "unknown fact path(s): " + ", ".join(sorted(unknown))
+            + ". Known fact paths: " + ", ".join(sorted(known)),
+        }
+
+    trial = dict(session_like_product)
+    for path, value in normalized.items():
         cur = trial
         parts = path.split(".")
         for part in parts[:-1]:

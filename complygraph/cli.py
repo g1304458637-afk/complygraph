@@ -235,6 +235,59 @@ def cmd_advise(args: argparse.Namespace) -> int:
     return 2
 
 
+def cmd_verify_receipt(args: argparse.Namespace) -> int:
+    """Audit a receipt three ways: hash integrity, rule-pack drift, replay."""
+    import json as _json
+
+    from .models import EvidenceBundle, Product
+    from .receipt import content_hash
+
+    receipt_path = Path(args.receipt)
+    receipt = _json.loads(receipt_path.read_text(encoding="utf-8"))
+    failures: list[str] = []
+
+    stored = receipt.get("sha256", "")
+    replay = {k: v for k, v in receipt.items() if k != "sha256"}
+    if content_hash(replay) != stored:
+        failures.append(f"hash mismatch: receipt content does not hash to {stored}")
+
+    root = Path(args.root)
+    paths = [Path(p) for p in args.rules] if args.rules else default_rule_paths(root)
+    rules = load_rules(paths)
+    by_hash = {content_hash(r.model_dump(mode="json")): r for r in rules}
+    drifted = []
+    for entry in receipt.get("rules", []):
+        current = by_hash.get(entry.get("sha256", ""))
+        if current is None and entry["id"] not in {r.id for r in rules}:
+            drifted.append(f"{entry['id']} (removed from packs)")
+        elif current is None:
+            drifted.append(f"{entry['id']} (changed since evaluation)")
+    if drifted:
+        failures.append("rule drift: " + ", ".join(drifted))
+
+    product = Product.model_validate(receipt["product"])
+    bundle = EvidenceBundle.model_validate(receipt["evidence"])
+    registry = load_markets(root / "config" / "markets.yaml")
+    market_id = receipt["market"]
+    as_of = date.fromisoformat(receipt["as_of"])
+    if market_id not in registry.markets:
+        failures.append(f"market {market_id} not in current registry")
+    else:
+        readiness = evaluate_market(rules, product, bundle, market_id,
+                                    registry.markets[market_id], receipt.get("channel"), as_of)
+        if readiness.model_dump(mode="json") != receipt["result"]:
+            failures.append("replay mismatch: re-evaluation differs from receipt result")
+
+    if failures:
+        print(f"FAIL {receipt_path}")
+        for f in failures:
+            print(f"  - {f}")
+        return 1
+    print(f"OK {receipt_path}: hash intact, {len(receipt.get('rules', []))} rules unchanged,"
+          f" result replays exactly")
+    return 0
+
+
 def _empty_bundle():
     from .models import EvidenceBundle
 
@@ -296,6 +349,12 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--bundle", required=True, help="evidence bundle YAML")
     ap.add_argument("--id", required=True, help="evidence id to approve")
     ap.set_defaults(func=cmd_evidence_approve)
+
+    vr = sub.add_parser("verify-receipt", help="audit a receipt: hash integrity, rule drift, replay")
+    vr.add_argument("receipt", help="receipt JSON (from evaluate --receipt / --json)")
+    vr.add_argument("--rules", nargs="*", help="rule pack YAML files (default: rulepacks/**/*.yaml)")
+    vr.add_argument("--root", default=".", help="repo root containing rulepacks/ and config/")
+    vr.set_defaults(func=cmd_verify_receipt)
     return parser
 
 

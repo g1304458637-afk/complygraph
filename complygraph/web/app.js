@@ -189,16 +189,20 @@ function ruleRow(r) {
     ? `<a href="${r.source.url || "#"}" target="_blank" rel="noreferrer">${r.source.authority} ↗</a>
        <span class="prov">${escapeHtml(r.source.provision || "")}</span>`
     : "";
-  const detail = r.reason
-    ? `<span class="reason">${escapeHtml(trReason(r.reason))}</span>`
-    : (r.requirements || [])
-        .map(
-          (q) =>
-            `${STATUS_PILL(q.status)} <span class="reason">${escapeHtml(q.requirement)} — ${
-              q.reason ? escapeHtml(trReason(q.reason)) : escapeHtml(trReqKind(q.kind))
-            }</span>`
-        )
-        .join("<br>");
+  // aggregate reason AND per-requirement detail coexist: the reason may carry
+  // audit notes (e.g. conflicting evidence) while the list shows document ids
+  const parts = [];
+  if (r.reason) parts.push(`<span class="reason">${escapeHtml(trReason(r.reason))}</span>`);
+  for (const q of r.requirements || []) {
+    parts.push(
+      `${STATUS_PILL(q.status)} <span class="reason">${escapeHtml(q.requirement)} — ${
+        q.reason ? escapeHtml(trReason(q.reason)) : escapeHtml(trReqKind(q.kind))
+      }</span>${q.evidence_ids && q.evidence_ids.length
+        ? `<span class="prov">📄 ${escapeHtml(q.evidence_ids.join(", "))}</span>`
+        : ""}`
+    );
+  }
+  const detail = parts.join("<br>");
   return `<tr class="status-${r.status}">
     <td><div class="rule-id">${r.rule_id}</div><div class="rule-ver">v${r.rule_version} · ${trSeverity(r.severity)}</div></td>
     <td>${STATUS_PILL(r.status)}</td>

@@ -105,7 +105,7 @@ Web UI（矩阵 / 对话 agent / 影响视图）
 - [x] Phase 4：规则 diff + 变更影响
 - [x] Tier-1 全球骨架：NTM 数据管道 + 25 国
 - [x] 100 SKU 合成目录 benchmark（**False Green Rate = 0 为发版红线**）——`scripts/benchmark_false_green.py`：预期结果由构造决定（非引擎自证），CI 固定种子批次见 `tests/test_false_green.py`
-- [x] MCP server：任意 MCP 宿主（Claude、Cursor…）可调用合规判定——`python -m complygraph.mcp_server`（7 个工具）
+- [x] MCP server：任意 MCP 宿主（Claude、Cursor…）可调用合规判定——`python -m complygraph.mcp_server`（8 个工具）
 - [ ] Tier-2：官方立法 API + LLM 规则挖掘（EUR-Lex / eCFR / e-Gov）——在线规则挖掘仍开放
 
 ## License

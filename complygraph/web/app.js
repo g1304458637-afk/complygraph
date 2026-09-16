@@ -724,6 +724,7 @@ $("advise-btn").addEventListener("click", () => {
   if (!LAST_DETAIL) return;
   openAdvise(LAST_DETAIL.sku, LAST_DETAIL.market);
 });
+$("markings-btn").addEventListener("click", openMarkings);
 $("recommend-btn").addEventListener("click", () => {
   if (!LAST_DETAIL) return;
   openRecommend(LAST_DETAIL.sku);
@@ -769,6 +770,30 @@ function exportCsv() {
   a.download = `complygraph-map-${LAST_MAP.as_of}.csv`;
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+/* ---------- marking/label checklist ---------- */
+
+async function openMarkings() {
+  if (!LAST_DETAIL) return;
+  const { sku, market } = LAST_DETAIL;
+  const data = await getJSON(`/api/markings?sku=${encodeURIComponent(sku)}&market=${market}`);
+  const box = $("markings-result");
+  box.classList.remove("hidden");
+  if (data.error) { box.innerHTML = `<div class="alert"><span>${escapeHtml(data.error)}</span></div>`; return; }
+  const statusLabel = { done: t("markings_done"), claimed: t("markings_claimed"), open: t("markings_open"), "n/a": "—" };
+  const statusTone = { done: "green", claimed: "amber", open: "red", "n/a": "amber" };
+  const rows = data.items.map((it) => `
+    <div class="rec-row">
+      <span class="badge ${statusTone[it.status]}">${statusLabel[it.status] || it.status}</span>
+      <b>${escapeHtml(it.marking)}</b>
+      <span>${escapeHtml(it.what)}</span>
+      <span class="muted">${escapeHtml(it.legal_basis)}</span>
+    </div>`).join("");
+  box.innerHTML = `
+    <div class="advise-head">🏷 ${t("markings_title")} — ${market.toUpperCase()} · ${data.items.length}</div>
+    ${rows || `<div class="okline">✓ ${t("markings_none")}</div>`}
+    <p class="muted" style="font-size:12px">${escapeHtml(data.note)}</p>`;
 }
 
 /* ---------- wiring ---------- */

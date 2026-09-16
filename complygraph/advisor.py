@@ -456,6 +456,54 @@ def what_if(session_like_product: dict, changes: dict[str, Any], markets_registr
     }
 
 
+# ------------------------------------------------------------- marking checklist
+
+
+def marking_checklist(product: Product, bundle: EvidenceBundle, market_id: str,
+                      lang: str = "zh") -> dict[str, Any]:
+    """Printable marking/label checklist for one SKU in one market.
+
+    Derived from the rule packs: every applicable requirement of kind
+    product_attribute is a marking duty (traceability, Wh, Triman, Prop 65,
+    toy warnings, ...), each with its legal basis and current status so the
+    factory knows exactly what to print where. Candidate rules only — see
+    each cited source."""
+    rules = _all_rules()
+    markets = _markets()
+    if market_id not in markets.markets:
+        return {"error": f"unknown market {market_id}"}
+    readiness = evaluate_market(rules, product, bundle, market_id,
+                                markets.markets[market_id], None, date.today())
+    status_of = {"verified": "done", "satisfied_unverified": "claimed",
+                 "needs_human_review": "open", "expired": "open", "mismatch": "open",
+                 "missing": "open", "unknown": "open", "not_applicable": "n/a"}
+    items: list[dict[str, Any]] = []
+    for rr in readiness.rules:
+        if rr.status == "not_applicable":
+            continue
+        rule = next((x for x in rules if x.id == rr.rule_id), None)
+        for req in rule.requires if rule else []:
+            if req.kind != "product_attribute":
+                continue
+            req_res = next((q for q in rr.requirements if q.requirement == req.id), None)
+            items.append({
+                "rule_id": rr.rule_id,
+                "marking": req.attribute,
+                "what": req.description,
+                "legal_basis": rule.source.provision,
+                "severity": req.severity,
+                "status": status_of.get(req_res.status if req_res else rr.status, "open"),
+            })
+    return {
+        "sku": product.sku, "market": market_id,
+        "items": items,
+        "note": ({
+            "zh": "仅覆盖已建模的标印义务（candidate 规则）；打印前请对照引用的权威源核实。",
+            "en": "Covers modelled marking duties (candidate rules) only; verify against the cited sources before printing.",
+        }["zh" if lang == "zh" else "en"]),
+    }
+
+
 # ------------------------------------------------------------- market recommendation
 
 

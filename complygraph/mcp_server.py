@@ -83,6 +83,11 @@ def tool_what_if(args: dict) -> dict:
     return payload
 
 
+def tool_markings(args: dict) -> dict:
+    payload, code = web.api_markings(args.get("sku", ""), args.get("market", "de"))
+    return payload
+
+
 def tool_list(args: dict) -> dict:
     return {"skus": _sku_enum(), "markets": _market_enum()}
 
@@ -146,6 +151,18 @@ TOOLS: list[dict[str, Any]] = [
         },
     },
     {
+        "name": "markings",
+        "description": "Printable marking/label checklist for a SKU in one market: every modelled marking duty with legal basis and status (on file / claimed / missing).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "sku": {"type": "string"},
+                "market": {"type": "string"},
+            },
+            "required": ["sku", "market"],
+        },
+    },
+    {
         "name": "list_catalog",
         "description": "Known SKUs and modelled market ids.",
         "inputSchema": {"type": "object", "properties": {}},
@@ -159,6 +176,7 @@ DISPATCH: dict[str, Callable[[dict], dict]] = {
     "recommend_markets": tool_recommend,
     "expiring": tool_expiring,
     "what_if": tool_what_if,
+    "markings": tool_markings,
     "list_catalog": tool_list,
 }
 

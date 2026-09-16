@@ -133,3 +133,28 @@ def test_advisor_loads_package_data_even_when_registry_root_rebound(monkeypatch,
         assert len(reloaded._all_rules()) >= 70
     finally:
         importlib.reload(advisor)  # restore lazy caches for other tests
+
+
+def test_marking_checklist_lists_attribute_duties_with_basis(pb100, bundle, rules, markets):
+    """Every applicable product_attribute requirement becomes a checklist item
+    with its legal basis and a derived status; unknown markets are rejected."""
+    from complygraph.advisor import marking_checklist
+
+    out = marking_checklist(pb100, bundle, "de")
+    by_marking = {i["marking"]: i for i in out["items"]}
+    assert "traceability_marking" in by_marking
+    assert by_marking["traceability_marking"]["legal_basis"]
+    assert by_marking["traceability_marking"]["status"] in ("done", "claimed", "open")
+    # battery Wh marking only applies to battery products — PB-100 is one
+    assert "battery_wh_marking" in by_marking
+    assert marking_checklist(pb100, bundle, "xx") == {"error": "unknown market xx"}
+
+
+def test_markings_endpoint(tmp_path):
+    from complygraph.web import api_markings
+
+    payload, code = api_markings("PB-100", "fr")
+    assert code == 200
+    assert any(i["marking"] == "triman_info_tri" for i in payload["items"])
+    payload, code = api_markings("GHOST", "de")
+    assert code == 404

@@ -42,7 +42,7 @@ def test_initialize_and_tools_list_roundtrip_subprocess():
     assert init["protocolVersion"] == "2024-11-05"
     names = {t["name"] for t in out[1]["result"]["tools"]}
     assert {"evaluate_market", "map_overview", "advise",
-            "recommend_markets", "expiring", "what_if", "list_catalog"} <= names
+            "recommend_markets", "expiring", "what_if", "markings", "list_catalog"} <= names
     assert proc.returncode == 0
 
 
@@ -65,3 +65,12 @@ def test_unknown_tool_is_a_jsonrpc_error():
 
 def test_notification_gets_no_response():
     assert mcp_server.handle(_rpc("notifications/initialized", msg_id=None)) is None
+
+
+def test_markings_tool_returns_checklist():
+    out = mcp_server.handle(_rpc("tools/call", {
+        "name": "markings", "arguments": {"sku": "PB-100", "market": "de"},
+    }))
+    data = json.loads(out["result"]["content"][0]["text"])
+    markings = {i["marking"] for i in data["items"]}
+    assert "traceability_marking" in markings

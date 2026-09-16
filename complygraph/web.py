@@ -8,6 +8,7 @@ Endpoints:
   GET /api/eval?sku=&market=&channel=  -> full evaluation + receipt
   GET /api/impact?market=  -> regulation-change impact (Demo D)
   GET /api/expiring?days=  -> evidence & registration expiry radar
+  GET /api/markings?sku=&market= -> printable marking/label checklist
   POST /api/whatif         -> counterfactual fact changes -> flipped rules
 """
 
@@ -230,6 +231,15 @@ def api_whatif(sku: str, market_id: str, changes: dict):
     return what_if(product.model_dump(), changes, STORE.markets.markets, market_id, bundle, STORE.rules), 200
 
 
+def api_markings(sku: str, market_id: str):
+    from .advisor import marking_checklist
+
+    product, bundle = STORE.find(sku)
+    if product is None:
+        return {"error": f"unknown sku {sku}"}, 404
+    return marking_checklist(product, bundle, market_id), 200
+
+
 def api_impact(market_id: str = "de", channel: str | None = None):
     if market_id not in STORE.markets.markets:
         market_id = "de"
@@ -291,6 +301,11 @@ class Handler(BaseHTTPRequestHandler):
                 sku = query.get("sku", [""])[0]
                 market = query.get("market", ["de"])[0]
                 payload, code = api_advise(sku, market)
+                self._json(payload, code)
+            elif route == "/api/markings":
+                payload, code = api_markings(
+                    query.get("sku", [""])[0], query.get("market", ["de"])[0]
+                )
                 self._json(payload, code)
             elif route == "/api/recommend":
                 sku = query.get("sku", [""])[0]

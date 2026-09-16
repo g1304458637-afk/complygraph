@@ -121,7 +121,7 @@ Audit offline: `complygraph evaluate --receipt r.json`, later `complygraph verif
 - [x] Phase 4: rule diff + change impact
 - [x] Tier-1 global skeleton: NTM pipeline + 25 markets
 - [x] 100-SKU synthetic benchmark (**False Green Rate = 0 is the release gate**) — `scripts/benchmark_false_green.py`: outcomes known by construction, not by engine oracle; CI runs a seeded batch in `tests/test_false_green.py`
-- [x] MCP server: any MCP host (Claude, Cursor, ...) can call the compliance verdict — `python -m complygraph.mcp_server` (7 tools: evaluate_market, map_overview, advise, recommend_markets, expiring, what_if, list_catalog)
+- [x] MCP server: any MCP host (Claude, Cursor, ...) can call the compliance verdict — `python -m complygraph.mcp_server` (8 tools: evaluate_market, map_overview, advise, recommend_markets, expiring, what_if, markings, list_catalog)
 - [ ] Tier-2: official legislation APIs + LLM rule mining (EUR-Lex / eCFR / e-Gov) — live rule mining still open
 
 ## License

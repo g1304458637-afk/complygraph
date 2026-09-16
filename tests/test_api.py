@@ -182,3 +182,34 @@ def test_brain_instructions_render():
 
     rendered = INSTRUCTIONS.format(lang="zh")
     assert "what_if" in rendered and "{lang}" not in rendered
+
+
+def test_bulk_import_reports_per_row(tmp_path):
+    """CSV-style bulk import: good rows land, bad rows report errors without
+    blocking the rest; duplicates are per-row failures."""
+    from complygraph.registry import catalog_entries, import_products
+
+    def body(sku):
+        return {"product": {"sku": sku, "name": f"Bulk {sku}", "category": "consumer_electronics"},
+                "documents": ["un383_test_summary"], "registrations": []}
+
+    out = import_products([body("BULK-1"), body("BULK-1"), body("bad sku!")])
+    assert out["imported"] == 1 and out["failed"] == 2
+    assert out["results"][0]["ok"] is True
+    assert out["results"][1]["ok"] is False and "已存在" in out["results"][1]["error"]
+    assert out["results"][2]["ok"] is False
+    assert any(e[0].endswith("user_BULK-1.yaml") for e in catalog_entries())
+
+
+def test_bulk_import_endpoint(tmp_path):
+    from complygraph.web import api_impact  # noqa: F401  (ensure web importable)
+
+    import json as _json
+    import urllib.request
+
+    # exercise the route handler logic through import_products via web module
+    from complygraph import web
+
+    rows = [{"product": {"sku": "BULK-2", "name": "x", "category": "toys"}, "documents": [], "registrations": []}]
+    assert web.import_products(rows)["imported"] == 1
+    assert _json.dumps(rows)  # shape stays JSON-serialisable

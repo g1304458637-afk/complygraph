@@ -73,6 +73,27 @@ def doc_jurisdictions(doc_type: str, product: Product) -> list[str]:
     return juris or ["GLOBAL"]
 
 
+def import_products(bodies: list[dict]) -> dict:
+    """Bulk import: iterate form-shaped bodies ({product, documents, registrations}).
+
+    The client parses its own CSV into this shape; the server stays a thin
+    validation loop. One bad row never blocks the rest."""
+    results = []
+    for idx, body in enumerate(bodies):
+        try:
+            saved = save_user_product(body)
+            results.append({"row": idx, "ok": True, "sku": saved["sku"]})
+        except Exception as exc:
+            sku = "?"
+            try:
+                sku = body.get("product", {}).get("sku") or "?"
+            except AttributeError:
+                pass
+            results.append({"row": idx, "ok": False, "sku": sku, "error": str(exc)})
+    ok_count = sum(1 for r in results if r["ok"])
+    return {"imported": ok_count, "failed": len(results) - ok_count, "results": results}
+
+
 def save_user_product(body: dict) -> dict:
     product = Product.model_validate(body.get("product") or {})
     if not product.sku or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,39}", product.sku):

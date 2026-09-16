@@ -796,6 +796,113 @@ async function openMarkings() {
     <p class="muted" style="font-size:12px">${escapeHtml(data.note)}</p>`;
 }
 
+/* ---------- bulk CSV import ---------- */
+
+function parseCsv(text) {
+  // minimal RFC-4180: quoted fields, "" escapes, \r\n or \n
+  const rows = [];
+  let row = [], field = "", inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (ch === '"') inQuotes = false;
+      else field += ch;
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ",") {
+      row.push(field); field = "";
+    } else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && text[i + 1] === "\n") i++;
+      row.push(field); field = "";
+      if (row.some((v) => v !== "")) rows.push(row);
+      row = [];
+    } else {
+      field += ch;
+    }
+  }
+  row.push(field);
+  if (row.some((v) => v !== "")) rows.push(row);
+  return rows;
+}
+
+const CSV_TRUTHY = new Set(["x", "true", "yes", "1", "y"]);
+const CSV_DOC_CODES = {
+  rpa: "responsible_person_agreement", safety: "safety_information",
+  techdoc: "technical_documentation", batdec: "battery_conformity_declaration",
+  un383: "un383_test_summary", red: "red_test_report", fcc: "fcc_test_report",
+  rohs: "rohs_test_report", emc: "emc_test_report", lvd: "lvd_test_report",
+};
+
+function csvToBodies(text) {
+  const rows = parseCsv(text);
+  if (rows.length < 2) throw new Error(t("import_hint"));
+  const head = rows[0].map((h) => h.trim().toLowerCase());
+  return rows.slice(1).map((cells) => {
+    const r = {};
+    head.forEach((h, i) => { r[h] = (cells[i] ?? "").trim(); });
+    const flag = (k) => CSV_TRUTHY.has((r[k] || "").toLowerCase());
+    const battery = flag("battery");
+    const attributes = {};
+    if (flag("trace")) attributes.traceability_marking = "CSV import（用户确认）";
+    if (flag("triman")) attributes.triman_info_tri = "Triman + Info-tri（CSV 导入确认）";
+    if (flag("prop65")) attributes.prop65_warning = "Prop 65 warning（CSV 导入确认）";
+    const wh = parseFloat(r.watt_hours);
+    if (battery && wh > 20) attributes.battery_wh_marking = `${wh} Wh（CSV 导入确认）`;
+    const documents = (r.docs || "").split(/[;|]/)
+      .map((d) => CSV_DOC_CODES[d.trim()])
+      .filter(Boolean);
+    return {
+      product: {
+        sku: r.sku || "",
+        name: r.name || r.sku || "",
+        category: r.category || "consumer_electronics",
+        offered_to_eu_consumer: flag("eu"),
+        offered_to_uk_consumer: flag("uk"),
+        offered_to_us_consumer: flag("us"),
+        features: { wireless_charging: flag("wireless") },
+        electrical: { battery: battery ? { present: true, chemistry: "li_ion", watt_hours: wh || 0 } : { present: false } },
+        packaging: { packaged_for_end_consumer: flag("retail") },
+        attributes,
+      },
+      documents,
+      registrations: [],
+    };
+  });
+}
+
+async function importCsv(file) {
+  const box = $("import-result");
+  try {
+    const text = await file.text();
+    const rows = csvToBodies(text);
+    const res = await fetch("/api/products/import", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rows }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    const failures = (data.results || []).filter((r) => !r.ok)
+      .map((r) => `<div class="muted">#${r.row + 1} ${escapeHtml(r.sku)}: ${escapeHtml(r.error)}</div>`).join("");
+    box.innerHTML = `<div class="okline">✓ ${t("import_report", { imported: data.imported, failed: data.failed })}</div>${failures}`;
+    box.classList.remove("hidden");
+    const map = await getJSON("/api/map");
+    renderStats(map);
+    renderMap(map);
+  } catch (exc) {
+    box.innerHTML = `<div class="alert"><span class="icon">⛔</span><span>${escapeHtml(exc.message)}</span></div>`;
+    box.classList.remove("hidden");
+  }
+}
+
+$("import-csv-btn").addEventListener("click", () => $("import-csv-file").click());
+$("import-csv-file").addEventListener("change", (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (file) importCsv(file);
+  e.target.value = "";
+});
+
 /* ---------- wiring ---------- */
 
 $("impact-btn").addEventListener("click", openImpact);

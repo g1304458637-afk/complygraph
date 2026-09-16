@@ -11,3 +11,6 @@ examples/products/user_*.yaml
 examples/evidence/user_*.yaml
 docs/*.webm
 docs/演示视频*.md
+
+# local browser binaries from test tooling
+.pw-browsers/

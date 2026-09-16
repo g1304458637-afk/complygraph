@@ -10,6 +10,7 @@ Endpoints:
   GET /api/expiring?days=  -> evidence & registration expiry radar
   GET /api/markings?sku=&market= -> printable marking/label checklist
   POST /api/whatif         -> counterfactual fact changes -> flipped rules
+  POST /api/products/import -> bulk add: {rows:[{product,documents,registrations}]}
 """
 
 from __future__ import annotations
@@ -36,7 +37,7 @@ from .loader import (
 )
 from .receipt import build_receipt
 from . import registry
-from .registry import catalog_entries, save_user_product
+from .registry import catalog_entries, import_products, save_user_product
 
 WEB = Path(__file__).resolve().parent / "web"
 
@@ -339,6 +340,12 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(length).decode("utf-8")) if length else {}
             if parsed.path == "/api/products":
                 self._json(save_user_product(body))
+            elif parsed.path == "/api/products/import":
+                rows = body.get("rows")
+                if not isinstance(rows, list) or not rows:
+                    self._json({"error": "body must include a non-empty 'rows' array of form-shaped {product, documents, registrations} objects"}, 400)
+                else:
+                    self._json(import_products(rows[:200]))
             elif parsed.path == "/api/agent/start":
                 result = start_intake(body.get("lang", "zh"))
                 result["brain"] = "llm" if (os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("CG_LLM_API_KEY")) else "deterministic"

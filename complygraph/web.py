@@ -3,6 +3,7 @@
 Run from anywhere:  python -m complygraph.web --port 8765
 Endpoints:
   GET /                    -> web/index.html
+  GET /report?sku=&market= -> standalone printable per-SKU compliance status page
   GET /app.js, /style.css  -> static assets
   GET /api/map             -> SKU x market/channel readiness matrix
   GET /api/eval?sku=&market=&channel=  -> full evaluation + receipt
@@ -314,6 +315,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(payload, code)
             elif route == "/" or route == "/index.html":
                 self._send(200, (WEB / "index.html").read_bytes(), "text/html; charset=utf-8")
+            elif route == "/report":
+                self._send(200, (WEB / "report.html").read_bytes(), "text/html; charset=utf-8")
             elif route == "/app.js":
                 self._send(200, (WEB / "app.js").read_bytes(), "text/javascript; charset=utf-8")
             elif route == "/i18n.js":

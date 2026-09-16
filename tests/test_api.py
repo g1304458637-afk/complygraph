@@ -8,6 +8,7 @@ import pytest
 
 import complygraph.intake as intake
 import complygraph.registry as registry
+import complygraph.web
 from complygraph.intake import SESSIONS, start, next_turn, apply_answer
 from complygraph.registry import catalog_entries, delete_user_product, save_user_product
 from complygraph.loader import load_product
@@ -213,3 +214,16 @@ def test_bulk_import_endpoint(tmp_path):
     rows = [{"product": {"sku": "BULK-2", "name": "x", "category": "toys"}, "documents": [], "registrations": []}]
     assert web.import_products(rows)["imported"] == 1
     assert _json.dumps(rows)  # shape stays JSON-serialisable
+
+
+def test_report_page_shell_complete():
+    """The standalone /report page must reference the APIs it renders and the
+    offline replay path — it is the shareable face of the receipt."""
+    from pathlib import Path
+
+    html = (Path(complygraph.web.WEB) / "report.html").read_text(encoding="utf-8")
+    assert "/api/eval" in html and "/api/markings" in html and "/api/expiring" in html
+    assert "verify-receipt" in html and 'data-f="receipt"' in html
+    # web.py must actually serve it
+    web_src = Path(complygraph.__file__).parent.joinpath("web.py").read_text(encoding="utf-8")
+    assert '"/report"' in web_src

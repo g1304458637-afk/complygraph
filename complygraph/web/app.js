@@ -147,6 +147,7 @@ function renderDetail({ sku, market, channel, colLabel, data }) {
   $("detail-blockers").innerHTML = blockersHtml(r);
   $("detail-rules").innerHTML = r.rules.map(ruleRow).join("");
   $("detail-receipt").textContent = data.receipt_sha256;
+  $("report-link").href = `/report?sku=${encodeURIComponent(sku)}&market=${market}&lang=${LANG}`;
 }
 
 function summaryTiles(r, cov) {

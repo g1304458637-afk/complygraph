@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ComplyGraph — Compliance Status</title>
+<style>
+  :root { --ink:#12141a; --muted:#5c6270; --line:#e4e6ec; --bg:#f7f8fa;
+          --green:#0e7a46; --amber:#9a6200; --red:#b42318;
+          --green-bg:#e6f4ec; --amber-bg:#fdf1dc; --red-bg:#fdecea; }
+  * { box-sizing:border-box; }
+  body { font:14px/1.55 -apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+         color:var(--ink); background:var(--bg); margin:0; padding:32px 16px; }
+  .sheet { max-width:860px; margin:0 auto; background:#fff; border:1px solid var(--line);
+           border-radius:10px; padding:36px 40px; }
+  h1 { font-size:19px; margin:0 0 2px; }
+  h2 { font-size:14px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted);
+       margin:26px 0 8px; border-bottom:1px solid var(--line); padding-bottom:5px; }
+  .brand { font-weight:700; color:#4c5bd4; }
+  .sub { color:var(--muted); font-size:12.5px; }
+  .headrow { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:999px; font-weight:700; font-size:12px; }
+  .green { color:var(--green); background:var(--green-bg); }
+  .amber { color:var(--amber); background:var(--amber-bg); }
+  .red { color:var(--red); background:var(--red-bg); }
+  .ring { --p:0; --ring:#999; width:84px; height:84px; border-radius:50%;
+          background:conic-gradient(var(--ring) calc(var(--p)*1%), var(--line) 0);
+          display:flex; align-items:center; justify-content:center; flex:none; }
+  .ring .in { width:64px; height:64px; border-radius:50%; background:#fff;
+              display:flex; align-items:center; justify-content:center; font-weight:700; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+  td.pill-cell { white-space:nowrap; }
+  a { color:#4c5bd4; text-decoration:none; }
+  .receipt { font-family:ui-monospace,Menlo,monospace; font-size:11.5px; word-break:break-all;
+             background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
+  .disclaimer { color:var(--muted); font-size:11.5px; border-left:3px solid var(--line); padding-left:10px; margin-top:24px; }
+  .err { color:var(--red); font-weight:600; }
+  @media print {
+    body { background:#fff; padding:0; }
+    .sheet { border:none; max-width:none; padding:12mm 0; }
+    .noprint { display:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="headrow">
+    <div>
+      <h1><span class="brand">⬡ ComplyGraph</span> — <span data-f="title"></span></h1>
+      <div class="sub" data-f="sub"></div>
+    </div>
+    <div style="text-align:right">
+      <div class="ring" data-f="ring"><div class="in" data-f="pct"></div></div>
+      <div style="margin-top:6px"><span class="badge" data-f="state"></span></div>
+    </div>
+  </div>
+
+  <h2 data-f="h_rules"></h2>
+  <table>
+    <thead><tr>
+      <th data-f="th_rule"></th><th data-f="th_status"></th>
+      <th data-f="th_basis"></th><th data-f="th_detail"></th>
+    </tr></thead>
+    <tbody data-f="rules"></tbody>
+  </table>
+
+  <h2 data-f="h_markings"></h2>
+  <div data-f="markings"></div>
+
+  <h2 data-f="h_expiry"></h2>
+  <div data-f="expiry"></div>
+
+  <h2 data-f="h_receipt"></h2>
+  <div class="receipt" data-f="receipt"></div>
+  <p class="sub" data-f="verify" style="margin-top:6px"></p>
+
+  <p class="disclaimer" data-f="disclaimer"></p>
+  <p class="sub noprint" style="margin-top:18px">
+    <button onclick="window.print()" style="padding:6px 14px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer">🖨 Print / Save as PDF</button>
+  </p>
+</div>
+<script>
+const P = new URLSearchParams(location.search);
+const SKU = P.get("sku") || "";
+const MARKET = (P.get("market") || "de").toLowerCase();
+const LANG = (P.get("lang") || "en") === "zh" ? "zh" : "en";
+const T = {
+  en: {
+    sub_s: "Compliance status for {sku} → {market}, evaluated {as_of} (deterministic engine, candidate rule packs)",
+    state_green: "READY", state_amber: "GAPS", state_red: "BLOCKED",
+    h_rules: "Applicable modelled rules", th_rule: "Rule / version", th_status: "Status",
+    th_basis: "Legal basis", th_detail: "Detail",
+    h_markings: "Marking & label checklist",
+    h_expiry: "Evidence & registrations expiring (90d)",
+    expiry_none: "Nothing expires within 90 days.",
+    h_receipt: "Evaluation receipt",
+    verify: 'Replay offline: complygraph verify-receipt <receipt.json> — hash integrity, rule-drift check, exact result replay.',
+    disclaimer: "Scope notice: only the modelled candidate rules above are checked. This page is decision support, not legal advice and not a full compliance determination. Verify against the cited authoritative sources.",
+    statuses: {verified:"verified", satisfied_unverified:"satisfied · unreviewed", missing:"missing",
+               mismatch:"mismatch", expired:"expired", unknown:"unknown", not_applicable:"not applicable"},
+    markings_done: "ON FILE", markings_claimed: "CLAIMED (unreviewed)", markings_open: "MISSING",
+    no_rules: "No applicable modelled rules for this market.",
+  },
+  zh: {
+    sub_s: "{sku} → {market} 的合规状态，评估基准日 {as_of}（确定性引擎，candidate 规则包）",
+    state_green: "可销售", state_amber: "有缺口", state_red: "被阻断",
+    h_rules: "适用的已建模规则", th_rule: "规则 / 版本", th_status: "状态",
+    th_basis: "法律依据", th_detail: "明细",
+    h_markings: "标印与标签清单",
+    h_expiry: "90 天内到期的证据与注册",
+    expiry_none: "90 天内没有证据/注册到期。",
+    h_receipt: "评估回执",
+    verify: "离线核验：complygraph verify-receipt <receipt.json> —— 哈希完整性、规则漂移检测、结果精确重放。",
+    disclaimer: "覆盖范围声明：仅核查上方已建模的 candidate 规则。本页为决策支持，不构成法律意见或完整合规评估。请对照引用的权威源核实。",
+    statuses: {verified:"已验证", satisfied_unverified:"已满足·未核验", missing:"缺失",
+               mismatch:"不匹配", expired:"已过期", unknown:"未知", not_applicable:"不适用"},
+    markings_done: "已核实", markings_claimed: "已声称（未核验）", markings_open: "缺失",
+    no_rules: "该市场暂无适用的已建模规则。",
+  },
+}[LANG];
+const $f = (n) => document.querySelector(`[data-f="${n}"]`);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const st = (s) => T.statuses[s] || s;
+const tone = (s) => ({green:"green",amber:"amber",red:"red"}[s] || "amber");
+
+async function getJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
+  return res.json();
+}
+
+(async () => {
+  document.documentElement.lang = LANG === "zh" ? "zh-CN" : "en";
+  for (const [k, v] of Object.entries(T)) {
+    document.querySelectorAll(`[data-f="${k}"]`).forEach((el) => { if (typeof v === "string") el.textContent = v; });
+  }
+  let evalData;
+  try {
+    evalData = await getJSON(`/api/eval?sku=${encodeURIComponent(SKU)}&market=${MARKET}`);
+  } catch (e) {
+    $f("title").textContent = `${SKU || "?"} → ${MARKET.toUpperCase()}`;
+    $f("sub").textContent = e.message;
+    return;
+  }
+  const r = evalData.readiness;
+  $f("title").textContent = `${SKU} → ${MARKET.toUpperCase()}`;
+  $f("sub").textContent = T.sub_s.replace("{sku}", SKU).replace("{market}", MARKET.toUpperCase()).replace("{as_of}", r.as_of);
+  const pct = Math.round(r.readiness * 100);
+  $f("ring").style.setProperty("--p", pct);
+  $f("ring").style.setProperty("--ring", r.state === "green" ? "#17b26a" : r.state === "amber" ? "#f79009" : "#f04438");
+  $f("pct").textContent = pct + "%";
+  const sb = $f("state");
+  sb.textContent = T["state_" + r.state];
+  sb.className = "badge " + tone(r.state);
+
+  const applicable = r.rules.filter((x) => x.status !== "not_applicable");
+  $f("rules").innerHTML = applicable.length ? applicable.map((x) => `
+    <tr>
+      <td><b>${esc(x.rule_id)}</b><br><span class="sub">v${esc(x.rule_version)}</span></td>
+      <td class="pill-cell"><span class="badge ${x.status === "verified" ? "green" : (["missing","mismatch","expired","unknown"].includes(x.status) ? "red" : "amber")}">${esc(st(x.status))}</span></td>
+      <td>${x.source ? `${esc(x.source.authority)}<br><a href="${esc(x.source.url || "#")}" target="_blank" rel="noreferrer">${esc(x.source.provision || "")}</a>` : ""}</td>
+      <td>${esc(x.title)}${x.reason ? `<br><span class="sub">${esc(x.reason)}</span>` : ""}</td>
+    </tr>`).join("") : `<tr><td colspan="4" class="sub">${T.no_rules}</td></tr>`;
+
+  try {
+    const mk = await getJSON(`/api/markings?sku=${encodeURIComponent(SKU)}&market=${MARKET}`);
+    const lab = { done: T.markings_done, claimed: T.markings_claimed, open: T.markings_open };
+    const tn = { done: "green", claimed: "amber", open: "red" };
+    $f("markings").innerHTML = mk.items && mk.items.length ? `<table><tbody>` + mk.items.map((i) => `
+      <tr><td class="pill-cell"><span class="badge ${tn[i.status]}">${lab[i.status] || i.status}</span></td>
+      <td><b>${esc(i.marking)}</b> — ${esc(i.what)}<br><span class="sub">${esc(i.legal_basis)}</span></td></tr>`).join("") + `</tbody></table>`
+      : `<span class="sub">—</span>`;
+  } catch (e) { $f("markings").textContent = "—"; }
+
+  try {
+    const ex = await getJSON(`/api/expiring?days=90`);
+    const mine = (ex.items || []).filter((i) => i.sku === SKU);
+    $f("expiry").innerHTML = mine.length ? `<table><tbody>` + mine.map((i) => `
+      <tr><td class="pill-cell"><span class="badge ${i.status === "expired" ? "red" : "amber"}">${i.status === "expired" ? (LANG === "zh" ? "已过期" : "EXPIRED") : (LANG === "zh" ? "即将到期" : "EXPIRING")}</span></td>
+      <td>${esc(i.label)}<br><span class="sub">${esc(i.valid_until)} · ${i.days_left >= 0 ? (LANG === "zh" ? `剩余 ${i.days_left} 天` : `${i.days_left} days left`) : (LANG === "zh" ? `已过期 ${-i.days_left} 天` : `${-i.days_left} days overdue`)}</span></td></tr>`).join("") + `</tbody></table>`
+      : `<span class="sub">${T.expiry_none}</span>`;
+  } catch (e) { $f("expiry").textContent = "—"; }
+
+  $f("receipt").textContent = `sha256: ${evalData.receipt_sha256}`;
+  $f("verify").textContent = T.verify;
+  $f("disclaimer").textContent = T.disclaimer;
+})();
+</script>
+</body>
+</html>

@@ -63,6 +63,9 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 | 法规变更影响 | `diff-rules` / `impact` | 规则集语义 diff → 受影响 SKU → 整改任务（Demo D） |
 | 评估回执 | `evaluate --json` | 内容寻址、可独立重放的判定凭据 |
 | 顾问层 | `advise` CLI + Web 按钮 + `POST /api/whatif` | 整改怎么办（怎么取证/去哪注册）、what-if 反事实推演（也是对话大脑的工具）、全市场就绪度排序 |
+| 标印清单 | Web `🏷 标印清单` / `GET /api/markings` | 按 SKU×市场生成可直接打印的标印义务清单，每项挂法律依据与状态 |
+| 批量导入 | Web 表单弹窗 ⬆ / `POST /api/products/import` | 一次导入整组 SKU，逐行返回成功/失败报告 |
+| 可分享状态页 | Web `/report?sku=&market=` | 每个 SKU 一张实时、可打印的合规状态页：逐条法规引用、标印清单、到期监控、回执哈希与重放说明 |
 
 ## 覆盖范围（诚实声明）
 

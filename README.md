@@ -61,6 +61,9 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 | Regulation-change impact | `diff-rules` / `impact` | Semantic rule diff → affected SKUs → remediation tasks |
 | Evaluation receipts | `evaluate --json` | Content-addressed, independently replayable decision credentials |
 | Advisory layer | `advise` CLI + Web buttons + `POST /api/whatif` | Remediation how-tos, what-if counterfactuals (also a chat-brain tool), compliance-driven market ranking |
+| Marking checklist | Web `🏷 Marking checklist` / `GET /api/markings` | Print-ready list of every modelled marking duty per SKU × market, each with legal basis and status |
+| Bulk CSV import | Web add-modal ⬆ / `POST /api/products/import` | Onboard a whole SKU portfolio at once; per-row ok/error report |
+| Shareable status page | Web `/report?sku=&market=` | Live, print-to-PDF compliance page per SKU: rules with citations, markings, expiry, receipt hash + replay instructions |
 
 ## Coverage (honest scope statement)
 
@@ -104,6 +107,8 @@ Web UI (matrix / conversational agent / impact view)      MCP stdio server
 | `GET /api/expiring?days=90` | Evidence & registration expiry radar |
 | `POST /api/whatif` | Counterfactual fact changes → flipped rules |
 | `POST /api/products` · `DELETE /api/products/{sku}` | Add / remove user SKUs |
+| `POST /api/products/import` | Bulk add: `{rows:[{product,documents,registrations}]}` → per-row report |
+| `GET /report?sku=&market=` | Standalone printable compliance status page |
 | `POST /api/agent/start` / `answer` / `chat` / `finish` / `stop` | Conversational intake (deterministic or LLM brain) |
 
 Audit offline: `complygraph evaluate --receipt r.json`, later `complygraph verify-receipt r.json` → hash integrity + rule-drift check + exact replay.

@@ -8,13 +8,18 @@ marked as an estimate.
 from __future__ import annotations
 
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 from .engine import evaluate_market
 from .intake import _rules, partial_product
 from .loader import load_markets
 from .models import EvidenceBundle, Product
-from .registry import ROOT as PKG_ROOT
+
+# Resolve package data from this file, NOT registry.ROOT — tests redirect that
+# to a tmp sandbox, and an import-time `from .registry import ROOT` would copy
+# whichever value happened to be bound when this module was first imported.
+_PKG_ROOT = Path(__file__).resolve().parents[1]
 
 _MARKETS = None
 _RULES = None
@@ -23,7 +28,7 @@ _RULES = None
 def _markets():
     global _MARKETS
     if _MARKETS is None:
-        _MARKETS = load_markets(PKG_ROOT / "config" / "markets.yaml")
+        _MARKETS = load_markets(_PKG_ROOT / "config" / "markets.yaml")
     return _MARKETS
 
 
@@ -32,7 +37,7 @@ def _all_rules():
     if _RULES is None:
         from .loader import default_rule_paths, load_rules
 
-        _RULES = load_rules(default_rule_paths(PKG_ROOT))
+        _RULES = load_rules(default_rule_paths(_PKG_ROOT))
     return _RULES
 
 

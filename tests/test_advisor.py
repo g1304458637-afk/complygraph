@@ -117,3 +117,19 @@ def test_what_if_maps_aliases_and_rejects_unknown_paths(product, bundle, rules, 
     assert "eu.red.radio_equipment" in flipped
     bad = what_if(probe, {"wireles": False}, markets.markets, "de", bundle, rules)
     assert "error" in bad and "features.wireless_charging" in bad["error"]
+
+
+def test_advisor_loads_package_data_even_when_registry_root_rebound(monkeypatch, tmp_path):
+    """advisor used to copy registry.ROOT at import time — whoever imported it
+    after a test rebinding got tmp paths and a crash on config/markets.yaml."""
+    import importlib
+
+    from complygraph import advisor, registry
+
+    monkeypatch.setattr(registry, "ROOT", tmp_path)
+    reloaded = importlib.reload(advisor)
+    try:
+        assert len(reloaded._markets().markets) >= 20
+        assert len(reloaded._all_rules()) >= 70
+    finally:
+        importlib.reload(advisor)  # restore lazy caches for other tests

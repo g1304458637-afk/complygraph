@@ -11,7 +11,7 @@ rules = generate_rules(seed)
 out = {"# header": None}
 lines = [
     "# AUTO-GENERATED from data/ntm_seed.yaml — do not hand-edit.",
-    f"# Regenerate: python scripts_gen_ntm.py  (seed v0, {len(rules)} rules)",
+    f"# Regenerate: python scripts/gen_ntm.py  (seed v0, {len(rules)} rules)",
 ]
 text = "\n".join(lines) + "\n"
 doc = {

@@ -6,7 +6,7 @@
 
 sku: <你的SKU编号，如 PB-200>
 name: <产品名称>
-category: <品类，当前规则包支持 consumer_electronics / apparel>
+category: <品类，当前规则包支持 consumer_electronics / toys / cosmetics / food_contact / medical_device(骨架) / apparel>
 
 # ---- 谁 in 卖：目标市场（true/false，不确定就留空）----
 offered_to_eu_consumer: <在欧盟卖给消费者？>

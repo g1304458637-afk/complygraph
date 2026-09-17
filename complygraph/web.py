@@ -233,6 +233,18 @@ def api_whatif(sku: str, market_id: str, changes: dict):
     return what_if(product.model_dump(), changes, STORE.markets.markets, market_id, bundle, STORE.rules), 200
 
 
+MAX_IMPORT_ROWS = 200
+
+
+def api_import(rows):
+    """Bulk import guard: honest 400s instead of silent truncation."""
+    if not isinstance(rows, list) or not rows:
+        return {"error": "body must include a non-empty 'rows' array of form-shaped {product, documents, registrations} objects"}, 400
+    if len(rows) > MAX_IMPORT_ROWS:
+        return {"error": f"{len(rows)} rows exceed the {MAX_IMPORT_ROWS}-per-request cap; split the file"}, 400
+    return import_products(rows), 200
+
+
 def api_markings(sku: str, market_id: str):
     from .advisor import marking_checklist
 
@@ -344,11 +356,8 @@ class Handler(BaseHTTPRequestHandler):
             if parsed.path == "/api/products":
                 self._json(save_user_product(body))
             elif parsed.path == "/api/products/import":
-                rows = body.get("rows")
-                if not isinstance(rows, list) or not rows:
-                    self._json({"error": "body must include a non-empty 'rows' array of form-shaped {product, documents, registrations} objects"}, 400)
-                else:
-                    self._json(import_products(rows[:200]))
+                payload, code = api_import(body.get("rows"))
+                self._json(payload, code)
             elif parsed.path == "/api/agent/start":
                 result = start_intake(body.get("lang", "zh"))
                 result["brain"] = "llm" if (os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("CG_LLM_API_KEY")) else "deterministic"

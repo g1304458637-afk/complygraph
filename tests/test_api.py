@@ -227,3 +227,23 @@ def test_report_page_shell_complete():
     # web.py must actually serve it
     web_src = Path(complygraph.__file__).parent.joinpath("web.py").read_text(encoding="utf-8")
     assert '"/report"' in web_src
+
+
+def test_bulk_import_rejects_bad_and_oversized_input(tmp_path):
+    """>200 rows is an honest 400, never a silent truncation; empty/malformed
+    rows arrays are 400s too."""
+    from complygraph import web
+
+    rows = [{"product": {"sku": f"CAP-{i}", "name": "x", "category": "toys"},
+             "documents": [], "registrations": []} for i in range(201)]
+    payload, code = web.api_import(rows)
+    assert code == 400 and "cap" in payload["error"] and "201" in payload["error"]
+
+    payload, code = web.api_import([])
+    assert code == 400
+    payload, code = web.api_import("not-a-list")
+    assert code == 400
+
+    ok_rows = rows[:2]
+    payload, code = web.api_import(ok_rows)
+    assert code == 200 and payload["imported"] == 2

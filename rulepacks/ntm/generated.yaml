@@ -1,5 +1,5 @@
 # AUTO-GENERATED from data/ntm_seed.yaml — do not hand-edit.
-# Regenerate: python scripts_gen_ntm.py  (seed v0, 36 rules)
+# Regenerate: python scripts/gen_ntm.py  (seed v0, 36 rules)
 pack: ntm
 pack_type: legal
 rules:

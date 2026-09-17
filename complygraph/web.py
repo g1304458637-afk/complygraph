@@ -10,6 +10,7 @@ Endpoints:
   GET /api/impact?market=  -> regulation-change impact (Demo D)
   GET /api/expiring?days=  -> evidence & registration expiry radar
   GET /api/markings?sku=&market= -> printable marking/label checklist
+  GET /api/passport?sku=   -> Battery Passport readiness preview (EU 2023/1542 Annex XIII)
   POST /api/whatif         -> counterfactual fact changes -> flipped rules
   POST /api/products/import -> bulk add: {rows:[{product,documents,registrations}]}
 """
@@ -254,6 +255,15 @@ def api_markings(sku: str, market_id: str):
     return marking_checklist(product, bundle, market_id), 200
 
 
+def api_battery_passport(sku: str):
+    from .advisor import battery_passport_preview
+
+    product, bundle = STORE.find(sku)
+    if product is None:
+        return {"error": f"unknown sku {sku}"}, 404
+    return battery_passport_preview(product, bundle), 200
+
+
 def api_impact(market_id: str = "de", channel: str | None = None):
     if market_id not in STORE.markets.markets:
         market_id = "de"
@@ -320,6 +330,9 @@ class Handler(BaseHTTPRequestHandler):
                 payload, code = api_markings(
                     query.get("sku", [""])[0], query.get("market", ["de"])[0]
                 )
+                self._json(payload, code)
+            elif route == "/api/passport":
+                payload, code = api_battery_passport(query.get("sku", [""])[0])
                 self._json(payload, code)
             elif route == "/api/recommend":
                 sku = query.get("sku", [""])[0]

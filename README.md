@@ -64,6 +64,7 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 | Marking checklist | Web `🏷 Marking checklist` / `GET /api/markings` | Print-ready list of every modelled marking duty per SKU × market, each with legal basis and status |
 | Bulk CSV import | Web add-modal ⬆ / `POST /api/products/import` | Onboard a whole SKU portfolio at once; per-row ok/error report |
 | Shareable status page | Web `/report?sku=&market=` | Live, print-to-PDF compliance page per SKU: rules with citations, markings, expiry, receipt hash + replay instructions |
+| Battery Passport preview | Web `🛂 Battery passport` / `GET /api/passport` | Maps facts & evidence already on file onto EU 2023/1542 Annex XIII field groups and lists the gaps (applies 2027-02-18 to >2 kWh batteries) |
 
 ## Coverage (honest scope statement)
 
@@ -109,6 +110,7 @@ Web UI (matrix / conversational agent / impact view)      MCP stdio server
 | `POST /api/products` · `DELETE /api/products/{sku}` | Add / remove user SKUs |
 | `POST /api/products/import` | Bulk add: `{rows:[{product,documents,registrations}]}` → per-row report |
 | `GET /report?sku=&market=` | Standalone printable compliance status page |
+| `GET /api/passport?sku=` | Battery Passport readiness preview (Annex XIII) |
 | `POST /api/agent/start` / `answer` / `chat` / `finish` / `stop` | Conversational intake (deterministic or LLM brain) |
 
 Audit offline: `complygraph evaluate --receipt r.json`, later `complygraph verify-receipt r.json` → hash integrity + rule-drift check + exact replay.
@@ -126,7 +128,7 @@ Audit offline: `complygraph evaluate --receipt r.json`, later `complygraph verif
 - [x] Phase 4: rule diff + change impact
 - [x] Tier-1 global skeleton: NTM pipeline + 25 markets
 - [x] 100-SKU synthetic benchmark (**False Green Rate = 0 is the release gate**) — `scripts/benchmark_false_green.py`: outcomes known by construction, not by engine oracle; CI runs a seeded batch in `tests/test_false_green.py`
-- [x] MCP server: any MCP host (Claude, Cursor, ...) can call the compliance verdict — `python -m complygraph.mcp_server` (8 tools: evaluate_market, map_overview, advise, recommend_markets, expiring, what_if, markings, list_catalog)
+- [x] MCP server: any MCP host (Claude, Cursor, ...) can call the compliance verdict — `python -m complygraph.mcp_server` (9 tools: evaluate_market, map_overview, advise, recommend_markets, expiring, what_if, markings, battery_passport, list_catalog)
 - [ ] Tier-2: official legislation APIs + LLM rule mining (EUR-Lex / eCFR / e-Gov) — live rule mining still open
 
 ## License

@@ -42,7 +42,8 @@ def test_initialize_and_tools_list_roundtrip_subprocess():
     assert init["protocolVersion"] == "2024-11-05"
     names = {t["name"] for t in out[1]["result"]["tools"]}
     assert {"evaluate_market", "map_overview", "advise",
-            "recommend_markets", "expiring", "what_if", "markings", "list_catalog"} <= names
+            "recommend_markets", "expiring", "what_if", "markings", "battery_passport",
+            "list_catalog"} <= names
     assert proc.returncode == 0
 
 
@@ -74,3 +75,11 @@ def test_markings_tool_returns_checklist():
     data = json.loads(out["result"]["content"][0]["text"])
     markings = {i["marking"] for i in data["items"]}
     assert "traceability_marking" in markings
+
+
+def test_battery_passport_tool():
+    out = mcp_server.handle(_rpc("tools/call", {
+        "name": "battery_passport", "arguments": {"sku": "PB-100"},
+    }))
+    data = json.loads(out["result"]["content"][0]["text"])
+    assert data["applicable"] is True and "carbon_footprint" in data["empty_groups"]

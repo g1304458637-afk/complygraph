@@ -158,3 +158,32 @@ def test_markings_endpoint(tmp_path):
     assert any(i["marking"] == "triman_info_tri" for i in payload["items"])
     payload, code = api_markings("GHOST", "de")
     assert code == 404
+
+
+def test_battery_passport_preview_maps_fields_and_gaps(product, bundle):
+    """Battery products get an Annex XIII readiness preview: known facts mapped,
+    unmodelled groups honestly listed as gaps; non-battery products are N/A."""
+    from complygraph.advisor import battery_passport_preview
+
+    out = battery_passport_preview(product, bundle)
+    assert out["applicable"] is True
+    assert out["regulation"].startswith("Regulation (EU) 2023/1542")
+    assert out["fields"]["composition"]["watt_hours"] == 37  # PB-100
+    assert "carbon_footprint" in out["empty_groups"]
+    assert "battery_conformity_declaration" in out["evidence_on_file"]
+    assert 0 < out["filled_share"] < 1
+    assert out["in_scope_by_watt_hours"] is False  # 37 Wh is portable class
+
+    no_battery = product.model_copy(deep=True)
+    no_battery.electrical = {"battery": {"present": False}}
+    out2 = battery_passport_preview(no_battery, bundle)
+    assert out2["applicable"] is False
+
+
+def test_battery_passport_endpoint(tmp_path):
+    from complygraph.web import api_battery_passport
+
+    payload, code = api_battery_passport("PB-100")
+    assert code == 200 and payload["applicable"] is True
+    payload, code = api_battery_passport("GHOST")
+    assert code == 404

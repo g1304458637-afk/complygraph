@@ -726,6 +726,7 @@ $("advise-btn").addEventListener("click", () => {
   openAdvise(LAST_DETAIL.sku, LAST_DETAIL.market);
 });
 $("markings-btn").addEventListener("click", openMarkings);
+$("passport-btn").addEventListener("click", openPassport);
 $("recommend-btn").addEventListener("click", () => {
   if (!LAST_DETAIL) return;
   openRecommend(LAST_DETAIL.sku);
@@ -903,6 +904,33 @@ $("import-csv-file").addEventListener("change", (e) => {
   if (file) importCsv(file);
   e.target.value = "";
 });
+
+/* ---------- battery passport readiness preview ---------- */
+
+async function openPassport() {
+  if (!LAST_DETAIL) return;
+  const data = await getJSON(`/api/passport?sku=${encodeURIComponent(LAST_DETAIL.sku)}`);
+  const box = $("passport-result");
+  box.classList.remove("hidden");
+  const zh = LANG === "zh";
+  if (data.error) { box.innerHTML = `<div class="alert"><span>${escapeHtml(data.error)}</span></div>`; return; }
+  if (!data.applicable) {
+    box.innerHTML = `<div class="advise-head">🛂 ${t("passport_title")}</div><div class="okline">✓ ${escapeHtml(data.note[zh ? "zh" : "en"] || t("passport_not_applicable"))}</div>`;
+    return;
+  }
+  const pct = Math.round((data.filled_share || 0) * 100);
+  const scopeBadge = data.in_scope_by_watt_hours
+    ? `<span class="badge red">${t("passport_in_scope")}</span>`
+    : `<span class="badge green">${t("passport_out_scope")}</span>`;
+  const groups = (data.empty_groups || []).map((g) => `<span class="chip subtle">${escapeHtml(g)}</span>`).join(" ");
+  const evidence = (data.evidence_on_file || []).map((e) => `<span class="chip subtle">${escapeHtml(e)}</span>`).join(" ");
+  box.innerHTML = `
+    <div class="advise-head">🛂 ${t("passport_title")} — ${scopeBadge}</div>
+    <div class="muted" style="font-size:12.5px;margin-bottom:8px">${escapeHtml(data.scope_note[zh ? "zh" : "en"])} · ${escapeHtml(data.regulation)} · ${data.applies_from}</div>
+    <div class="advise-head">${t("passport_filled", { pct })}</div>
+    ${data.empty_groups && data.empty_groups.length ? `<div class="muted" style="font-size:12px;margin:6px 0">${t("passport_gaps")}</div><div style="display:flex;flex-wrap:wrap;gap:6px">${groups}</div>` : ""}
+    ${evidence ? `<div class="muted" style="font-size:12px;margin:10px 0 6px">${t("passport_evidence")}</div><div style="display:flex;flex-wrap:wrap;gap:6px">${evidence}</div>` : ""}`;
+}
 
 /* ---------- wiring ---------- */
 

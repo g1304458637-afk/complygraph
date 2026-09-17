@@ -504,6 +504,80 @@ def marking_checklist(product: Product, bundle: EvidenceBundle, market_id: str,
     }
 
 
+# ------------------------------------------------------------- battery passport preview
+
+
+def battery_passport_preview(product: Product, bundle: EvidenceBundle) -> dict[str, Any]:
+    """Battery Passport readiness preview against Regulation (EU) 2023/1542
+    Annex XIII (applies 2027-02-18 to EV / LMT / industrial batteries >2 kWh).
+
+    This maps what is ALREADY on file onto the passport field groups and
+    honestly lists the gaps — it is a readiness check, not a passport. The
+    field-level delegated requirements are still pending; the Battery Passport
+    Content Guidance (Global Battery Alliance / GS1) is the reference model."""
+    battery = product.electrical.get("battery") or {}
+    if not battery.get("present"):
+        return {
+            "applicable": False,
+            "note": {
+                "zh": "产品不含电池，电池护照不适用。",
+                "en": "Product has no battery — the Battery Passport does not apply.",
+            },
+        }
+    wh = float(battery.get("watt_hours") or 0)
+    fields: dict[str, dict[str, Any]] = {
+        "identification": {
+            "model": product.name,
+            "sku": product.sku,
+            "manufacturer": product.manufacturer.name,
+            "manufacturing_country": product.manufacturer.country,
+            "manufacturing_date": None,
+        },
+        "composition": {
+            "chemistry": battery.get("chemistry"),
+            "watt_hours": wh or None,
+            "capacity_mah": battery.get("capacity_mah"),
+            "hazardous_substances": None,
+            "critical_raw_materials": None,
+        },
+        "performance_durability": {
+            "expected_lifetime": None,
+            "rated_power": None,
+        },
+        "circularity": {
+            "recycled_content": None,
+            "dismantling_info": None,
+        },
+        "carbon_footprint": None,
+        "supply_chain_due_diligence": None,
+    }
+    evidence_on_file = sorted({e.evidence_type for e in bundle.evidence if product.sku in e.model_scope or e.covers_family})
+    groups = [k for k, v in fields.items() if v is None] + [
+        g for g, v in fields.items() if isinstance(v, dict) and all(x is None for x in v.values())
+    ]
+    filled = sum(
+        1
+        for v in fields.values()
+        for x in (v.values() if isinstance(v, dict) else [v])
+        if x is not None
+    )
+    total = sum(len(v.values()) if isinstance(v, dict) else 1 for v in fields.values())
+    return {
+        "applicable": True,
+        "regulation": "Regulation (EU) 2023/1542 Annex XIII",
+        "applies_from": "2027-02-18",
+        "in_scope_by_watt_hours": wh > 2000,
+        "scope_note": {
+            "zh": f"附件 XIII 仅强制适用于 EV/LMT/工业电池（>2 kWh）；本产品 {wh:g} Wh。字段级要求以最终授权法案为准。",
+            "en": f"Annex XIII is mandatory for EV/LMT/industrial batteries (>2 kWh); this product is {wh:g} Wh. Field-level requirements pend the delegated act.",
+        },
+        "fields": fields,
+        "evidence_on_file": evidence_on_file,
+        "empty_groups": sorted(set(groups)),
+        "filled_share": round(filled / total, 4) if total else 0.0,
+    }
+
+
 # ------------------------------------------------------------- market recommendation
 
 

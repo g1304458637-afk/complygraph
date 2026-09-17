@@ -66,6 +66,7 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 | 标印清单 | Web `🏷 标印清单` / `GET /api/markings` | 按 SKU×市场生成可直接打印的标印义务清单，每项挂法律依据与状态 |
 | 批量导入 | Web 表单弹窗 ⬆ / `POST /api/products/import` | 一次导入整组 SKU，逐行返回成功/失败报告 |
 | 可分享状态页 | Web `/report?sku=&market=` | 每个 SKU 一张实时、可打印的合规状态页：逐条法规引用、标印清单、到期监控、回执哈希与重放说明 |
+| 电池护照预览 | Web `🛂 电池护照` / `GET /api/passport` | 把在档事实与证据映射到电池法附件 XIII 字段组，诚实列出缺口（2027-02-18 起适用于 >2 kWh 电池） |
 
 ## 覆盖范围（诚实声明）
 
@@ -108,7 +109,7 @@ Web UI（矩阵 / 对话 agent / 影响视图）
 - [x] Phase 4：规则 diff + 变更影响
 - [x] Tier-1 全球骨架：NTM 数据管道 + 25 国
 - [x] 100 SKU 合成目录 benchmark（**False Green Rate = 0 为发版红线**）——`scripts/benchmark_false_green.py`：预期结果由构造决定（非引擎自证），CI 固定种子批次见 `tests/test_false_green.py`
-- [x] MCP server：任意 MCP 宿主（Claude、Cursor…）可调用合规判定——`python -m complygraph.mcp_server`（8 个工具）
+- [x] MCP server：任意 MCP 宿主（Claude、Cursor…）可调用合规判定——`python -m complygraph.mcp_server`（9 个工具）
 - [ ] Tier-2：官方立法 API + LLM 规则挖掘（EUR-Lex / eCFR / e-Gov）——在线规则挖掘仍开放
 
 ## License

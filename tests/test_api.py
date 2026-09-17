@@ -247,3 +247,11 @@ def test_bulk_import_rejects_bad_and_oversized_input(tmp_path):
     ok_rows = rows[:2]
     payload, code = web.api_import(ok_rows)
     assert code == 200 and payload["imported"] == 2
+
+
+@needs_brain
+def test_brain_battery_passport_tool():
+    session, ctx, ab = _session_with_brain_tools()
+    ab._answer_current_question(ctx, "AGT-10")
+    out = ab._battery_passport(ctx)
+    assert "applicable" in out  # engine decides; tool only reports

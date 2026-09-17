@@ -86,6 +86,8 @@ You have tools that read and drive a STRUCTURED INTAKE SESSION:
 - what_if(market_id, changes): hypothetical — apply fact changes (dotted path
   -> value, e.g. {{"attributes.traceability_marking": "marked"}}) to a COPY of
   the product and report which rules would flip. Use for 'what if I...' questions.
+- battery_passport: readiness preview for the EU Battery Passport (Reg. 2023/1542
+  Annex XIII, from 2027-02-18 for >2 kWh batteries) — what is on file, what is missing.
 
 HARD RULES:
 1. When the user's message answers the current question, call answer_current_question
@@ -140,6 +142,14 @@ def _list_markets(ctx: RunContext[Session]) -> list[str]:
     return sorted(_markets().markets.keys())
 
 
+def _battery_passport(ctx: RunContext[Session]) -> dict[str, Any]:
+    """Battery Passport readiness preview (EU 2023/1542 Annex XIII) for the
+    session's product: fields on file vs gaps. Read-only."""
+    from .advisor import battery_passport_preview
+
+    return battery_passport_preview(partial_product(ctx.deps), _bundle_stub())
+
+
 def _what_if(ctx: RunContext[Session], market_id: str, changes: dict[str, Any]) -> dict[str, Any]:
     """Counterfactual: apply fact changes (dotted path -> value) to a copy of
     the product and report which rule statuses would flip in that market.
@@ -171,7 +181,7 @@ def _build_agent(lang: str) -> Agent:
         model,
         instructions=INSTRUCTIONS.format(lang=lang),
         deps_type=Session,
-        tools=[_current_question, _answer_current_question, _evaluate_market, _list_blockers, _list_markets, _what_if],
+        tools=[_current_question, _answer_current_question, _evaluate_market, _list_blockers, _list_markets, _what_if, _battery_passport],
     )
 
 

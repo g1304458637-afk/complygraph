@@ -72,6 +72,11 @@
   <h2 data-f="h_expiry"></h2>
   <div data-f="expiry"></div>
 
+  <div data-f="passport_section" style="display:none">
+    <h2 data-f="h_passport"></h2>
+    <div data-f="passport"></div>
+  </div>
+
   <h2 data-f="h_receipt"></h2>
   <div class="receipt" data-f="receipt"></div>
   <p class="sub" data-f="verify" style="margin-top:6px"></p>
@@ -95,6 +100,7 @@ const T = {
     h_markings: "Marking & label checklist",
     h_expiry: "Evidence & registrations expiring (90d)",
     expiry_none: "Nothing expires within 90 days.",
+    h_passport: "Battery Passport readiness (EU 2023/1542 Annex XIII — preview)",
     h_receipt: "Evaluation receipt",
     verify: 'Replay offline: complygraph verify-receipt <receipt.json> — hash integrity, rule-drift check, exact result replay.',
     disclaimer: "Scope notice: only the modelled candidate rules above are checked. This page is decision support, not legal advice and not a full compliance determination. Verify against the cited authoritative sources.",
@@ -111,6 +117,7 @@ const T = {
     h_markings: "标印与标签清单",
     h_expiry: "90 天内到期的证据与注册",
     expiry_none: "90 天内没有证据/注册到期。",
+    h_passport: "电池护照就绪度（欧盟电池法附件 XIII —— 预览）",
     h_receipt: "评估回执",
     verify: "离线核验：complygraph verify-receipt <receipt.json> —— 哈希完整性、规则漂移检测、结果精确重放。",
     disclaimer: "覆盖范围声明：仅核查上方已建模的 candidate 规则。本页为决策支持，不构成法律意见或完整合规评估。请对照引用的权威源核实。",
@@ -182,6 +189,21 @@ async function getJSON(url) {
       <td>${esc(i.label)}<br><span class="sub">${esc(i.valid_until)} · ${i.days_left >= 0 ? (LANG === "zh" ? `剩余 ${i.days_left} 天` : `${i.days_left} days left`) : (LANG === "zh" ? `已过期 ${-i.days_left} 天` : `${-i.days_left} days overdue`)}</span></td></tr>`).join("") + `</tbody></table>`
       : `<span class="sub">${T.expiry_none}</span>`;
   } catch (e) { $f("expiry").textContent = "—"; }
+
+  try {
+    const pp = await getJSON(`/api/passport?sku=${encodeURIComponent(SKU)}`);
+    if (pp.applicable) {
+      document.querySelector('[data-f="passport_section"]').style.display = "";
+      const lab = { done: T.markings_done, claimed: T.markings_claimed, open: T.markings_open };
+      const tn = { done: "green", claimed: "amber", open: "red" };
+      $f("passport").innerHTML = `
+        <div style="margin-bottom:6px"><span class="badge ${pp.in_scope_by_watt_hours ? "red" : "green"}">${pp.in_scope_by_watt_hours ? (LANG === "zh" ? "在强制范围内（>2 kWh）" : "IN SCOPE (>2 kWh)") : (LANG === "zh" ? "便携类（<2 kWh，非强制）" : "PORTABLE (<2 kWh — not mandatory)")}</span>
+        <span class="sub"> ${(pp.filled_share * 100).toFixed(0)}%</span></div>
+        <table><tbody>${Object.entries(pp.fields).map(([g, v]) => `
+          <tr><td style="width:180px"><b>${esc(g)}</b></td><td>${v === null || (typeof v === "object" && Object.values(v).every((x) => x === null)) ? `<span class="badge amber">${LANG === "zh" ? "空缺" : "gap"}</span>` : esc(typeof v === "object" ? Object.entries(v).filter(([, x]) => x !== null).map(([k, x]) => `${k}: ${x}`).join(" · ") : String(v))}</td></tr>`).join("")}</tbody></table>
+        ${pp.evidence_on_file && pp.evidence_on_file.length ? `<p class="sub" style="margin-top:6px">${LANG === "zh" ? "在档证据" : "Evidence on file"}: ${esc(pp.evidence_on_file.join(", "))}</p>` : ""}`;
+    }
+  } catch (e) { /* passport section stays hidden */ }
 
   $f("receipt").textContent = `sha256: ${evalData.receipt_sha256}`;
   $f("verify").textContent = T.verify;
